@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Introduction To K-Means ClusteringK-Means 聚类算法是一类无监督学习算法，适用于unlabeled data (data without defined categories or groups)该算法的目标是在数据中找到划分的界限，使数据被分为K个类别。算法不断的迭代，使得每个数据点根据特征被归入K个Categories中的其中一个。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K-Means聚类算法原理">
+<meta property="og:url" content="https://ly1998117.github.io/2019/04/25/K-Means%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="Introduction To K-Means ClusteringK-Means 聚类算法是一类无监督学习算法，适用于unlabeled data (data without defined categories or groups)该算法的目标是在数据中找到划分的界限，使数据被分为K个类别。算法不断的迭代，使得每个数据点根据特征被归入K个Categories中的其中一个。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.datascience.com/hs-fs/hubfs/Blog/introduction-to-k-means-clustering-elbow-point-example.png?width=1520&height=822&name=introduction-to-k-means-clustering-elbow-point-example.png">
+<meta property="article:published_time" content="2019-04-25T07:32:46.000Z">
+<meta property="article:modified_time" content="2021-05-26T14:34:06.261Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="K-Means">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.datascience.com/hs-fs/hubfs/Blog/introduction-to-k-means-clustering-elbow-point-example.png?width=1520&height=822&name=introduction-to-k-means-clustering-elbow-point-example.png">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2019/04/25/K-Means%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2019&#x2F;04&#x2F;25&#x2F;K-Means%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86&#x2F;&quot;,&quot;path&quot;:&quot;2019&#x2F;04&#x2F;25&#x2F;K-Means聚类算法原理&#x2F;&quot;,&quot;title&quot;:&quot;K-Means聚类算法原理&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>K-Means聚类算法原理 | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">18</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction-To-K-Means-Clustering"><span class="nav-number">1.</span> <span class="nav-text">Introduction To K-Means Clustering</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#K-%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">3.</span> <span class="nav-text">K 的选择</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E4%BC%AA%E4%BB%A3%E7%A0%81%E6%8F%8F%E8%BF%B0"><span class="nav-number">4.</span> <span class="nav-text">算法伪代码描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">Python 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#python-code-use-PCA-to-reduct-dimensions"><span class="nav-number">5.1.</span> <span class="nav-text">python code(use PCA to reduct dimensions)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Running-Result"><span class="nav-number">5.2.</span> <span class="nav-text">Running Result</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.agefans.net/" title="https:&#x2F;&#x2F;www.agefans.net" rel="noopener" target="_blank">agefans</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2019/04/25/K-Means%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          K-Means聚类算法原理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-04-25 15:32:46" itemprop="dateCreated datePublished" datetime="2019-04-25T15:32:46+08:00">2019-04-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-05-26 22:34:06" itemprop="dateModified" datetime="2021-05-26T22:34:06+08:00">2021-05-26</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">数据科学</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Introduction-To-K-Means-Clustering"><a href="#Introduction-To-K-Means-Clustering" class="headerlink" title="Introduction To K-Means Clustering"></a>Introduction To K-Means Clustering</h1><p>K-Means 聚类算法是一类无监督学习算法，适用于unlabeled data (data without defined categories or groups)该算法的目标是在数据中找到划分的界限，使数据被分为K个类别。算法不断的迭代，使得每个数据点根据特征被归入K个Categories中的其中一个。</p>
+<span id="more"></span>
+
+<p>算法的最终输出有：</p>
+<pre><code>      1. K簇的质心，可用于标记新数据
+      2. 训练数据的标签（每个数据点分配给一个集群）
+</code></pre>
+<p>K簇的质心就是一组特征值，根据这k个质心即确定数据所代表的类</p>
+<h1 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h1><p><em>Κ</em> -means聚类算法使用迭代优化，以产生最终结果。算法输入是簇  <em>Κ</em>  和数据集的数量。数据集是每个数据点的向量集合。算法从<em>Κ</em> 质心的初始估计开始，可以随机生成或从数据集中随机选择。然后算法在两个步骤之间迭代：</p>
+<ol>
+<li><p>数据分配</p>
+<p>每个质心定义一个簇。在此步骤中，每个数据点基于平方欧几里德距离分配到距其最近的质心。更正式地说，如果<em>c i</em> 是集合<em>C中</em>的质心集合，则每个数据点<em>x</em>按下面公式被分配给集群。</p>
+<p>​                        $$\underset{c_i\in C}{\arg\min};DIST(C_i，x)^2 $$</p>
+<ol start="2">
+<li>质心更新</li>
+</ol>
+<p>在此步骤中，质心被重新计算，通过计算分配给该质心的所有数据的平均值来更新质心</p>
+<p>​                        $$c_i=\frac{1}{|S_i|}\sum_{x_i \in S_i x_i}$$</p>
+</li>
+</ol>
+<p>该算法在步骤1和步骤2之间迭代，直到满足停止标准（即，没有数据点改变簇，距离的总和最小化，或者达到一些最大迭代次数）。</p>
+<p>由于初始质心的选择是随机确定，这意味着最终结果可能是局部最优。</p>
+<h1 id="K-的选择"><a href="#K-的选择" class="headerlink" title="K 的选择"></a>K 的选择</h1><p>上面描述的K-Means算法找到类并为数据点标记都基于提前给定的K值。为了发现数据集的簇的数量，用户需要给定一系列不同的k值并运行算法，然后比较结果。实际上，也没有具体的算法能直接给出合适的k值，但存在一些措施来辅助确定较为准确的K值</p>
+<p>对于不同k值的度量方式：数据点与其质心的平均距离。</p>
+<p>由于增加簇的数量将总是减少到数据点的距离，即增加 <em>K</em> 将<em>总是</em>减小该度量值。而当<em>K</em> 与数据点的数量相同时，该度量值就会达到零的极值。</p>
+<p>故该指标不能用作唯一目标。，到质心的平均距离可以看做是一个关于K的函数，下图对该函数进行绘制，其中下降率急剧变化的“驻点”，可用于粗略地确定<em>ķ</em>。</p>
+<p><img src="https://www.datascience.com/hs-fs/hubfs/Blog/introduction-to-k-means-clustering-elbow-point-example.png?width=1520&height=822&name=introduction-to-k-means-clustering-elbow-point-example.png"></p>
+<p>​    也存在许多其他用于验证<em>K的</em>技术，包括交叉验证，信息标准，信息理论跳跃方法，轮廓方法和G均值算法。此外，监视跨组的数据点分布可以深入了解算法如何分割每个<em>K</em>的数据  。</p>
+<h1 id="算法伪代码描述"><a href="#算法伪代码描述" class="headerlink" title="算法伪代码描述"></a>算法伪代码描述</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function K-Means(数据data, 中心点k) </span><br><span class="line">	获取输入数据的维度Dim 和 个数 N</span><br><span class="line">	随机生成 K 个 Dim 维的点作为中心点</span><br><span class="line">	while(未收敛)		</span><br><span class="line">			对 N 个点：计算每个点属于的类别</span><br><span class="line">			对 K 个中心点 ：</span><br><span class="line">				1、找出所有与该点同类的所有数据点</span><br><span class="line">				2、把自己的坐标修改为这些数据点的中心</span><br><span class="line">	end	</span><br><span class="line">	output</span><br><span class="line">end </span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Python-实现"><a href="#Python-实现" class="headerlink" title="Python 实现"></a>Python 实现</h1><h2 id="python-code-use-PCA-to-reduct-dimensions"><a href="#python-code-use-PCA-to-reduct-dimensions" class="headerlink" title="python code(use PCA to reduct dimensions)"></a>python code(use PCA to reduct dimensions)</h2><p>选用数据集： </p>
+<ol>
+<li><p>sklearn 库中的鸢尾花，降维后绘制图象。</p>
+</li>
+<li><p>自设数据集，给定不同的协方差矩阵和均值生成符合分布的随机数据</p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"><span class="keyword">from</span> PCA <span class="keyword">import</span> PCA</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">K_Means</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, n_clusters, max_iter=<span class="number">200</span>, n_init=<span class="number">5</span></span>):</span></span><br><span class="line">        self.n_cluster = n_clusters</span><br><span class="line">        self.max_iter = max_iter</span><br><span class="line">        self.n_init = n_init</span><br><span class="line"></span><br><span class="line">        self.data = <span class="literal">None</span></span><br><span class="line">        self.dim = <span class="literal">None</span></span><br><span class="line">        self.n = <span class="literal">None</span></span><br><span class="line">        self.center_point = <span class="literal">None</span></span><br><span class="line">        self.data_label = <span class="literal">None</span></span><br><span class="line">        self.init_point = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">rand_points</span>(<span class="params">self</span>):</span>  <span class="comment"># 初始化中心点</span></span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        index = []</span><br><span class="line"></span><br><span class="line">        center_point = np.zeros((self.n_cluster, self.dim), dtype=np.float32)</span><br><span class="line">        self.init_point = np.zeros((self.n_cluster, self.dim), dtype=np.float32)</span><br><span class="line">        <span class="keyword">while</span> counter &lt; self.n_cluster:</span><br><span class="line">            i = np.random.randint(<span class="number">0</span>, self.n)</span><br><span class="line">            <span class="keyword">if</span> i <span class="keyword">not</span> <span class="keyword">in</span> index:</span><br><span class="line">                index.append(i)</span><br><span class="line">                center_point[counter] = self.data[i]</span><br><span class="line">                counter += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        self.init_point[:] = center_point[:]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_k_means</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.rand_points()</span><br><span class="line">        sign = np.zeros(self.n_cluster, dtype=np.<span class="built_in">bool</span>)</span><br><span class="line">        data_label = np.zeros((self.n, <span class="number">1</span>), dtype=np.float32)</span><br><span class="line">        counter = <span class="number">0</span></span><br><span class="line">        new_center_point = np.zeros_like(self.init_point)</span><br><span class="line">        new_center_point[:] = self.init_point[:]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span> <span class="keyword">and</span> counter &lt; self.max_iter:</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(self.n):</span><br><span class="line">                d = <span class="number">1e+10</span></span><br><span class="line">                label = <span class="number">0</span></span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(self.n_cluster):</span><br><span class="line">                    distance = np.linalg.norm(self.data[i] - new_center_point[j])</span><br><span class="line">                    <span class="keyword">if</span> distance &lt; d:</span><br><span class="line">                        d = distance</span><br><span class="line">                        label = j</span><br><span class="line">                data_label[i] = label</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(self.n_cluster):</span><br><span class="line">                cluster = np.argwhere(data_label == i)[:, <span class="number">0</span>]</span><br><span class="line">                coord = self.data[cluster].T</span><br><span class="line">                ave = []</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> coord:</span><br><span class="line">                    ave.append(np.mean(j))</span><br><span class="line">                ave = np.array(ave)</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> np.linalg.norm(new_center_point[i] - ave) &gt; <span class="number">1e-06</span>:</span><br><span class="line"></span><br><span class="line">                    sign[i] = <span class="literal">False</span></span><br><span class="line">                    new_center_point[i] = ave</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    sign[i] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> sign.<span class="built_in">all</span>() == <span class="literal">True</span>:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        counter += <span class="number">1</span></span><br><span class="line">        distance = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(self.n_cluster):</span><br><span class="line">            data_labeld = self.data[np.argwhere(data_label == j)]</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> data_labeld:</span><br><span class="line">                distance += np.linalg.norm(new_center_point[j] - i)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> new_center_point, data_label, distance / self.n</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fit</span>(<span class="params">self, data</span>):</span>  <span class="comment"># K-Means算法实现主体 多次运行取最优值</span></span><br><span class="line">        self.data = data</span><br><span class="line">        self.dim = data.shape[<span class="number">1</span>]</span><br><span class="line">        self.n = data.shape[<span class="number">0</span>]</span><br><span class="line">        distance = <span class="number">1e+10</span></span><br><span class="line">        init_point = np.zeros((self.n_cluster, self.dim), dtype=self.data.dtype)</span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(self.n_init):</span><br><span class="line">            new_center_point, data_label, d = self._k_means()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> d &lt; distance:</span><br><span class="line">                distance = d</span><br><span class="line">                self.center_point = new_center_point</span><br><span class="line">                self.data_label = data_label</span><br><span class="line">                init_point[:] = self.init_point[:]</span><br><span class="line"></span><br><span class="line">        self.init_point = init_point</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;\n&#x27;</span>, <span class="number">20</span> * <span class="string">&#x27;_&#x27;</span>, <span class="string">&quot;K-Means 数据聚类&quot;</span>, <span class="number">20</span> * <span class="string">&#x27;_&#x27;</span>,<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;\n&#x27;</span>, <span class="number">20</span> * <span class="string">&#x27;_&#x27;</span>, <span class="string">&quot; 初始中心点 &quot;</span>, <span class="number">20</span> * <span class="string">&#x27;_&#x27;</span>,<span class="string">&#x27;\n&#x27;</span>, init_point)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;\n&#x27;</span>, <span class="number">20</span> * <span class="string">&#x27;_&#x27;</span>, <span class="string">&quot; 最终中心点 &quot;</span>, <span class="number">20</span> * <span class="string">&#x27;_&#x27;</span>,<span class="string">&#x27;\n&#x27;</span>, self.center_point)</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;\n&#x27;</span>, <span class="number">20</span> * <span class="string">&#x27;_&#x27;</span>, <span class="string">&#x27; 运行次数：&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(self.n_init), <span class="number">20</span> * <span class="string">&#x27;_&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">label_</span>(<span class="params">self</span>):</span>  <span class="comment"># 返回标签</span></span><br><span class="line">        <span class="keyword">return</span> self.data_label.reshape(self.n)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cluster_centers</span>(<span class="params">self</span>):</span>  <span class="comment"># 最终分类中心点</span></span><br><span class="line">        <span class="keyword">return</span> self.center_point</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span>(<span class="params">self, data</span>):</span>  <span class="comment"># 对输入数据进行分类预测</span></span><br><span class="line">        data = np.array(data)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            n, d = data.shape</span><br><span class="line">        <span class="keyword">except</span> ValueError:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;wrong data type&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> d != self.dim:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;wrong data type&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        result = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(data)):</span><br><span class="line">            d = <span class="number">1e+10</span></span><br><span class="line">            label = <span class="number">0</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(self.n_cluster):</span><br><span class="line">                distance = np.linalg.norm(data[i] - self.center_point[j])</span><br><span class="line">                <span class="keyword">if</span> distance &lt; d:</span><br><span class="line">                    d = distance</span><br><span class="line">                    label = j</span><br><span class="line">            result.append(label)</span><br><span class="line">        <span class="keyword">return</span> np.array(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DataProduce</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">test_data</span>(<span class="params">self</span>):</span></span><br><span class="line">        data1 = np.random.multivariate_normal([<span class="number">10</span>, <span class="number">0</span>], [[<span class="number">5</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">5</span>]], size=<span class="number">100</span>)</span><br><span class="line">        data2 = np.random.multivariate_normal([<span class="number">0</span>, -<span class="number">10</span>], [[<span class="number">5</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">5</span>]], size=<span class="number">100</span>)</span><br><span class="line">        data3 = np.random.multivariate_normal([<span class="number">0</span>, <span class="number">15</span>], [[<span class="number">5</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">5</span>]], size=<span class="number">100</span>)</span><br><span class="line">        data4 = np.random.multivariate_normal([-<span class="number">10</span>, <span class="number">5</span>],[[<span class="number">5</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">5</span>]], size=<span class="number">100</span>)</span><br><span class="line"></span><br><span class="line">        target = [<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> data1]</span><br><span class="line">        target.extend([<span class="number">1</span> <span class="keyword">for</span> _ <span class="keyword">in</span> data2])</span><br><span class="line">        target.extend([<span class="number">2</span> <span class="keyword">for</span> _ <span class="keyword">in</span> data3])</span><br><span class="line">        target.extend([<span class="number">3</span> <span class="keyword">for</span> _ <span class="keyword">in</span> data4])</span><br><span class="line"></span><br><span class="line">        data = np.concatenate((data1,data2,data3,data4))</span><br><span class="line">        data_dict = &#123;<span class="string">&#x27;data&#x27;</span>: data, <span class="string">&#x27;target&#x27;</span>: target&#125;</span><br><span class="line">        <span class="keyword">return</span> data_dict</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">iris</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> load_iris()  <span class="comment"># 鸾尾花数据集</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Draw</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_2d_draw</span>(<span class="params">self,d</span>):</span></span><br><span class="line">        data = d[<span class="string">&#x27;data&#x27;</span>]</span><br><span class="line">        d_label = d[<span class="string">&#x27;target&#x27;</span>]</span><br><span class="line">        cluster_num = <span class="built_in">len</span>(<span class="built_in">set</span>(d_label))</span><br><span class="line">        <span class="comment"># --------------------------绘制网格-----------------------------</span></span><br><span class="line">        h = <span class="number">.1</span></span><br><span class="line">        x_min, x_max = data[:, <span class="number">0</span>].<span class="built_in">min</span>() - <span class="number">1</span>, data[:, <span class="number">0</span>].<span class="built_in">max</span>() + <span class="number">1</span></span><br><span class="line">        y_min, y_max = data[:, <span class="number">1</span>].<span class="built_in">min</span>() - <span class="number">1</span>, data[:, <span class="number">1</span>].<span class="built_in">max</span>() + <span class="number">1</span></span><br><span class="line">        xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))</span><br><span class="line">        kmeans = K_Means(cluster_num)</span><br><span class="line">        kmeans.fit(data)</span><br><span class="line">        centroids = kmeans.cluster_centers()</span><br><span class="line"></span><br><span class="line">        label_pred = kmeans.predict(np.c_[xx.ravel(), yy.ravel()])</span><br><span class="line"></span><br><span class="line">        z = label_pred.reshape(xx.shape)</span><br><span class="line">        fig = plt.figure(figsize=(<span class="number">10</span>, <span class="number">5</span>))</span><br><span class="line">        ax1 = fig.add_subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">        ax2 = fig.add_subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">        ax1.set_title(<span class="string">&quot;initial data-set&quot;</span>, size=<span class="number">20</span>)</span><br><span class="line">        ax2.set_title(<span class="string">&#x27;K-means clustering &#x27;</span>, size=<span class="number">20</span>)</span><br><span class="line">        ax2.imshow(z, interpolation=<span class="string">&#x27;nearest&#x27;</span>,</span><br><span class="line">                   extent=(xx.<span class="built_in">min</span>(), xx.<span class="built_in">max</span>(), yy.<span class="built_in">min</span>(), yy.<span class="built_in">max</span>()),</span><br><span class="line">                   cmap=plt.cm.Paired,</span><br><span class="line">                   aspect=<span class="string">&#x27;auto&#x27;</span>, origin=<span class="string">&#x27;lower&#x27;</span>)</span><br><span class="line">        ax2.plot(data[:, <span class="number">0</span>], data[:, <span class="number">1</span>], <span class="string">&#x27;k.&#x27;</span>, markersize=<span class="number">2</span>)</span><br><span class="line">        ax1.scatter(*<span class="built_in">zip</span>(*data), c=d_label, s=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">        ax2.scatter(*<span class="built_in">zip</span>(*data), c=<span class="string">&#x27;black&#x27;</span>, s=<span class="number">2</span>)</span><br><span class="line">        ax2.scatter(*<span class="built_in">zip</span>(*centroids), c=<span class="string">&#x27;w&#x27;</span>, marker=<span class="string">&#x27;x&#x27;</span>, s=<span class="number">1000</span>)</span><br><span class="line">        ax2.scatter(*<span class="built_in">zip</span>(*kmeans.init_point), c=<span class="string">&#x27;r&#x27;</span>, marker=<span class="string">&#x27;1&#x27;</span>, s=<span class="number">1000</span>)</span><br><span class="line">        plt.show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    data = DataProduce()</span><br><span class="line"></span><br><span class="line">    test_data = data.test_data()</span><br><span class="line">    iris = data.iris()</span><br><span class="line"></span><br><span class="line">    kmeans = K_Means(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># --------------4维数据聚类------------</span></span><br><span class="line">    kmeans.fit(iris[<span class="string">&#x27;data&#x27;</span>])</span><br><span class="line">    <span class="comment"># --------------PCA降维---------------</span></span><br><span class="line">    pca = PCA(iris[<span class="string">&#x27;data&#x27;</span>])</span><br><span class="line">    reduced_data = &#123;<span class="string">&#x27;data&#x27;</span>: pca.pca(<span class="number">2</span>), <span class="string">&#x27;target&#x27;</span>: iris[<span class="string">&#x27;target&#x27;</span>]&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># ----------------绘图-----------------</span></span><br><span class="line">    draw = Draw()</span><br><span class="line">    draw._2d_draw(reduced_data)</span><br><span class="line">    draw._2d_draw(test_data)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Running-Result"><a href="#Running-Result" class="headerlink" title="Running Result"></a>Running Result</h2><p>鸢尾花数据集，k=3</p>
+<p>红色y型记号代表初始随机质心，白色记号代表最终数据中心</p>
+<p>![](Screen Shot 2019-05-05 at 1.21.09 AM.png)</p>
+<p>自设数据集，k=4，分类结果正确</p>
+<p>红色y型记号代表初始随机质心，白色记号代表最终数据中心</p>
+<p>![](Screen Shot 2019-05-05 at 1.22.35 AM.png)</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/K-Means/" rel="tag"># K-Means</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/04/19/%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/" rel="prev" title="数学公式">
+                  <i class="fa fa-chevron-left"></i> 数学公式
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/05/26/LDA%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/" rel="next" title="LDA线性判别分析基本原理及Python实现">
+                  LDA线性判别分析基本原理及Python实现 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">567k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">8:35</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2019&#x2F;04&#x2F;25&#x2F;K-Means%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>

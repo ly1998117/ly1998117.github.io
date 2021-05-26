@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="The basic principle and implementation of LDA LDA（Linear Discriminant Analysis）线性判别分析，是一种典型的有监督学习分类技术。最常用作模式分类和机器学习应用的预处理步骤中的降维技术。目标是将数据集从高维空间投影到具有良好类别可分性的低维空间，以避免过度拟合（“维数灾难”），在降低计算成本同时，又最大的保持了高维数据的特性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LDA线性判别分析基本原理及Python实现">
+<meta property="og:url" content="https://ly1998117.github.io/2019/05/26/LDA%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="The basic principle and implementation of LDA LDA（Linear Discriminant Analysis）线性判别分析，是一种典型的有监督学习分类技术。最常用作模式分类和机器学习应用的预处理步骤中的降维技术。目标是将数据集从高维空间投影到具有良好类别可分性的低维空间，以避免过度拟合（“维数灾难”），在降低计算成本同时，又最大的保持了高维数据的特性">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ly1998117.github.io/2019/05/26/LDA%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/725DB6D2-6C42-48EB-9E5F-EB6F7603CF87.png">
+<meta property="article:published_time" content="2019-05-26T08:05:47.000Z">
+<meta property="article:modified_time" content="2021-05-26T14:34:12.157Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="PCA">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ly1998117.github.io/2019/05/26/LDA%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/725DB6D2-6C42-48EB-9E5F-EB6F7603CF87.png">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2019/05/26/LDA%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2019&#x2F;05&#x2F;26&#x2F;LDA%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0&#x2F;&quot;,&quot;path&quot;:&quot;2019&#x2F;05&#x2F;26&#x2F;LDA线性判别分析基本原理及Python实现&#x2F;&quot;,&quot;title&quot;:&quot;LDA线性判别分析基本原理及Python实现&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>LDA线性判别分析基本原理及Python实现 | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">18</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#The-basic-principle-and-implementation-of-LDA"><span class="nav-number">1.</span> <span class="nav-text">The basic principle and implementation of LDA</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">2.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-difference-between-PCA-and-LDA"><span class="nav-number">3.</span> <span class="nav-text">The difference between PCA and LDA</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mathematical-principles"><span class="nav-number">4.</span> <span class="nav-text">Mathematical principles</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IRIS-Data-Analysis"><span class="nav-number">5.</span> <span class="nav-text">IRIS Data Analysis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LDA-Python-Implementation"><span class="nav-number">6.</span> <span class="nav-text">LDA Python Implementation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96-Iris-%E6%95%B0%E6%8D%AE%EF%BC%8C%E7%BB%84%E5%90%88%E6%95%B0%E6%8D%AE%E4%B8%BADataFrame%E6%A0%BC%E5%BC%8F"><span class="nav-number">6.1.</span> <span class="nav-text">读取 Iris 数据，组合数据为DataFrame格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%AF%8F%E4%B8%80%E7%B1%BB%E7%9A%84%E5%B9%B3%E5%9D%87%E5%90%91%E9%87%8FMi%EF%BC%8C%E5%B0%86Mi%E7%BB%84%E5%90%88%E4%B8%BA%E5%90%91%E9%87%8F%E7%9F%A9%E9%98%B5M"><span class="nav-number">6.2.</span> <span class="nav-text">计算每一类的平均向量Mi，将Mi组合为向量矩阵M</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%95%A3%E5%BA%A6%E7%9F%A9%E9%98%B5-Sw"><span class="nav-number">6.3.</span> <span class="nav-text">计算散度矩阵 Sw</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%95%A3%E5%BA%A6%E7%9F%A9%E9%98%B5-Sb"><span class="nav-number">6.4.</span> <span class="nav-text">计算散度矩阵 Sb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97-S-w-1-S-b-%E7%9F%A9%E9%98%B5%EF%BC%8C%E5%B9%B6%E7%89%B9%E5%BE%81%E5%80%BC%E5%88%86%E8%A7%A3"><span class="nav-number">6.5.</span> <span class="nav-text">计算$S_{w}^{-1}S_{b}$矩阵，并特征值分解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E5%89%8DK%E4%B8%AA%E6%9C%80%E5%A4%A7%E7%89%B9%E5%BE%81%E5%80%BC%E5%AF%B9%E5%BA%94%E7%9A%84%E7%89%B9%E5%BE%81%E5%90%91%E9%87%8F%E7%BB%84%E6%88%90%E7%9F%A9%E9%98%B5W"><span class="nav-number">6.6.</span> <span class="nav-text">选择前K个最大特征值对应的特征向量组成矩阵W</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AEW-%E8%AE%A1%E7%AE%97%E9%99%8D%E7%BB%B4%E6%95%B0%E6%8D%AE-%E7%BB%B4%E5%BA%A6%E4%B8%8D%E5%8F%AF%E5%A4%A7%E4%BA%8EC-1"><span class="nav-number">6.7.</span> <span class="nav-text">根据W 计算降维数据(维度不可大于C-1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E9%99%8D%E7%BB%B4%E6%95%B0%E6%8D%AE%E4%BD%9C%E5%9B%BE"><span class="nav-number">6.8.</span> <span class="nav-text">对降维数据作图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8EPCA%E6%AF%94%E8%BE%83"><span class="nav-number">6.9.</span> <span class="nav-text">与PCA比较</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.agefans.net/" title="https:&#x2F;&#x2F;www.agefans.net" rel="noopener" target="_blank">agefans</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2019/05/26/LDA%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LDA线性判别分析基本原理及Python实现
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-05-26 16:05:47" itemprop="dateCreated datePublished" datetime="2019-05-26T16:05:47+08:00">2019-05-26</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-05-26 22:34:12" itemprop="dateModified" datetime="2021-05-26T22:34:12+08:00">2021-05-26</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">数据科学</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="The-basic-principle-and-implementation-of-LDA"><a href="#The-basic-principle-and-implementation-of-LDA" class="headerlink" title="The basic principle and implementation of LDA"></a>The basic principle and implementation of LDA</h1><blockquote>
+<p>LDA（Linear Discriminant Analysis）线性判别分析，是一种典型的有监督学习分类技术。最常用作模式分类和机器学习应用的预处理步骤中的降维技术。目标是将数据集从高维空间投影到具有良好类别可分性的低维空间，以避免过度拟合（“维数灾难”），在降低计算成本同时，又最大的保持了高维数据的特性。</p>
+</blockquote>
+<span id="more"></span>
+
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><blockquote>
+<p>LDA由费舍尔（Ronald A. Fisher）于1936年提出，因此LDA又被称为 Fisher’s Linear Discriminant，最初的LDA算法仅仅是适用于二分类问题，于1948年被 C. R. Rao 泛化为多类别线性判别分析。一般的LDA算法与PCA降维算法不论是算法过程还是最终目的都有着极大的相似性，LDA是在降维后保留最大数据方差的同时，也使得对多个数据类别仍然尽可能可分。</p>
+</blockquote>
+<h1 id="The-difference-between-PCA-and-LDA"><a href="#The-difference-between-PCA-and-LDA" class="headerlink" title="The difference between PCA and LDA"></a>The difference between PCA and LDA</h1><blockquote>
+<p>PCA与LDA都是常用的降维线性变换技术。PCA由于不需要数据标签，属于unsupervised learning，其目标是找到最大化数据集方差的方向，即主成分。LDA则是supervised learning，适用于已知类标签的数据集，其目的是最大化各类数据之间协方差。对于已知标签的多类分类任务，LDA似乎优于PCA。但实际情况中，对于各类样本较少的数据集，PCA降维后的数据分类准确性往往优优LDA。故先对数据进行PCA降维到合适维度，再使用LDA进行二次降维是常用的方法。</p>
+</blockquote>
+<p>![](Screen Shot 2019-05-26 at 4.17.24 PM.png)</p>
+<h1 id="Mathematical-principles"><a href="#Mathematical-principles" class="headerlink" title="Mathematical principles"></a>Mathematical principles</h1><blockquote>
+<p>LDA的目的是将高维特征投影到一个低维子空间中同时保持类间的良好可分性和类内的最大化方差。如周志华老师书中图所示</p>
+</blockquote>
+<p><img src="725DB6D2-6C42-48EB-9E5F-EB6F7603CF87.png" alt="725DB6D2-6C42-48EB-9E5F-EB6F7603CF87"></p>
+<ol>
+<li><p><strong>前提条件</strong></p>
+<p>假设数据集有N类，第i类数据有$x_{i}$个</p>
+</li>
+<li><p><strong>全局散度矩阵</strong></p>
+<p>其中$\mu $是所有示例的均值向量</p>
+</li>
+</ol>
+<p>​                                $S_{t} = S_{b} + S_{w}$</p>
+<p>​                                    $= \sum_{i=1}^{m}(x-\mu _{i})(x-\mu _{i})^{T}$</p>
+<ol start="3">
+<li><p><strong>类内散度矩阵</strong></p>
+<p>$\mu_{i} $为第i个类的均值向量</p>
+<p>​                            $S_{w} = \sum_{i=1}^{N} \sum_{x\epsilon x_{i}}(x-\mu_{i})(x-\mu_{i})^{T}$</p>
+</li>
+<li><p><strong>类间散度矩阵</strong></p>
+<p>计算不同类之间的方差</p>
+<p>​                            $S_{b}=S_{t}-S_{w}$</p>
+<p>​                            $S_{b} = \sum_{i=1}^{N}m_{i}(\mu_{i}-\mu)(\mu_{i}-\mu)^{T}$</p>
+<p>数学推导：</p>
+<p>![](Screen Shot 2019-05-26 at 4.53.40 PM.png)</p>
+</li>
+<li><p><strong>优化目标</strong></p>
+<p>tr{·}表示矩阵的迹</p>
+<p>​                            $\max_{w} = \frac{tr(W^T S_{b} W)}{tr(W^T S_{w} W)}  $</p>
+<p>![](Screen Shot 2019-05-26 at 4.55.45 PM.png)</p>
+<p>![](Screen Shot 2019-05-26 at 4.56.02 PM.png)</p>
+<p>求解得表达式：</p>
+<p>​                            $S_{b}W = \lambda S_{w} W$</p>
+<p>W 即为$S_{w}^{-1}S_{b}$ 的N-1个最大广义特征值所对应的特征向量组成的矩阵</p>
+<p><strong>NOTE</strong>：</p>
+<p><strong>在LDA中，线性判别器的数量最多为C-1个，C是数据的类标签数量。因为对于类间散度矩阵Sb的秩最多为C（Sb是由C个矩阵相加得来，具体可以看公式）。又因为前C-1个$\mu$可以线性表示第C个$ \mu $，故Sb的秩最多为C-1，即特征向量最多有C-1个。</strong></p>
+<p><strong>对于 Iris数据集，C=3，即LDA降维最多只能降维到2维</strong></p>
+</li>
+</ol>
+<h1 id="IRIS-Data-Analysis"><a href="#IRIS-Data-Analysis" class="headerlink" title="IRIS Data Analysis"></a>IRIS Data Analysis</h1><blockquote>
+<p>实验数据iris数据集，数据集共3类，维度4维，实验前对数据分布进行粗略了解统计同特征不同类的分布，如图所示：</p>
+</blockquote>
+<p>​    ![](Screen Shot 2019-05-26 at 5.04.32 PM.png)</p>
+<blockquote>
+<p>通过观察这些特征的简单图形表示，我们已经可以看出花瓣长度和宽度可能更适合作为三个花类之间的两个独立的潜在特征。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line">data = load_iris()[<span class="string">&#x27;data&#x27;</span>]</span><br><span class="line">label = load_iris()[<span class="string">&#x27;target&#x27;</span>]</span><br><span class="line">feature_names = load_iris()[<span class="string">&#x27;feature_names&#x27;</span>]</span><br><span class="line"></span><br><span class="line">df = pd.DataFrame(data)</span><br><span class="line">df[<span class="string">&#x27;label&#x27;</span>] = label</span><br><span class="line">X = df[[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]].values</span><br><span class="line">y = df[<span class="string">&#x27;label&#x27;</span>].values+<span class="number">1</span></span><br><span class="line"></span><br><span class="line">feature_dict = &#123;i: label <span class="keyword">for</span> i, label <span class="keyword">in</span> <span class="built_in">zip</span>(<span class="built_in">range</span>(<span class="number">4</span>),feature_names)&#125;</span><br><span class="line">label_dict = &#123;<span class="number">1</span>: <span class="string">&#x27;Setosa&#x27;</span>, <span class="number">2</span>: <span class="string">&#x27;Versicolor&#x27;</span>, <span class="number">3</span>: <span class="string">&#x27;Virginica&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line">fig, axes = plt.subplots(nrows=<span class="number">2</span>, ncols=<span class="number">2</span>, figsize=(<span class="number">12</span>, <span class="number">6</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ax, cnt <span class="keyword">in</span> <span class="built_in">zip</span>(axes.ravel(), <span class="built_in">range</span>(<span class="number">4</span>)):</span><br><span class="line"></span><br><span class="line">    min_b = math.floor(np.<span class="built_in">min</span>(X[:, cnt]))</span><br><span class="line">    max_b = math.ceil(np.<span class="built_in">max</span>(X[:, cnt]))</span><br><span class="line">    bins = np.linspace(min_b, max_b, <span class="number">25</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> lab, col <span class="keyword">in</span> <span class="built_in">zip</span>(<span class="built_in">range</span>(<span class="number">1</span>, <span class="number">4</span>), (<span class="string">&#x27;blue&#x27;</span>, <span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;green&#x27;</span>)):</span><br><span class="line">        ax.hist(X[y == lab, cnt],</span><br><span class="line">                color=col,</span><br><span class="line">                label=<span class="string">&#x27;class %s&#x27;</span> % label_dict[lab],</span><br><span class="line">                bins=bins,</span><br><span class="line">                alpha=<span class="number">0.5</span>, )</span><br><span class="line">    ylims = ax.get_ylim()</span><br><span class="line"></span><br><span class="line">    leg = ax.legend(loc=<span class="string">&#x27;upper right&#x27;</span>, fancybox=<span class="literal">True</span>, fontsize=<span class="number">8</span>)</span><br><span class="line">    leg.get_frame().set_alpha(<span class="number">0.5</span>)</span><br><span class="line">    ax.set_ylim([<span class="number">0</span>, <span class="built_in">max</span>(ylims) + <span class="number">2</span>])</span><br><span class="line">    ax.set_xlabel(feature_dict[cnt])</span><br><span class="line">    ax.set_title(<span class="string">&#x27;Iris: %s&#x27;</span> % <span class="built_in">str</span>(cnt + <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">    ax.tick_params(axis=<span class="string">&quot;both&quot;</span>, which=<span class="string">&quot;both&quot;</span>, bottom=<span class="string">&quot;off&quot;</span>, top=<span class="string">&quot;off&quot;</span>,</span><br><span class="line">                   labelbottom=<span class="string">&quot;on&quot;</span>, left=<span class="string">&quot;off&quot;</span>, right=<span class="string">&quot;off&quot;</span>, labelleft=<span class="string">&quot;on&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># # 去除边框</span></span><br><span class="line">    ax.spines[<span class="string">&quot;top&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line">    ax.spines[<span class="string">&quot;right&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line">    ax.spines[<span class="string">&quot;bottom&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line">    ax.spines[<span class="string">&quot;left&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">axes[<span class="number">0</span>][<span class="number">0</span>].set_ylabel(<span class="string">&#x27;count&#x27;</span>)</span><br><span class="line">axes[<span class="number">1</span>][<span class="number">0</span>].set_ylabel(<span class="string">&#x27;count&#x27;</span>)</span><br><span class="line"></span><br><span class="line">fig.tight_layout()</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="LDA-Python-Implementation"><a href="#LDA-Python-Implementation" class="headerlink" title="LDA Python Implementation"></a>LDA Python Implementation</h1><h2 id="读取-Iris-数据，组合数据为DataFrame格式"><a href="#读取-Iris-数据，组合数据为DataFrame格式" class="headerlink" title="读取 Iris 数据，组合数据为DataFrame格式"></a>读取 Iris 数据，组合数据为DataFrame格式</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"><span class="keyword">from</span> mpl_toolkits.mplot3d <span class="keyword">import</span> Axes3D</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LDA</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, data, label</span>):</span></span><br><span class="line">        self.data = data</span><br><span class="line">        self.X = pd.DataFrame(data)</span><br><span class="line">        self.label = label</span><br><span class="line">        self.class_count = <span class="built_in">len</span>(<span class="built_in">set</span>(label))		<span class="comment"># 数据类别计数</span></span><br><span class="line">        self.X_lda = <span class="literal">None</span>			<span class="comment"># lda 降维数据</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="计算每一类的平均向量Mi，将Mi组合为向量矩阵M"><a href="#计算每一类的平均向量Mi，将Mi组合为向量矩阵M" class="headerlink" title="计算每一类的平均向量Mi，将Mi组合为向量矩阵M"></a>计算每一类的平均向量Mi，将Mi组合为向量矩阵M</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">X = self.X</span><br><span class="line">X[<span class="string">&quot;label&quot;</span>] = self.label</span><br><span class="line">label = self.label</span><br><span class="line">N = np.array([<span class="built_in">len</span>(X[label == <span class="number">0</span>]), <span class="built_in">len</span>(X[label == <span class="number">1</span>]), <span class="built_in">len</span>(X[label == <span class="number">2</span>])])</span><br><span class="line">Mi = pd.DataFrame([np.mean(X[label == <span class="number">0</span>]), np.mean(X[label == <span class="number">1</span>]),</span><br><span class="line">                   np.mean(X[label == <span class="number">2</span>])]).T</span><br><span class="line">M = pd.DataFrame([np.mean(X)] * <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="计算散度矩阵-Sw"><a href="#计算散度矩阵-Sw" class="headerlink" title="计算散度矩阵 Sw"></a>计算散度矩阵 Sw</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X_mean = X.apply(<span class="keyword">lambda</span> x: x - Mi[x[<span class="string">&quot;label&quot;</span>]], axis=<span class="number">1</span>).drop(columns=<span class="string">&quot;label&quot;</span>)</span><br><span class="line">Sw = np.dot(X_mean.T, X_mean)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="计算散度矩阵-Sb"><a href="#计算散度矩阵-Sb" class="headerlink" title="计算散度矩阵 Sb"></a>计算散度矩阵 Sb</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Mi_M = (Mi - M.T).drop(index=<span class="string">&#x27;label&#x27;</span>)</span><br><span class="line">Mi_M_N = Mi_M * N</span><br><span class="line">Sb = np.dot(Mi_M, Mi_M_N.T)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="计算-S-w-1-S-b-矩阵，并特征值分解"><a href="#计算-S-w-1-S-b-矩阵，并特征值分解" class="headerlink" title="计算$S_{w}^{-1}S_{b}$矩阵，并特征值分解"></a>计算$S_{w}^{-1}S_{b}$矩阵，并特征值分解</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">eig_vals, eig_vecs = np.linalg.eig(np.linalg.inv(Sw).dot(Sb))</span><br><span class="line">val_vecs = pd.DataFrame()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 特征值与特征向量组合转为DataFrame</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(eig_vals)):</span><br><span class="line">		val_vecs[eig_vals[i]] = eig_vecs[:, i]</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="选择前K个最大特征值对应的特征向量组成矩阵W"><a href="#选择前K个最大特征值对应的特征向量组成矩阵W" class="headerlink" title="选择前K个最大特征值对应的特征向量组成矩阵W"></a>选择前K个最大特征值对应的特征向量组成矩阵W</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">columns = <span class="built_in">sorted</span>(val_vecs.columns, reverse=<span class="literal">True</span>)</span><br><span class="line">W = val_vecs[columns]</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="根据W-计算降维数据-维度不可大于C-1"><a href="#根据W-计算降维数据-维度不可大于C-1" class="headerlink" title="根据W 计算降维数据(维度不可大于C-1)"></a>根据W 计算降维数据(维度不可大于C-1)</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> dim&gt;self.class_count:</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&quot;The dim cannot more than C-1 witch is &#123;&#125; here&quot;</span>.<span class="built_in">format</span>(self.class_count-<span class="number">1</span>))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">w = self.create_w()</span><br><span class="line">new_data = np.dot(self.X.drop(columns=<span class="string">&#x27;label&#x27;</span>), w.values[:, :dim])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Variance explained:&quot;</span>)</span><br><span class="line">eigv_sum = w.columns.values.<span class="built_in">sum</span>()</span><br><span class="line">eigenvalue = w.columns / eigv_sum</span><br><span class="line"><span class="keyword">for</span> i, j <span class="keyword">in</span> <span class="built_in">enumerate</span>(eigenvalue):</span><br><span class="line">    <span class="keyword">if</span> j &lt; <span class="number">0</span>:</span><br><span class="line">        j = -j</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;eigenvalue &#123;0:&#125;:     &#123;1:.2%&#125;&#x27;</span>.<span class="built_in">format</span>(i + <span class="number">1</span>, j))</span><br><span class="line">self.X_lda = new_data</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="对降维数据作图"><a href="#对降维数据作图" class="headerlink" title="对降维数据作图"></a>对降维数据作图</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_lda</span>(<span class="params">self</span>):</span></span><br><span class="line">  <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">len</span>(self.X_lda):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;error&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">  X_lda = self.X_lda</span><br><span class="line">  dim = X_lda.shape[<span class="number">1</span>]</span><br><span class="line">  <span class="keyword">if</span> X_lda.shape[<span class="number">1</span>] == <span class="number">1</span>:</span><br><span class="line">    X_lda = np.array([[i[<span class="number">0</span>],<span class="number">1</span>] <span class="keyword">for</span> i <span class="keyword">in</span> X_lda])</span><br><span class="line">    ax = plt.subplot(<span class="number">111</span>)</span><br><span class="line">    y = self.label</span><br><span class="line">    label_dict = &#123;<span class="number">0</span>: <span class="string">&#x27;Setosa&#x27;</span>, <span class="number">1</span>: <span class="string">&#x27;Versicolor&#x27;</span>, <span class="number">2</span>: <span class="string">&#x27;Virginica&#x27;</span>&#125;</span><br><span class="line">    <span class="keyword">for</span> label, marker, color <span class="keyword">in</span> <span class="built_in">zip</span>(</span><br><span class="line">      <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">3</span>), (<span class="string">&#x27;^&#x27;</span>, <span class="string">&#x27;s&#x27;</span>, <span class="string">&#x27;o&#x27;</span>), (<span class="string">&#x27;blue&#x27;</span>, <span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;green&#x27;</span>)):</span><br><span class="line">      plt.scatter(x=X_lda[:, <span class="number">0</span>][y == label],</span><br><span class="line">                  y=X_lda[:, <span class="number">1</span>][y == label],</span><br><span class="line">                  marker=marker,</span><br><span class="line">                  color=color,</span><br><span class="line">                  alpha=<span class="number">0.5</span>,</span><br><span class="line">                  label=label_dict[label]</span><br><span class="line">                 )</span><br><span class="line"></span><br><span class="line">      leg = plt.legend(loc=<span class="string">&#x27;upper right&#x27;</span>, fancybox=<span class="literal">True</span>)</span><br><span class="line">      leg.get_frame().set_alpha(<span class="number">0.5</span>)</span><br><span class="line">      plt.title(<span class="string">&#x27;LDA: Iris onto the first &#123;&#125; linear discriminants&#x27;</span>.<span class="built_in">format</span>(dim))</span><br><span class="line"></span><br><span class="line">      <span class="comment"># hide axis ticks</span></span><br><span class="line">      plt.tick_params(axis=<span class="string">&quot;both&quot;</span>, which=<span class="string">&quot;both&quot;</span>, bottom=<span class="string">&quot;off&quot;</span>, top=<span class="string">&quot;off&quot;</span>,</span><br><span class="line">                      labelbottom=<span class="string">&quot;on&quot;</span>, left=<span class="string">&quot;off&quot;</span>, right=<span class="string">&quot;off&quot;</span>, labelleft=<span class="string">&quot;on&quot;</span>)</span><br><span class="line"></span><br><span class="line">      <span class="comment"># remove axis spines</span></span><br><span class="line">      ax.spines[<span class="string">&quot;top&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line">      ax.spines[<span class="string">&quot;right&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line">      ax.spines[<span class="string">&quot;bottom&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line">      ax.spines[<span class="string">&quot;left&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">      plt.grid()</span><br><span class="line">      plt.tight_layout()</span><br><span class="line">      plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>![](Screen Shot 2019-05-26 at 5.25.55 PM.png)</p>
+<p>![](Screen Shot 2019-05-26 at 5.26.48 PM.png)</p>
+<h2 id="与PCA比较"><a href="#与PCA比较" class="headerlink" title="与PCA比较"></a>与PCA比较</h2><p>![](Screen Shot 2019-05-26 at 5.28.16 PM.png)</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PCA/" rel="tag"># PCA</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/04/25/K-Means%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/" rel="prev" title="K-Means聚类算法原理">
+                  <i class="fa fa-chevron-left"></i> K-Means聚类算法原理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/03/01/java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="java学习笔记">
+                  java学习笔记 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">567k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">8:35</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2019&#x2F;05&#x2F;26&#x2F;LDA%E7%BA%BF%E6%80%A7%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>

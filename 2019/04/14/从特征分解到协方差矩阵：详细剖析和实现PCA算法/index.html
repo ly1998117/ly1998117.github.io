@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="转载:原文链接  引言 本文先简要明了地介绍了特征向量和其与矩阵的关系，然后再以其为基础解释协方差矩阵和主成分分析法的基本概念，最后我们结合协方差矩阵和主成分分析法实现数据降维。本文不仅仅是从理论上阐述各种重要概念，同时最后还一步步使用 Python 实现数据降维。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从特征分解到协方差矩阵：详细剖析和实现PCA算法">
+<meta property="og:url" content="https://ly1998117.github.io/2019/04/14/%E4%BB%8E%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3%E5%88%B0%E5%8D%8F%E6%96%B9%E5%B7%AE%E7%9F%A9%E9%98%B5%EF%BC%9A%E8%AF%A6%E7%BB%86%E5%89%96%E6%9E%90%E5%92%8C%E5%AE%9E%E7%8E%B0PCA%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="转载:原文链接  引言 本文先简要明了地介绍了特征向量和其与矩阵的关系，然后再以其为基础解释协方差矩阵和主成分分析法的基本概念，最后我们结合协方差矩阵和主成分分析法实现数据降维。本文不仅仅是从理论上阐述各种重要概念，同时最后还一步步使用 Python 实现数据降维。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-435177ba8055ac2b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/258/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-d5f0ad12f93a0892.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/497/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-f99afddf8e222732.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/465/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-4f73f65b8bf985d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/460/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-a1bf9e5c751961f9.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/493/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-9ba4065d5a2fb241.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/479/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-80f580af442d9290.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/86/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-5580e12b3851f3d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/149/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-350bf09b84ec8998.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/149/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-6795fae77bc1d828.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/233/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-04e54827030a843c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/442/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-257fc98b75afb1c5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/390/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-83b44f1a7549d05c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/258/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-55e546f02c5beb13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/364/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-f3b6b8ddb6f487b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/137/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-fde71e1cbff0bb17.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/510/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-fb773c19eda2cc04.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/355/format/webp">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3635046-43cd4df76a81262f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/529/format/webp">
+<meta property="article:published_time" content="2019-04-14T08:47:24.000Z">
+<meta property="article:modified_time" content="2021-05-26T14:35:28.654Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="特征分解">
+<meta property="article:tag" content="协方差矩阵">
+<meta property="article:tag" content="PCA算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3635046-435177ba8055ac2b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/258/format/webp">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2019/04/14/%E4%BB%8E%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3%E5%88%B0%E5%8D%8F%E6%96%B9%E5%B7%AE%E7%9F%A9%E9%98%B5%EF%BC%9A%E8%AF%A6%E7%BB%86%E5%89%96%E6%9E%90%E5%92%8C%E5%AE%9E%E7%8E%B0PCA%E7%AE%97%E6%B3%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2019&#x2F;04&#x2F;14&#x2F;%E4%BB%8E%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3%E5%88%B0%E5%8D%8F%E6%96%B9%E5%B7%AE%E7%9F%A9%E9%98%B5%EF%BC%9A%E8%AF%A6%E7%BB%86%E5%89%96%E6%9E%90%E5%92%8C%E5%AE%9E%E7%8E%B0PCA%E7%AE%97%E6%B3%95&#x2F;&quot;,&quot;path&quot;:&quot;2019&#x2F;04&#x2F;14&#x2F;从特征分解到协方差矩阵：详细剖析和实现PCA算法&#x2F;&quot;,&quot;title&quot;:&quot;从特征分解到协方差矩阵：详细剖析和实现PCA算法&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>从特征分解到协方差矩阵：详细剖析和实现PCA算法 | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">18</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">线性变换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5"><span class="nav-number">2.1.</span> <span class="nav-text">矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3"><span class="nav-number">2.2.</span> <span class="nav-text">特征分解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90%EF%BC%88PCA%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">主成分分析（PCA）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9D%87%E5%80%BC%E3%80%81%E6%A0%87%E5%87%86%E5%B7%AE%E3%80%81%E6%96%B9%E5%B7%AE"><span class="nav-number">3.1.</span> <span class="nav-text">均值、标准差、方差</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E6%96%B9%E5%B7%AE%E7%9F%A9%E9%98%B5"><span class="nav-number">3.2.</span> <span class="nav-text">协方差矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E5%8F%98%E6%8D%A2"><span class="nav-number">3.3.</span> <span class="nav-text">基变换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.agefans.net/" title="https:&#x2F;&#x2F;www.agefans.net" rel="noopener" target="_blank">agefans</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2019/04/14/%E4%BB%8E%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3%E5%88%B0%E5%8D%8F%E6%96%B9%E5%B7%AE%E7%9F%A9%E9%98%B5%EF%BC%9A%E8%AF%A6%E7%BB%86%E5%89%96%E6%9E%90%E5%92%8C%E5%AE%9E%E7%8E%B0PCA%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从特征分解到协方差矩阵：详细剖析和实现PCA算法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-04-14 16:47:24" itemprop="dateCreated datePublished" datetime="2019-04-14T16:47:24+08:00">2019-04-14</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-05-26 22:35:28" itemprop="dateModified" datetime="2021-05-26T22:35:28+08:00">2021-05-26</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">数据科学</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>转载:<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/2803caeadb8e?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation">原文链接</a></p>
+<hr>
+<h1 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h1><blockquote>
+<p>本文先简要明了地介绍了特征向量和其与矩阵的关系，然后再以其为基础解释协方差矩阵和主成分分析法的基本概念，最后我们结合协方差矩阵和主成分分析法实现数据降维。本文不仅仅是从理论上阐述各种重要概念，同时最后还一步步使用 Python 实现数据降维。</p>
+<span id="more"></span>
+
+<p>首先本文的特征向量是数学概念上的特征向量，并不是指由输入特征值所组成的向量。数学上，线性变换的特征向量是一个非简并的向量，其方向在该变换下不变。该向量在此变换下缩放的比例称为特征值。一个线性变换通常可以由其特征值和特征向量完全描述。如果我们将矩阵看作物理运动，那么最重要的就是运动方向（特征向量）和速度（特征值）。因为物理运动只需要方向和速度就可以描述，同理矩阵也可以仅使用特征向量和特征值描述。</p>
+<p>其实在线性代数中，矩阵就是一个由各种标量或变量构成的表格，它和 Excel 表格并没有什么本质上的区别。只不过数学上定义了一些矩阵间的运算，矩阵运算的法则和实际内部的值并没有什么关系，只不过定义了在运算时哪些位置需要进行哪些操作。因为矩阵相当于定义了一系列运算法则的表格，那么其实它就相当于一个变换，这个变换（物理运动）可以由特征向量（方向）和特征值（速度）完全描述出来。</p>
+</blockquote>
+<h1 id="线性变换"><a href="#线性变换" class="headerlink" title="线性变换"></a>线性变换</h1><h2 id="矩阵"><a href="#矩阵" class="headerlink" title="矩阵"></a>矩阵</h2><p>在解释线性变换前，我们需要先了解矩阵运算到底是什么。因为我们可以对矩阵中的值统一进行如加法或乘法等运算，所以矩阵是十分高效和有用的。如下所示，如果我们将向量 v 左乘矩阵 A，我们就会得到新的向量 b，也即可以表述说矩阵 A 对输入向量 v 执行了一次线性变换，且线性变换结果为 b。因此矩阵运算 Av = b 就代表向量 v 通过一个变换（矩阵 A）得到向量 b。下面的实例展示了矩阵乘法（该类型的乘法称之为点积）是怎样进行的：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-435177ba8055ac2b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/258/format/webp"></p>
+<p>所以矩阵 A 将向量 v 变换为向量 b。下图展示了矩阵 A 如何将更短更低的向量 v 映射到更长更高的向量 b：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-d5f0ad12f93a0892.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/497/format/webp"></p>
+<p>我们可以馈送其他正向量到矩阵 A 中，每一个馈送的向量都会投影到新的空间中且向右边变得更高更长。</p>
+<p>假定所有的输入向量 V 可以排列为一个标准表格，即：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-f99afddf8e222732.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/465/format/webp"></p>
+<p>而矩阵可以将所有的输入向量 V 投影为如下所示的新空间，也即所有输出向量组成的 B：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-4f73f65b8bf985d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/460/format/webp"></p>
+<p>下图可以看到输入向量空间和输出向量空间的关系，</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-a1bf9e5c751961f9.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/493/format/webp"></p>
+<h2 id="特征分解"><a href="#特征分解" class="headerlink" title="特征分解"></a>特征分解</h2><p>如果假设矩阵就是一阵风，它通过有形的力量得出可见的结果。而这一阵风所吹向的方向就是特征向量，因此特征向量就表明矩阵所要变换的方向。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-9ba4065d5a2fb241.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/479/format/webp"></p>
+<p>如上图所示，特征向量并不会改变方向，它已经指向了矩阵想要将所有输入向量都推向的方向。因此，特征向量的数学定义为：存在非零矩阵 A 和标量λ，若有向量 x 且满足以下关系式，那么 x 就为特征向量、λ为特征值。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-80f580af442d9290.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/86/format/webp"></p>
+<p>特征向量同样是线性变换的不变轴，所有输入向量沿着这条轴压缩或延伸。线性变换中的线性正是表明了这种沿直线轴进行变换的特性，一般来说几阶方阵就有几个特征向量，如 3*3 矩阵有 3 个特征向量，n 阶方阵有 n 个特征向量，每一个特征向量表征一个维度上的线性变换方向。</p>
+<p>因为特征向量提取出了矩阵变换的主要信息，因此它在矩阵分解中十分重要，即沿着特征向量对角化矩阵。因为这些特征向量表征着矩阵的重要特性，所以它们可以执行与深度神经网络中自编码器相类似的任务。引用 Yoshua Bengio 的话来说：</p>
+<p>许多数学对象可以通过分解为更基础的组成部分而有更好的理解，因为我们会发现它们的一些广泛性属性，而不是我们选择表征它们的特性。例如整数可以分解为质因数，虽然我们表征整数的方式会因为采用二进制还是十进制而改变，但整数总可以由几个质因数表示（如 12=2 × 2 × 3），因此这种分解的性质正好是我们所需要的稳定性质。</p>
+<p>我们可以分解一个整数为质因数而得到其自然属性，同样我们也可以分解矩阵以得到它的功能性属性，并且这种属性信息在矩阵表示为多组元素的阵列下是不明显的。矩阵分解最常见的是特征分解（eigen-decomposition），即我们将矩阵分解为一系列的特征向量和特征值。</p>
+<h1 id="主成分分析（PCA）"><a href="#主成分分析（PCA）" class="headerlink" title="主成分分析（PCA）"></a>主成分分析（PCA）</h1><p>PCA 是一种寻找高维数据（图像等）模式的工具。机器学习实践上经常使用 PCA 对输入神经网络的数据进行预处理。通过聚集、旋转和缩放数据，PCA 算法可以去除一些低方差的维度而达到降维的效果，这样操作能提升神经网络的收敛速度和整体效果。</p>
+<h2 id="均值、标准差、方差"><a href="#均值、标准差、方差" class="headerlink" title="均值、标准差、方差"></a>均值、标准差、方差</h2><p>为了进一步了解 PCA 算法，我们还需要定义一些基本的统计学概念，即均值、标准差、方差和协方差。</p>
+<p>样本均值可简单的表示为所有样本 X 的平均值，如下所示样本均值表示为：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-5580e12b3851f3d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/149/format/webp"></p>
+<p>样本标准差即样本方差的平方根。即每一样本点到样本均值之间的平均距离。n 个样本的方差却只除以 n-1 是因为样本只是真实分布的估计量，样本方差也只是真实方差的估计量。在大学课本概率论和数理统计中有证明，如果除以 n（2 阶中心矩），那么样本方差是真实方差的一致性估计，但并不是无偏估计，也就是样本方差存在系统偏差。因此我们需要对 2 阶中心矩进行调整以消除系统偏差。如下所示，样本的标准差 s 和方差 var(X) 都是无偏估计：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-350bf09b84ec8998.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/149/format/webp"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-6795fae77bc1d828.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/233/format/webp"></p>
+<p>因为样本标准差和方差都是先求距离的平方再求平方根，因此距离一定是正数且不会抵消。假设我们有如下数据点（散点图）：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-04e54827030a843c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/442/format/webp"></p>
+<p>PCA 如线性回归那样会尝试构建一条可解释性的直线贯穿所有数据点。每一条直线表示一个「主成分」或表示自变量和因变量间的关系。数据的维度数就是主成分的数量，也即每一个数据点的特征维度。PCA 的作用就是分析这些特征，并选出最重要的特征。PCA 本质上是将方差最大的方向作为主要特征，并且在各个正交方向上将数据「去相关」，也就是让它们在不同正交方向上没有相关性。通常我们认为信息具有较大的方差，而噪声有较小的方差，信噪比就是信号与噪声的方差比，所以我们希望投影后的数据方差越大越好。因此我们认为，最好的 k 维特征是将 n 维样本点转换为 k 维后，每一维上的样本方差都很大。</p>
+<p>如下图所示，第一个主成分以直线（红色）的形式将散点图分为两边，并且它是保留了最大方差的。因为投影到这条直线（红色）上数据点离均值（空心点）有最大的方差，即所有蓝点到灰色线的平均距离为最大方差，所以这一个主成分将保留最多的信息。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-257fc98b75afb1c5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/390/format/webp"></p>
+<p>如上所示，假设第二个主成分为垂直于红线（第一个主成分）的灰色线。当数据点投影到第二个主成分上时，它们离样本均值（空心点）的方差却非常小，即数据点到红色线的平均距离。所以红色线是最优的主成分。</p>
+<h2 id="协方差矩阵"><a href="#协方差矩阵" class="headerlink" title="协方差矩阵"></a>协方差矩阵</h2><p>前面我们已经了解矩阵其实就是一种将某个向量变换为另一个的方法，另外我们也可以将矩阵看作作用于所有数据并朝向某个方向的力。同时我们还知道了变量间的相关性可以由方差和协方差表达，并且我们希望保留最大方差以实现最优的降维。因此我们希望能将方差和协方差统一表示，并且两者均可以表示为内积的形式，而内积又与矩阵乘法密切相关。因此我们可以采用矩阵乘法的形式表示。若输入矩阵 X 有两个特征 a 和 b，且共有 m 个样本，那么有：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-83b44f1a7549d05c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/258/format/webp"></p>
+<p>如果我们用 X 左乘 X 的转置，那么就可以得出协方差矩阵：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-55e546f02c5beb13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/364/format/webp"></p>
+<p>这个矩阵对角线上的两个元素分别是两特征的方差，而其它元素是 a 和 b 的协方差。两者被统一到了一个矩阵的，因此我们可以利用协方差矩阵描述数据点之间的方差和协方差，即经验性地描述我们观察到的数据。</p>
+<p>寻找协方差矩阵的特征向量和特征值就等价于拟合一条能保留最大方差的直线或主成分。因为特征向量追踪到了主成分的方向，而最大方差和协方差的轴线表明了数据最容易改变的方向。根据上述推导，我们发现达到优化目标就等价于将协方差矩阵对角化：即除对角线外的其它元素化为 0，并且在对角线上将特征值按大小从上到下排列。协方差矩阵作为实对称矩阵，其主要性质之一就是可以正交对角化，因此就一定可以分解为特征向量和特征值。</p>
+<p>当协方差矩阵分解为特征向量和特征值之后，特征向量表示着变换方向，而特征值表示着伸缩尺度。在本例中，特征值描述着数据间的协方差。我们可以按照特征值的大小降序排列特征向量，如此我们就按照重要性的次序得到了主成分排列。</p>
+<p>对于 2 阶方阵，一个协方差矩阵可能如下所示：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-f3b6b8ddb6f487b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/137/format/webp"></p>
+<p>在上面的协方差矩阵中，1.07 和 0.64 分别代表变量 x 和变量 y 的方差，而副对角线上的 0.63 代表着变量 x 和 y 之间的协方差。因为协方差矩阵为实对称矩阵（即 Aij=Aji），所以其必定可以通过正交化相似对角化。因为这两个变量的协方差为正值，所以这两个变量的分布成正相关性。如下图所示，如果协方差为负值，那么变量间就成负相关性。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-fde71e1cbff0bb17.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/510/format/webp"></p>
+<p>注意如果变量间的协方差为零，那么变量是没有相关性的，并且也没有线性关系。因此，如果两个变量的协方差越大，相关性越大，投影到主成分后的损失就越小。我们同时可以考虑协方差和方差的计算式而了解他们的关系：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-fb773c19eda2cc04.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/355/format/webp"></p>
+<p>计算协方差的优处在于我们可以通过协方差的正值、负值或零值考察两个变量在高维空间中相互关系。总的来说，协方差矩阵定义了数据的形状，协方差决定了沿对角线对称分布的强度，而方差决定了沿 x 轴或 y 轴对称分布的趋势。</p>
+<h2 id="基变换"><a href="#基变换" class="headerlink" title="基变换"></a>基变换</h2><p>因为协方差矩阵的特征向量都是彼此正交的，所以变换就相当于将 x 轴和 y 轴两个基轴换为主成分一个基轴。也就是将数据集的坐标系重新变换为由主成分作为基轴的新空间，当然这些主成分都保留了最大的方差。</p>
+<p>我们上面所述的 x 轴和 y 轴称之为矩阵的基，即矩阵所有的值都是在这两个基上度量而来的。但矩阵的基是可以改变的，通常一组特征向量就可以组成该矩阵一组不同的基坐标，原矩阵的元素可以在这一组新的基中表达。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3635046-43cd4df76a81262f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/529/format/webp"></p>
+<p>在上图中，我们展示了相同向量 v 如何在不同的坐标系中有不同的表达。黑色实线代表 x-y 轴坐标系而红色虚线是另外一个坐标系。在第一个坐标系中 v = (1,1)，而在第二个坐标系中 v = (1,0)。因此矩阵和向量可以在不同坐标系中等价变换。在数学上，n 维空间并没有唯一的描述，所以等价转换矩阵的基也许可以令问题更容易解决。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>最后我们简单地总结一下 PCA 算法的基本概念和步骤：</p>
+<p>首先我们得理解矩阵就相当于一个变换，变换的方向为特征向量，变换的尺度为特征值。PCA 的本质是将方差最大的方向作为主要特征，并且在各个正交方向上将数据「去相关」，即让它们在不同正交方向上没有相关性。所以我们希望将最相关的特征投影到一个主成分上而达到降维的效果，投影的标准是保留最大方差。而在实际操作中，我们希望计算特征之间的协方差矩阵，并通过对协方差矩阵的特征分解而得出特征向量和特征值。如果我们将特征值由大到小排列，相对应的特征向量所组成的矩阵就是我们所需降维后的数据。下面我们将一步步实现 PCA 算法。</p>
+<p>输入数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">x=np.array([<span class="number">2.5</span>,<span class="number">0.5</span>,<span class="number">2.2</span>,<span class="number">1.9</span>,<span class="number">3.1</span>,<span class="number">2.3</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">1.5</span>,<span class="number">1.1</span>])</span><br><span class="line">y=np.array([<span class="number">2.4</span>,<span class="number">0.7</span>,<span class="number">2.9</span>,<span class="number">2.2</span>,<span class="number">3</span>,<span class="number">2.7</span>,<span class="number">1.6</span>,<span class="number">1.1</span>,<span class="number">1.6</span>,<span class="number">0.9</span>])</span><br></pre></td></tr></table></figure>
+
+<p>归一化数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mean_x=np.mean(x)</span><br><span class="line">mean_y=np.mean(y)</span><br><span class="line">scaled_x=x-mean_x</span><br><span class="line">scaled_y=y-mean_y</span><br><span class="line">data=np.matrix([[scaled_x[i],scaled_y[i]] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(scaled_x))])</span><br></pre></td></tr></table></figure>
+
+<p>绘制散点图查看数据分布：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> pltplt.plot(scaled_x,scaled_y,<span class="string">&#x27;o&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>求协方差矩阵：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cov=np.cov(scaled_x,scaled_y)</span><br></pre></td></tr></table></figure>
+
+<p>求协方差矩阵的特征值和特征向量：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eig_val, eig_vec = np.linalg.eig(cov)</span><br></pre></td></tr></table></figure>
+
+<p>求出特征向量后，我们需要选择降维后的数据维度 k（n 维数据降为 k 维数据），但我们的数据只有两维，所以只能降一维：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">eig_pairs = [(np.<span class="built_in">abs</span>(eig_val[i]), eig_vec[:,i]) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(eig_val))]</span><br><span class="line">eig_pairs.sort(reverse=<span class="literal">True</span>)</span><br><span class="line">feature=eig_pairs[<span class="number">0</span>][<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>转化得到降维后的数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new_data_reduced=np.transpose(np.dot(feature,np.transpose(data))</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3/" rel="tag"># 特征分解</a>
+              <a href="/tags/%E5%8D%8F%E6%96%B9%E5%B7%AE%E7%9F%A9%E9%98%B5/" rel="tag"># 协方差矩阵</a>
+              <a href="/tags/PCA%E7%AE%97%E6%B3%95/" rel="tag"># PCA算法</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/04/09/%E9%99%84%E5%BD%95B-%E6%9B%B4%E5%A4%9A%E5%85%B3%E4%BA%8EIPython%E7%9A%84%E5%86%85%E5%AE%B9%EF%BC%88%E5%AE%8C%EF%BC%89/" rel="prev" title="附录B 更多关于IPython的内容（完）">
+                  <i class="fa fa-chevron-left"></i> 附录B 更多关于IPython的内容（完）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/" rel="next" title="PCA降维算法的Python实现">
+                  PCA降维算法的Python实现 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">567k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">8:35</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2019&#x2F;04&#x2F;14&#x2F;%E4%BB%8E%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3%E5%88%B0%E5%8D%8F%E6%96%B9%E5%B7%AE%E7%9F%A9%E9%98%B5%EF%BC%9A%E8%AF%A6%E7%BB%86%E5%89%96%E6%9E%90%E5%92%8C%E5%AE%9E%E7%8E%B0PCA%E7%AE%97%E6%B3%95&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>

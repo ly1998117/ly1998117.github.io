@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="#摘要 感知机（Perceptron）被视为最简单形式的前馈神经网络，是二类线性分类模型，旨在求出将线性训练数据进行线性划分的分离超平面。本文简述了感知机的基本组成模型及原理，给出基于误分类的损失函数，利用梯度下降法对损失函数进行极小化，从而求得超平面参数，得到感知机模型，并对训练得到的模型进行测试实验。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="感知机原理及Python实现">
+<meta property="og:url" content="https://ly1998117.github.io/2019/04/18/%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="#摘要 感知机（Perceptron）被视为最简单形式的前馈神经网络，是二类线性分类模型，旨在求出将线性训练数据进行线性划分的分离超平面。本文简述了感知机的基本组成模型及原理，给出基于误分类的损失函数，利用梯度下降法对损失函数进行极小化，从而求得超平面参数，得到感知机模型，并对训练得到的模型进行测试实验。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-18T15:39:07.000Z">
+<meta property="article:modified_time" content="2021-05-26T14:35:36.791Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2019/04/18/%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2019&#x2F;04&#x2F;18&#x2F;%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0&#x2F;&quot;,&quot;path&quot;:&quot;2019&#x2F;04&#x2F;18&#x2F;感知机原理及Python实现&#x2F;&quot;,&quot;title&quot;:&quot;感知机原理及Python实现&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>感知机原理及Python实现 | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">18</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li>
+        <li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Principle-and-implementation-of-perceptron"><span class="nav-number">1.</span> <span class="nav-text">Principle and implementation of perceptron</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%84%9F%E7%9F%A5%E6%9C%BA"><span class="nav-number">3.1.</span> <span class="nav-text">感知机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">3.4.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">4.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">Python 实现</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.agefans.net/" title="https:&#x2F;&#x2F;www.agefans.net" rel="noopener" target="_blank">agefans</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2019/04/18/%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          感知机原理及Python实现
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-04-18 23:39:07" itemprop="dateCreated datePublished" datetime="2019-04-18T23:39:07+08:00">2019-04-18</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-05-26 22:35:36" itemprop="dateModified" datetime="2021-05-26T22:35:36+08:00">2021-05-26</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>#<strong>摘要</strong></p>
+<p>感知机（Perceptron）被视为最简单形式的前馈神经网络，是二类线性分类模型，旨在求出将线性训练数据进行线性划分的分离超平面。本文简述了感知机的基本组成模型及原理，给出基于误分类的损失函数，利用梯度下降法对损失函数进行极小化，从而求得超平面参数，得到感知机模型，并对训练得到的模型进行测试实验。</p>
+<span id="more"></span>
+
+<p><strong>关键词</strong>：感知机（Perceptron）；梯度下降；超平面；损失函数</p>
+<h1 id="Principle-and-implementation-of-perceptron"><a href="#Principle-and-implementation-of-perceptron" class="headerlink" title="Principle and implementation of perceptron"></a><strong>Principle and implementation of perceptron</strong></h1><p><strong>Abstract</strong>：Perceptron, regarded as the simplest feed-forward neural network, is a second-class linear classification model, which is designed to find the separation hyperplane for linear division of linear training data. In this paper, the basic component model and principle of perceptron are briefly introduced, loss function based on misclassification is given, loss function is minimized by gradient descent method, hyperplane parameters are obtained, perceptron model is obtained, and the trained model is tested.</p>
+<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><ol>
+<li><p>生成线性可分的二维空间两类样本数据，编写计算机程序，完成感知器对这组数据的学习过程:</p>
+<p>A. 观察学习算法的收敛过程.</p>
+<p>B. 改变算法的初始值,观察初始化对收敛结果的影响.</p>
+<p>C. 观察两类数据的样本不平衡情况对性能的影响.</p>
+</li>
+<li><p>生成线性不可分的二维空间两类样本数据，做上述同样的实验。根据你的实验和分析，给出结论。</p>
+</li>
+<li><p>针对上述的线性可分问题，如果采用Cross validation来评价分类器的推广能力，你会得到怎样的观察，并请给出结果和结论。</p>
+</li>
+</ol>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><h2 id="感知机"><a href="#感知机" class="headerlink" title="感知机"></a>感知机</h2><p>假设输入空间（特征空间）是x⊆Rn，输出空间是＝{+1,-1}。输入x∊x表示实例的特征向量，对应于输入空间（特征空间）的点；输出y∊表示实例的类别。由输入空间到输出空间的如下函数</p>
+<p>![Screen Shot 2019-04-18 at 11.47.08 PM](Screen Shot 2019-04-18 at 11.47.08 PM.png)</p>
+<p>称为感知机。其中，w和b为感知机模型参数，w∊Rn叫作权值（weight）或权值向量（weight vector），b∊R叫作偏置（bias），w·x表示w和x的内积。sign是符号函数</p>
+<p>​              即：</p>
+<p>![Screen Shot 2019-04-18 at 11.47.24 PM](Screen Shot 2019-04-18 at 11.47.24 PM.png)</p>
+<p>感知机是二分类的线性模型，属于判别模型。通过对网络权值的训练，可以使感知器对一组输人矢量的响应达到元素为 -1或1的目标输出，从而实现对输人矢量分类的目的，其输入是实例的特征向量，输出的是事例的类别，属于判别模型。单层感知器可以计算逻辑或，逻辑与，逻辑非等运算，但是不能计算异或。因为异或不是平面线性可分的。</p>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>感知机的假设空间是定义在特征空间的所以线性分类模型，或线性分类器，即函数集合：</p>
+<p>![Screen Shot 2019-04-18 at 11.47.40 PM](Screen Shot 2019-04-18 at 11.47.40 PM.png)</p>
+<p>![Screen Shot 2019-04-18 at 11.49.00 PM](Screen Shot 2019-04-18 at 11.49.00 PM.png)</p>
+<p>对感知机的几何解释：</p>
+<p>​                                W·X + b = 0</p>
+<p>其对应于特征空间中的一个超平面S，其中w是超平面的法向量，b是超平面的截距。如图，超平面将特征空间划分为两个部分。位于两部分的点分别被分为正负两类。</p>
+<p>![Screen Shot 2019-04-18 at 11.48.33 PM](Screen Shot 2019-04-18 at 11.48.33 PM.png)</p>
+<p>假设训练数据集是线性可分的，感知机学习的目标是求得一个能够将训练数据集正实例点和负实例点完全正确分开的分离超平面。如果是非线性可分的数据，则最后无法获得超平面</p>
+<p>![Screen Shot 2019-04-18 at 11.49.22 PM](Screen Shot 2019-04-18 at 11.49.22 PM.png)</p>
+<p>如果存在某个超平面能将数据集的正实例点和负实例点分开，则称数据集为线性可分数据集。</p>
+<p>​                                    W·X + b = 0</p>
+<p>​                        w=(w0,w1,…wm)，x=(x0,x1,…xm)</p>
+<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p>为了找出这个超平面，需要定义一个损失函数来度量错误的程度，损失函数值越小，模型就越好。然后通过某种算法找到其极小化值</p>
+<p>A、误分类点x到超平面S的距离如下： ，</p>
+<p>![Screen Shot 2019-04-18 at 11.50.48 PM](Screen Shot 2019-04-18 at 11.50.48 PM.png)</p>
+<p>​     对于分类错误的数据   <strong>(Xi，Yi)</strong></p>
+<p>![Screen Shot 2019-04-18 at 11.50.58 PM](Screen Shot 2019-04-18 at 11.50.58 PM.png)</p>
+<p>​    误分类点<strong>Xi</strong>到超平面S的距离：</p>
+<p>![Screen Shot 2019-04-18 at 11.51.09 PM](Screen Shot 2019-04-18 at 11.51.09 PM.png)</p>
+<p>​    设误分类点集为M，则所有误分类点到超平面S的总距离：</p>
+<p>![Screen Shot 2019-04-18 at 11.51.19 PM](Screen Shot 2019-04-18 at 11.51.19 PM.png)</p>
+<p>​    因为感知机不需要关心得到的超平面到平面的距离的数值，为了简化计算故不考虑$-\frac{1}{\left | w \right |}$得损失函数：</p>
+<p>![Screen Shot 2019-04-18 at 11.51.29 PM](Screen Shot 2019-04-18 at 11.51.29 PM.png)</p>
+<p>我们可以知道，感知机分类完全正确时，L（w，b）= 0</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>感知机学习算法是<strong>误分类</strong>驱动的，具有简单且易于实现的优点。</p>
+<p>我们的目的是求参数 w，b 使得损失函数极小化，即</p>
+<p>![Screen Shot 2019-04-18 at 11.51.42 PM](Screen Shot 2019-04-18 at 11.51.42 PM.png)</p>
+<p>采取梯度下降法（stochastic gradient descent）：梯度下降法不断极小化目标函数，每次随机选取一个误分点并使其梯度下降</p>
+<p>![Screen Shot 2019-04-19 at 12.00.29 AM](Screen Shot 2019-04-19 at 12.00.29 AM.png) </p>
+<blockquote>
+<p>算法实现描述：</p>
+</blockquote>
+<blockquote>
+<p>输入：训练数据集 T: ，学习率</p>
+<p>输出：（w，b） &amp;&amp; 感知机模型 </p>
+<p>a)    任意取一个超平面，</p>
+<p>b)    在训练集中选取数据</p>
+<p>c)    如果  $y_{i}\left ( w\cdot x_{i}+b \right )\leq 0$</p>
+</blockquote>
+<blockquote>
+<p>![Screen Shot 2019-04-19 at 12.01.42 AM](Screen Shot 2019-04-19 at 12.01.42 AM.png)</p>
+</blockquote>
+<blockquote>
+<p>d)    转至（b），直到训练集中没有误分类点</p>
+</blockquote>
+<p><strong>原理</strong>：</p>
+<p>​        通过不断修正w，b的值，使超平面不断向误分类点移动，直到其被正确分类。</p>
+<p>#实验结果</p>
+<ul>
+<li>使用python语言编写上述感知机算法的实现过程，训练数据采用python numpy生成训练数据：正类数据：服从均值为(5,5)、协方差矩阵为[1 0;0 1]的高斯分布数据作为样本的数据，数据量为1000.负类数据：服从均值为(0,0)、协方差矩阵为[1 0;0 1]的高斯分布数据作为样本的数据，数据量也为1000.数据分布情况如图所示</li>
+</ul>
+<p>![Screen Shot 2019-04-19 at 12.02.55 AM](Screen Shot 2019-04-19 at 12.02.55 AM.png)</p>
+<ul>
+<li>训练得到超平面参数（w，b），学习率0.5 在图像中显示如图所示：初始值这里取（0，0），得到收敛的超平面参数（36，-5.5）</li>
+</ul>
+<p>![Screen Shot 2019-04-19 at 12.03.20 AM](Screen Shot 2019-04-19 at 12.03.20 AM.png)</p>
+<p>​        修改初始值为（10，10），得到的超平面参数为（102，-9.0）如图所示</p>
+<p>![Screen Shot 2019-04-19 at 12.03.48 AM](Screen Shot 2019-04-19 at 12.03.48 AM.png)</p>
+<p>故：<strong>初始值对****最后结果有影响，不通的初始值可能导致不同的解，所以感知机有多个解</strong></p>
+<ul>
+<li>使用非均衡训练数据集，使得感知机更容易收敛，但在测试数据集偏差会些许变高。</li>
+</ul>
+<p>![Screen Shot 2019-04-19 at 12.04.12 AM](Screen Shot 2019-04-19 at 12.04.12 AM.png)</p>
+<ul>
+<li><strong>若使用非线性可分数据作为训练集，如图所示，会造成训练失败，出现死循环，超平面无法收敛的现象。</strong></li>
+</ul>
+<p>![Screen Shot 2019-04-19 at 12.04.32 AM](Screen Shot 2019-04-19 at 12.04.32 AM.png)</p>
+<ul>
+<li><p>交叉验证的基本想法是重复地使用数据；把给定的数据进行切分，将切分的数据集组合为训练集与测试集，在此基础上反复地进行训练、测试以及模型选择。应用最多的是s-fold交叉验证。</p>
+<blockquote>
+<p>我们在这里采用5折交叉验证，随机将数据切分5个互不相交的子集，然后利用4个子集训练模型，利用余下的子集测试模型。</p>
+<p>数据类型：</p>
+<p>服从均值为(5,5)、协方差矩阵为[1 0;0 1]的高斯分布数据作为样本的数据，数据量为1000，服从均值为(0,0)、协方差矩阵为[1 0;0 1]的高斯分布数据作为样本的数据，数据量也为1000.</p>
+<p>将上述数据随机shuffle后分为5折，进行k-折交叉验证，重复5次</p>
+<p>图中分别为超平面参数（w，b），共四次训练</p>
+</blockquote>
+<p>![Screen Shot 2019-04-19 at 12.05.44 AM](Screen Shot 2019-04-19 at 12.05.44 AM.png)</p>
+</li>
+</ul>
+<p>可以看到感知机采取此种方法测试的性能较好</p>
+<p>![Screen Shot 2019-04-19 at 12.05.10 AM](Screen Shot 2019-04-19 at 12.05.10 AM.png)</p>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>1、感知机只能解决类似与、或、非等线性可分问题，对简单地异或非线性问题则无法收敛。</p>
+<p>2、整个算法的收敛是逐步逼近的，但如果学习率设置过大则很有可能无法找到超平面。</p>
+<p>3、初值设置的不同会影响获得的超平面参数，超平面的求取不是唯一的，具体现象已在三中给出</p>
+<p>4、非均衡训练数据集训练得到的感知机模型，往往不能真实反映真实分布，或者样本分布不均衡，直接估计会出现很大误导性。</p>
+<p>5、通过k折交叉验证来验证模型参数的调优，从而找到模型泛化性能最优的参数，找到满意的参数之后，就使用整个训练集作为训练数据来训练模型，然后通过测试集来评价模型的性能。在k折交叉验证中，每一个样本都会被划分为训练集或者测试集（验证集）的机会，因此泛化能力较好。</p>
+<h1 id="Python-实现"><a href="#Python-实现" class="headerlink" title="Python 实现"></a>Python 实现</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成线性可分的二维空间两类样本数据</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DataProducing</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, mean1, mean2, cov, size,size2</span>):</span></span><br><span class="line">        self.data1 = np.random.multivariate_normal(mean=mean1, cov=cov, size=size)</span><br><span class="line">        self.data2 = np.random.multivariate_normal(mean=mean2, cov=cov, size=size2)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">data_producing</span>(<span class="params">self</span>):</span></span><br><span class="line">        data1 = [[x, -<span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> self.data1]</span><br><span class="line">        data2 = [[x, <span class="number">1</span>] <span class="keyword">for</span> x <span class="keyword">in</span> self.data2]</span><br><span class="line">        data1.extend(data2)</span><br><span class="line">        <span class="keyword">return</span> data1</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">draw</span>(<span class="params">self</span>):</span></span><br><span class="line">        x1, y1 = <span class="built_in">zip</span>(*self.data1)</span><br><span class="line">        x2, y2 = <span class="built_in">zip</span>(*self.data2)</span><br><span class="line">        plt.scatter(x1, y1, s=<span class="number">2</span>)</span><br><span class="line">        plt.scatter(x2, y2, s=<span class="number">2</span>)</span><br><span class="line">        plt.show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># #感知机</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PerCeptron</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, w, b, learn_ratio</span>):</span></span><br><span class="line">        self.w = w</span><br><span class="line">        self.b = b</span><br><span class="line">        self.learn_ratio = learn_ratio</span><br><span class="line">        self.index = -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">check_error</span>(<span class="params">self, train_data, w, b</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(train_data)):</span><br><span class="line">            result = train_data[i][<span class="number">1</span>] * (np.<span class="built_in">sum</span>(w * train_data[i][<span class="number">0</span>]) + b)</span><br><span class="line">            <span class="comment"># print(&#x27;re&#x27;,result,self.train_data[i][1],w,self.train_data[i][0])</span></span><br><span class="line">            <span class="keyword">if</span> result &lt;= <span class="number">0</span>:</span><br><span class="line">                self.index = i</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 训练</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">training</span>(<span class="params">self,train_data</span>):</span></span><br><span class="line">        <span class="built_in">print</span>(self.w,self.b)</span><br><span class="line">        w = self.w</span><br><span class="line">        b = self.b</span><br><span class="line">        <span class="keyword">while</span> self.check_error(train_data, w, b):</span><br><span class="line">            w = w + self.learn_ratio * train_data[self.index][<span class="number">1</span>] * train_data[self.index][<span class="number">0</span>]</span><br><span class="line">            b = b + <span class="built_in">float</span>(self.learn_ratio) * train_data[self.index][<span class="number">1</span>]</span><br><span class="line">        <span class="comment"># print(train_data[self.index], self.index, w, b)</span></span><br><span class="line">        self.w = w</span><br><span class="line">        self.b = b</span><br><span class="line">        <span class="keyword">return</span> w, b</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 测试</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">testing</span>(<span class="params">self, test_data</span>):</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;测试开始&quot;</span>)</span><br><span class="line">        correct = <span class="number">0</span></span><br><span class="line">        wrong = <span class="number">0</span></span><br><span class="line">        ob = <span class="number">0</span></span><br><span class="line">        ne = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(test_data)):</span><br><span class="line">            result = test_data[i][<span class="number">1</span>] * (np.<span class="built_in">sum</span>(self.w * test_data[i][<span class="number">0</span>]) + self.b)</span><br><span class="line">            <span class="keyword">if</span> result &lt; <span class="number">0</span>:</span><br><span class="line">                wrong += <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                correct += <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(test_data)):</span><br><span class="line">            result = (np.<span class="built_in">sum</span>(self.w * test_data[i][<span class="number">0</span>]) + self.b)</span><br><span class="line">            <span class="keyword">if</span> result &lt; <span class="number">0</span>:</span><br><span class="line">                ne += <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                ob += <span class="number">1</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;object&quot;</span>,ob,<span class="string">&quot;negative&quot;</span>,ne)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;错误率：&quot;</span>,wrong/(wrong+correct))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">draw</span>(<span class="params">self</span>):</span></span><br><span class="line">        x = np.linspace(-<span class="number">4</span>, <span class="number">8</span>, <span class="number">100</span>)</span><br><span class="line">        y = -<span class="number">1</span> * (self.b + self.w[<span class="number">0</span>] * x) / self.w[<span class="number">1</span>]</span><br><span class="line">        plt.plot(x, y, label=<span class="string">&quot;&#123;&#125;&quot;</span>.<span class="built_in">format</span>(self.b))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    dataproduing = DataProducing([<span class="number">0</span>, <span class="number">0</span>], [<span class="number">5</span>, <span class="number">5</span>], [[<span class="number">1</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span>]], <span class="number">100</span>,<span class="number">1000</span>)</span><br><span class="line">    data = dataproduing.data_producing()</span><br><span class="line">    dataproduing2 = DataProducing([<span class="number">0</span>, <span class="number">0</span>], [<span class="number">5</span>, <span class="number">5</span>], [[<span class="number">1</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span>]], <span class="number">1000</span>,<span class="number">1000</span>)</span><br><span class="line">    data2 = dataproduing2.data_producing()</span><br><span class="line">    dataproduing.draw()</span><br><span class="line">    dataproduing2.draw()</span><br><span class="line">    perceptron = PerCeptron(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0.5</span>)</span><br><span class="line">    w, b = perceptron.training(data)</span><br><span class="line">    perceptron2 = PerCeptron(<span class="number">10</span>, <span class="number">10</span>, <span class="number">0.5</span>)</span><br><span class="line">    perceptron2.training(data)</span><br><span class="line">    perceptron.testing(data2)</span><br><span class="line">    perceptron.draw()</span><br><span class="line">    perceptron2.draw()</span><br><span class="line">    dataproduing.draw()</span><br><span class="line">    perceptron.draw()</span><br><span class="line">    perceptron2.draw()</span><br><span class="line">    dataproduing2.draw()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Perceptron</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">dataproducing = Perceptron.DataProducing([<span class="number">0</span>, <span class="number">0</span>], [<span class="number">5</span>, <span class="number">5</span>], [[<span class="number">1</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span>]], <span class="number">1000</span>,<span class="number">1000</span>)</span><br><span class="line">data = dataproducing.data_producing()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fold</span>(<span class="params">data</span>):</span></span><br><span class="line">    fold5 = []</span><br><span class="line">    np.random.shuffle(data)</span><br><span class="line">    split_num = <span class="built_in">len</span>(data)//<span class="number">5</span></span><br><span class="line">    fold5.append(data[<span class="number">0</span>:split_num])</span><br><span class="line">    fold5.append(data[split_num:split_num*<span class="number">2</span>])</span><br><span class="line">    fold5.append(data[split_num*<span class="number">2</span>:split_num*<span class="number">3</span>])</span><br><span class="line">    fold5.append(data[split_num*<span class="number">3</span>:split_num*<span class="number">4</span>])</span><br><span class="line">    fold5.append(data[split_num*<span class="number">4</span>:split_num*<span class="number">5</span>])</span><br><span class="line">    <span class="keyword">return</span> fold5</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line"></span><br><span class="line">    perceptron = Perceptron.PerCeptron(<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">        x1 = []</span><br><span class="line">        y1 = []</span><br><span class="line">        x2 = []</span><br><span class="line">        y2 = []</span><br><span class="line">        data_fold = fold(data)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;第 &#123;&#125; 次&quot;</span>.<span class="built_in">format</span>(j+<span class="number">1</span>))</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> data_fold[:<span class="number">5</span>]:</span><br><span class="line">            perceptron.training(i)</span><br><span class="line">        perceptron.testing(data_fold[<span class="number">4</span>])</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> data_fold[<span class="number">4</span>]:</span><br><span class="line">            <span class="keyword">if</span> i[<span class="number">1</span>] == -<span class="number">1</span>:</span><br><span class="line">                x1.append(i[<span class="number">0</span>][<span class="number">0</span>])</span><br><span class="line">                y1.append(i[<span class="number">0</span>][<span class="number">1</span>])</span><br><span class="line">            <span class="keyword">if</span> i[<span class="number">1</span>] == <span class="number">1</span>:</span><br><span class="line">                x2.append(i[<span class="number">0</span>][<span class="number">0</span>])</span><br><span class="line">                y2.append(i[<span class="number">0</span>][<span class="number">1</span>])</span><br><span class="line">        perceptron.draw()</span><br><span class="line">        plt.scatter(x1, y1, s=<span class="number">2</span>)</span><br><span class="line">        plt.scatter(x2, y2, s=<span class="number">2</span>)</span><br><span class="line">        plt.show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/" rel="prev" title="PCA降维算法的Python实现">
+                  <i class="fa fa-chevron-left"></i> PCA降维算法的Python实现
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/04/19/%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/" rel="next" title="数学公式">
+                  数学公式 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">567k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">8:35</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2019&#x2F;04&#x2F;18&#x2F;%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%8E%9F%E7%90%86%E5%8F%8APython%E5%AE%9E%E7%8E%B0&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>
