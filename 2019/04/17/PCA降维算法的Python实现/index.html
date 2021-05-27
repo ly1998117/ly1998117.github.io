@@ -27,14 +27,26 @@
 <meta property="og:site_name" content="LiuYang&#39;s Blog">
 <meta property="og:description" content="摘要 PCA算法本质实际上是n维数据向量空间的基变换，再将数据向量投影在变化之后的基之上，从而达到降维的目的，为了使n维数据向量在降维之后仍能尽可能保持原有的信息量，这就类似于有损压缩的概念（有损压缩是指使用压缩后的数据进行重构，重构后的数据与原来的数据有所不同，但不影响人对原始资料表达的信息造成误解）。所以基的选择自然显得十分重要。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://blog.codinglabs.org/uploads/pictures/pca-tutorial/06.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/8.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/9.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/10.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/11.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/13.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/1.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/12.png">
 <meta property="article:published_time" content="2019-04-17T03:36:42.000Z">
-<meta property="article:modified_time" content="2021-05-26T14:34:43.607Z">
+<meta property="article:modified_time" content="2021-05-27T02:22:26.770Z">
 <meta property="article:author" content="LiuYang">
 <meta property="article:tag" content="PCA">
 <meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://blog.codinglabs.org/uploads/pictures/pca-tutorial/06.png">
+<meta name="twitter:image" content="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/5.png">
 
 
 <link rel="canonical" href="https://ly1998117.github.io/2019/04/17/PCA%E9%99%8D%E7%BB%B4%E7%AE%97%E6%B3%95%E7%9A%84Python%E5%AE%9E%E7%8E%B0/">
@@ -261,7 +273,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-05-26 22:34:43" itemprop="dateModified" datetime="2021-05-26T22:34:43+08:00">2021-05-26</time>
+        <time title="修改时间：2021-05-27 10:22:26" itemprop="dateModified" datetime="2021-05-27T10:22:26+08:00">2021-05-27</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -281,7 +293,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>6k</span>
+      <span>5.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -314,27 +326,39 @@
 </blockquote>
 <p>换句话说，信息的度量是与概率相关的。</p>
 <h2 id="熵"><a href="#熵" class="headerlink" title="熵"></a>熵</h2><p>依据Boltzmann’s H-theorem，香农把随机变量<em>X</em>的熵值 Η定义如下，其值域为{<em>x</em>1, …, <em>x**n</em>}：</p>
-<p>![Screen Shot 2019-04-17 at 12.17.58 PM](Screen Shot 2019-04-17 at 12.17.58 PM.png)</p>
+<img src="5.png" alt="" style="zoom:80%;" />
+
 <p>其中，P为<em>X</em>的概率质量函数（probability mass function），E为期望函数，而I(<em>X</em>)是<em>X</em>的信息量。I(<em>X</em>)本身是个随机变数。</p>
 <p>当取自有限的样本时，熵的公式可以表示为：</p>
-<p>![Screen Shot 2019-04-17 at 12.19.12 PM](Screen Shot 2019-04-17 at 12.19.12 PM.png)</p>
+<img src="6.png" alt="" style="zoom:80%;" />
+
+
+
 <p>在这里<em>b</em>是对数所使用的底，通常是2,自然常数<strong>e</strong>，或是10。当<em>b</em> = 2，熵的单位是bit；当<em>b</em> = e，熵的单位是nat；而当<em>b</em> = 10,熵的单位是Hart。</p>
 <p><em>p**i</em> = 0时，对于一些<em>i</em>值，对应的被加数0 log<em>b</em> 0的值将会是0，这与极限一致。</p>
-<p>![Screen Shot 2019-04-17 at 12.20.50 PM](Screen Shot 2019-04-17 at 12.20.50 PM.png)</p>
+<img src="7.png" alt="" style="zoom:80%;" />
+
 <p>还可以定义事件 <em>X</em> 与 <em>Y</em> 分别取 <em>xi</em> 和 <em>yj</em> 时的<strong>条件熵为</strong></p>
-<p>![Screen Shot 2019-04-17 at 12.21.46 PM](Screen Shot 2019-04-17 at 12.21.46 PM.png)</p>
+<img src="8.png" alt="" style="zoom:80%;" />
+
 <p>其中<em>p</em>(<em>xi</em>, <em>yj</em>)为 <em>X</em> = <em>xi</em> 且 <em>Y</em> = <em>yj</em> 时的概率。这个量应当理解为你知道<em>Y</em>的值前提下随机变量 <em>X</em> 的随机性的量。</p>
-<h2 id="熵与方差"><a href="#熵与方差" class="headerlink" title="熵与方差"></a>熵与方差</h2><h3 id="方差"><a href="#方差" class="headerlink" title="方差"></a>方差</h3><p>方差的定义相信大家都懂，这里直接给出公式</p>
-<p>![Screen Shot 2019-04-17 at 12.29.10 PM](Screen Shot 2019-04-17 at 12.29.10 PM.png)</p>
+<h2 id="熵与方差"><a href="#熵与方差" class="headerlink" title="熵与方差"></a>熵与方差</h2><h3 id="方差"><a href="#方差" class="headerlink" title="方差"></a>方差</h3><p>方差的定义</p>
+<img src="9.png" alt="" style="zoom:80%;" />
+
 <p>方差越大数据的波动也就越大，其不确定性自然越大,方差描述不确定度在某些情况下会失效，因为它要求数据均匀分布并且忽略极端事件的发生。熵本就是对信息的不确定度的度量，相比于方差必然更加精确。</p>
 <h1 id="基的选择"><a href="#基的选择" class="headerlink" title="基的选择"></a>基的选择</h1><p>举个栗子：</p>
 <p>假设我们的数据由五条记录组成，将它们表示成矩阵形式：</p>
-<p>![Screen Shot 2019-04-17 at 12.48.28 PM](Screen Shot 2019-04-17 at 12.48.28 PM.png)</p>
+<img src="10.png" alt="" style="zoom:80%;" />
+
 <p>其中每一列为一条数据记录，而一行为一个字段。为了后续处理方便，我们首先将每个字段内所有值都减去字段均值，其结果是将每个字段都变为均值为0（这样做的道理和好处后面会看到）。</p>
 <p>我们看上面的数据，第一个字段均值为2，第二个字段均值为3，所以变换后：</p>
-<p>![Screen Shot 2019-04-17 at 12.47.32 PM](Screen Shot 2019-04-17 at 12.47.32 PM.png)</p>
+<img src="11.png" alt="" style="zoom:80%;" />
+
+
+
 <p>我们可以看下五条数据在平面直角坐标系内的样子：</p>
-<p><img src="http://blog.codinglabs.org/uploads/pictures/pca-tutorial/06.png" alt="img"></p>
+<img src="13.png" alt="" style="zoom:50%;" />
+
 <p>如果我们必须使用一维来表示这些数据，又希望尽量保留原始的信息，你要如何选择？</p>
 <p>直观的说这个问题实际上是要在二维平面中选择一个方向，将所有数据都投影到这个方向所在直线上，用投影值表示原始记录。这是一个实际的二维降到一维的问题。</p>
 <p>所以数据样本投影到基后的投影值尽可能分散。也就是使得数据变化到基上的坐标后，方差最大。</p>
@@ -344,18 +368,24 @@
 </blockquote>
 <h2 id="协方差矩阵"><a href="#协方差矩阵" class="headerlink" title="协方差矩阵"></a>协方差矩阵</h2><p>我们知道最终优化目标与字段内的方差和字段之间的协方差有关(字段之间独立)</p>
 <p>对于矩阵x：</p>
-<p>![Screen Shot 2019-04-17 at 1.04.33 PM](Screen Shot 2019-04-17 at 1.04.33 PM.png)</p>
+<img src="1.png" alt="" style="zoom:80%;" />
+
 <p>X乘以X的转置，并乘上系数1/m：</p>
-<p>![Screen Shot 2019-04-17 at 1.05.11 PM](Screen Shot 2019-04-17 at 1.05.11 PM.png)</p>
+<img src="2.png" alt="" style="zoom:80%;" />
+
 <p>我们发现，对角线上的两个元素分别是两个字段的方差，而其它元素是a和b的协方差。要达到优化目前，等价于将协方差矩阵对角化：即除对角线外的其它元素化为0，并且在对角线上将元素按大小从上到下排列，这样我们就达到了优化目的。</p>
 <p>设原始数据矩阵X对应的协方差矩阵为C，而P是一组基按行组成的矩阵，设Y=PX，则Y为X对P做基变换后的数据。设Y的协方差矩阵为D，我们推导一下D与C的关系：</p>
-<p>![Screen Shot 2019-04-17 at 1.06.56 PM](Screen Shot 2019-04-17 at 1.06.56 PM.png)</p>
+<img src="3.png" alt="" style="zoom:80%;" />
+
 <p>变化矩阵P就是原始协方差矩阵对角化的P。</p>
 <p>我们知道：协方差矩阵C是一个是对称矩阵，在线性代数上，实对称矩阵有一系列非常好的性质：</p>
 <p>1）实对称矩阵不同特征值对应的特征向量必然正交。</p>
 <p>2）设特征向量λ重数为r，则必然存在r个线性无关的特征向量对应于λ，因此可以将这r个特征向量单位正交化。</p>
 <p>则对协方差矩阵C有如下结论：</p>
-<p>![Screen Shot 2019-04-17 at 1.09.18 PM](Screen Shot 2019-04-17 at 1.09.18 PM.png)</p>
+<img src="4.png" alt="" style="zoom:80%;" />
+
+
+
 <p>对角元素为各特征向量对应的特征值，P对应与E的转置</p>
 <p>P是协方差矩阵的特征向量单位化后按行排列出的矩阵，其中每一行都是C的一个特征向量。如果设P按照ΛΛ中特征值的从大到小，将特征向量从上到下排列，则用P的前K行组成的矩阵乘以原始数据矩阵X，就得到了我们需要的降维后的数据矩阵Y。</p>
 <h1 id="PCA算法"><a href="#PCA算法" class="headerlink" title="PCA算法"></a>PCA算法</h1><p>设有m条n维数据。</p>
@@ -366,7 +396,8 @@
 <p>5）将特征向量按对应特征值大小从上到下按行排列成矩阵，取前k行组成矩阵P</p>
 <p>6）Y=PX即为降维到k维后的数据</p>
 <h1 id="结果示例"><a href="#结果示例" class="headerlink" title="结果示例"></a>结果示例</h1><p>样本为符合[[-5，5]，[5，-5]]的协方差矩阵的数据</p>
-<p>![](Screen Shot 2019-05-26 at 4.02.45 PM.png)</p>
+<img src="12.png" alt="" style="zoom:80%;" />
+
 <h1 id="Python实现代码"><a href="#Python实现代码" class="headerlink" title="Python实现代码"></a>Python实现代码</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"><span class="keyword">from</span> mpl_toolkits.mplot3d <span class="keyword">import</span> Axes3D</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PCA</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, matrix</span>):</span></span><br><span class="line">        self.sign = <span class="literal">False</span></span><br><span class="line">        self.matrix = matrix</span><br><span class="line">        self.m, self.n = matrix.shape[:<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">normalization</span>(<span class="params">self</span>):</span>  <span class="comment"># 数据中心化</span></span><br><span class="line">        matrix = self.matrix.T</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> matrix:</span><br><span class="line">            i -= np.mean(i)</span><br><span class="line">        <span class="keyword">return</span> matrix</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pca</span>(<span class="params">self, dim</span>):</span></span><br><span class="line">        matrix_T = self.normalization()</span><br><span class="line">        Cov = np.dot(matrix_T, self.matrix) / (self.m - <span class="number">1</span>)</span><br><span class="line">        x, y = np.linalg.eig(Cov)</span><br><span class="line">        eig_pairs = [[np.<span class="built_in">abs</span>(x[i]), y[:, i]] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(x))]</span><br><span class="line">        eig_pairs = <span class="built_in">sorted</span>(eig_pairs, reverse=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">        Lambda = np.zeros_like(Cov)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(self.n):</span><br><span class="line">            Lambda[i][i] = eig_pairs[i][<span class="number">0</span>]</span><br><span class="line">        <span class="comment"># print(&quot;\nLambda\n&quot;, Lambda)</span></span><br><span class="line">        self.sign = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">if</span> dim &gt; self.n:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;illegal dimensions&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">        P = np.array([eig_pairs[i][<span class="number">1</span>] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(dim)])  <span class="comment"># 正交变换矩阵P</span></span><br><span class="line">        <span class="comment"># print(&quot;\n正交变换矩阵P：\n&quot;, P)</span></span><br><span class="line">        D = np.dot(np.dot(P, Cov).T, P)</span><br><span class="line">        D[D &lt; <span class="number">0.000001</span>] = <span class="number">0</span></span><br><span class="line">        <span class="comment"># print(&quot;\n目标降维矩阵的协方差矩阵D\n&quot;, D)</span></span><br><span class="line">        new_data_reduced = np.dot(self.matrix, P.T)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;\n&quot;</span>, <span class="number">20</span> * <span class="string">&#x27;-&#x27;</span>, <span class="string">&quot;PCA降到&#123;&#125;维数据前10项&quot;</span>.<span class="built_in">format</span>(dim), <span class="number">20</span> * <span class="string">&#x27;-&#x27;</span>, <span class="string">&quot;\n&quot;</span>, new_data_reduced[:<span class="number">10</span>])</span><br><span class="line">        <span class="keyword">return</span> new_data_reduced</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">draw</span>(<span class="params">ax, data, y</span>):</span></span><br><span class="line">    X_lda = data</span><br><span class="line">    dim = X_lda.shape[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">if</span> X_lda.shape[<span class="number">1</span>] == <span class="number">1</span>:</span><br><span class="line">        X_lda = np.array([[i[<span class="number">0</span>], <span class="number">1</span>] <span class="keyword">for</span> i <span class="keyword">in</span> X_lda])</span><br><span class="line">    <span class="keyword">if</span> dim == <span class="number">3</span>:</span><br><span class="line">        ax = plt.subplot(<span class="number">111</span>, projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line">    label_dict = &#123;<span class="number">0</span>: <span class="string">&#x27;Setosa&#x27;</span>, <span class="number">1</span>: <span class="string">&#x27;Versicolor&#x27;</span>, <span class="number">2</span>: <span class="string">&#x27;Virginica&#x27;</span>&#125;</span><br><span class="line">    <span class="keyword">for</span> label, marker, color <span class="keyword">in</span> <span class="built_in">zip</span>(</span><br><span class="line">            <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">3</span>), (<span class="string">&#x27;^&#x27;</span>, <span class="string">&#x27;s&#x27;</span>, <span class="string">&#x27;o&#x27;</span>), (<span class="string">&#x27;blue&#x27;</span>, <span class="string">&#x27;red&#x27;</span>, <span class="string">&#x27;green&#x27;</span>)):</span><br><span class="line">        plt.scatter(x=X_lda[:, <span class="number">0</span>][y == label],</span><br><span class="line">                    y=X_lda[:, <span class="number">1</span>][y == label],</span><br><span class="line">                    marker=marker,</span><br><span class="line">                    color=color,</span><br><span class="line">                    alpha=<span class="number">0.5</span>,</span><br><span class="line">                    label=label_dict[label]</span><br><span class="line">                    )</span><br><span class="line"></span><br><span class="line">    leg = plt.legend(loc=<span class="string">&#x27;upper right&#x27;</span>, fancybox=<span class="literal">True</span>)</span><br><span class="line">    leg.get_frame().set_alpha(<span class="number">0.5</span>)</span><br><span class="line">    ax.set_title(<span class="string">&#x27;PCA: Iris onto the first &#123;&#125; linear discriminants&#x27;</span>.<span class="built_in">format</span>(dim))</span><br><span class="line">    <span class="comment"># hide axis ticks</span></span><br><span class="line">    plt.tick_params(axis=<span class="string">&quot;both&quot;</span>, which=<span class="string">&quot;both&quot;</span>, bottom=<span class="string">&quot;off&quot;</span>, top=<span class="string">&quot;off&quot;</span>,</span><br><span class="line">                    labelbottom=<span class="string">&quot;on&quot;</span>, left=<span class="string">&quot;off&quot;</span>, right=<span class="string">&quot;off&quot;</span>, labelleft=<span class="string">&quot;on&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># remove axis spines</span></span><br><span class="line">    ax.spines[<span class="string">&quot;top&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line">    ax.spines[<span class="string">&quot;right&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line">    ax.spines[<span class="string">&quot;bottom&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line">    ax.spines[<span class="string">&quot;left&quot;</span>].set_visible(<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">    plt.grid()</span><br><span class="line">    plt.tight_layout()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    data = load_iris()[<span class="string">&#x27;data&#x27;</span>]</span><br><span class="line">    label = load_iris()[<span class="string">&#x27;target&#x27;</span>]</span><br><span class="line">    label_dict = &#123;<span class="number">0</span>: <span class="string">&#x27;Setosa&#x27;</span>, <span class="number">1</span>: <span class="string">&#x27;Versicolor&#x27;</span>, <span class="number">2</span>: <span class="string">&#x27;Virginica&#x27;</span>&#125;</span><br><span class="line">    pca = PCA(data)</span><br><span class="line">    pca_2d = pca.pca(<span class="number">2</span>)</span><br><span class="line">    pca_3d = pca.pca(<span class="number">3</span>)</span><br><span class="line">    fig = plt.figure(figsize=(<span class="number">12</span>, <span class="number">6</span>))</span><br><span class="line">    ax1 = fig.add_subplot(<span class="number">121</span>)</span><br><span class="line">    draw(ax1,pca_2d, label)</span><br><span class="line">    ax2 = fig.add_subplot(<span class="number">122</span>, projection=<span class="string">&#x27;3d&#x27;</span>)</span><br><span class="line">    ax2.scatter(*<span class="built_in">zip</span>(*pca_3d),c=label)</span><br><span class="line">    ax2.set_title(<span class="string">&quot;PCA: Iris onto the first 3 linear discriminants&quot;</span>,size=<span class="number">20</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
@@ -428,14 +459,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">567k</span>
+    <span title="站点总字数">564k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">8:35</span>
+    <span title="站点阅读时长">8:33</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
