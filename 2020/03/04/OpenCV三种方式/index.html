@@ -20,12 +20,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
 <script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
-<meta name="description" content="Android Studio使用 OpenCV三种方式 开发环境：Android Studio 3.5  &amp;&amp;  macOS 10.15  在 Android 使用 OpenCV，一般有三种方法：  OpenCV Manager + OpenCV-Android-SDK OpenCV-Android-SDK + OpenCV动态库 JNI + OpenCV 动态库">
+<meta name="description" content="Android Studio使用 OpenCV三种方式  开发环境：Android Studio 3.5 &amp;&amp; macOS 10.15  在 Android 使用 OpenCV，一般有三种方法：  OpenCV Manager + OpenCV-Android-SDK OpenCV-Android-SDK + OpenCV动态库 JNI + OpenCV 动态库">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OpenCV三种方式">
 <meta property="og:url" content="https://ly1998117.github.io/2020/03/04/OpenCV%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F/index.html">
 <meta property="og:site_name" content="LiuYang&#39;s Blog">
-<meta property="og:description" content="Android Studio使用 OpenCV三种方式 开发环境：Android Studio 3.5  &amp;&amp;  macOS 10.15  在 Android 使用 OpenCV，一般有三种方法：  OpenCV Manager + OpenCV-Android-SDK OpenCV-Android-SDK + OpenCV动态库 JNI + OpenCV 动态库">
+<meta property="og:description" content="Android Studio使用 OpenCV三种方式  开发环境：Android Studio 3.5 &amp;&amp; macOS 10.15  在 Android 使用 OpenCV，一般有三种方法：  OpenCV Manager + OpenCV-Android-SDK OpenCV-Android-SDK + OpenCV动态库 JNI + OpenCV 动态库">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ly1998117.github.io/2020/03/04/OpenCV%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F/1.jpeg">
 <meta property="og:image" content="https://ly1998117.github.io/2020/03/04/OpenCV%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F/2.png">
@@ -152,7 +152,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-Studio%E4%BD%BF%E7%94%A8-OpenCV%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">Android Studio使用 OpenCV三种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#OpenCV-Manager-OpenCV-Android-SDK"><span class="nav-number">1.1.</span> <span class="nav-text">OpenCV Manager + OpenCV-Android-SDK</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#android-studio%E4%BD%BF%E7%94%A8-opencv%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">Android Studio使用 OpenCV三种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#opencv-manager-opencv-android-sdk"><span class="nav-number">1.1.</span> <span class="nav-text">OpenCV Manager + OpenCV-Android-SDK</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -283,7 +283,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>260</span>
+      <span>265</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -301,8 +301,9 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="Android-Studio使用-OpenCV三种方式"><a href="#Android-Studio使用-OpenCV三种方式" class="headerlink" title="Android Studio使用 OpenCV三种方式"></a>Android Studio使用 OpenCV三种方式</h1><blockquote>
-<p>开发环境：Android Studio 3.5  &amp;&amp;  macOS 10.15</p>
+        <h1 id="android-studio使用-opencv三种方式">Android Studio使用 OpenCV三种方式</h1>
+<blockquote>
+<p>开发环境：Android Studio 3.5 &amp;&amp; macOS 10.15</p>
 </blockquote>
 <p>在 Android 使用 OpenCV，一般有三种方法：</p>
 <ul>
@@ -311,34 +312,14 @@
 <li>JNI + OpenCV 动态库</li>
 </ul>
 <span id="more"></span>
-
-<h2 id="OpenCV-Manager-OpenCV-Android-SDK"><a href="#OpenCV-Manager-OpenCV-Android-SDK" class="headerlink" title="OpenCV Manager + OpenCV-Android-SDK"></a>OpenCV Manager + OpenCV-Android-SDK</h2><p>原理：利用 Android Service 与 OpenCV Manager APK 跨进程通信</p>
-<p><img src="1.jpeg" alt="跨进程通信"></p>
+<h2 id="opencv-manager-opencv-android-sdk">OpenCV Manager + OpenCV-Android-SDK</h2>
+<p>原理：利用 Android Service 与 OpenCV Manager APK 跨进程通信</p>
+<figure>
+<img src="1.jpeg" alt="跨进程通信" /><figcaption aria-hidden="true">跨进程通信</figcaption>
+</figure>
 <p>要求: 必须安装 OpenCV Manager APK</p>
-<img src="2.png" alt="2" style="zoom:50%;" />
-
-
-
-<img src="3.png" alt="2" style="zoom:50%;" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<p><img src="2.png" alt="2" style="zoom:50%;" /></p>
+<p><img src="3.png" alt="2" style="zoom:50%;" /></p>
 
     </div>
 
@@ -396,14 +377,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">564k</span>
+    <span title="站点总字数">566k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">8:33</span>
+    <span title="站点阅读时长">8:34</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
