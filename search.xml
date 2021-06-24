@@ -712,6 +712,7 @@
     <url>/2021/06/22/PyTorch-Transform/</url>
     <content><![CDATA[<h2 id="build-a-neural-network">Build a neural network</h2>
 <p>take a sample minibatch of 3 images of size <strong>28x28</strong></p>
+<span id="more"></span>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">input_image = torch.rand(<span class="number">3</span>,<span class="number">28</span>,<span class="number">28</span>)</span><br><span class="line"><span class="built_in">print</span>(input_image.size())</span><br></pre></td></tr></table></figure>
 <h3 id="nn.flatten">nn.Flatten</h3>
 <p>the <a href="https://pytorch.org/docs/stable/generated/torch.nn.Flatten.html">nn.Flatten</a> layer to convert each 2D 28x28 image into a contiguous array of 784 pixel values (the minibatch dimension (at dim=0) is maintained).</p>
