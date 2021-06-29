@@ -20,19 +20,45 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
 <script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
-<meta name="description" content="Introduction 机器具备拟合复杂数据的能力  Regression：function outputs a scalar Classification：given options(classes), the function outputs the correct one. Structured Learning: create something with structure (imag">
+<meta name="description" content="Introduction 机器具备拟合复杂数据的能力  Regression：function outputs a scalar.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="机器学习">
+<meta property="og:title" content="机器学习 by 李宏毅(1)">
 <meta property="og:url" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="LiuYang&#39;s Blog">
-<meta property="og:description" content="Introduction 机器具备拟合复杂数据的能力  Regression：function outputs a scalar Classification：given options(classes), the function outputs the correct one. Structured Learning: create something with structure (imag">
+<meta property="og:description" content="Introduction 机器具备拟合复杂数据的能力  Regression：function outputs a scalar.">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/1.png">
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/8.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/9.png">
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/10.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/11.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/12.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/13.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/14.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/15.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/16.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/17.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/18.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/19.png">
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/20.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/21.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/22.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/23.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/24.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/25.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/26.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/27.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/28.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/29.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/30.png">
 <meta property="article:published_time" content="2021-05-07T02:36:22.000Z">
-<meta property="article:modified_time" content="2021-06-21T10:44:43.521Z">
+<meta property="article:modified_time" content="2021-06-29T05:44:52.509Z">
 <meta property="article:author" content="LiuYang">
 <meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary">
@@ -43,10 +69,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;05&#x2F;07&#x2F;%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;05&#x2F;07&#x2F;机器学习&#x2F;&quot;,&quot;title&quot;:&quot;机器学习&quot;}</script>
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;05&#x2F;07&#x2F;%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;05&#x2F;07&#x2F;机器学习&#x2F;&quot;,&quot;title&quot;:&quot;机器学习 by 李宏毅(1)&quot;}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
-<title>机器学习 | LiuYang's Blog</title><script src="/js/config.js"></script>
+<title>机器学习 by 李宏毅(1) | LiuYang's Blog</title><script src="/js/config.js"></script>
   
 
 
@@ -151,7 +177,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#case-study"><span class="nav-number">2.</span> <span class="nav-text">Case Study</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#function-with-unknown-parameters-model"><span class="nav-number">2.1.</span> <span class="nav-text">Function with Unknown Parameters (Model)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#define-loss-from-training-data-function-of-parameters-lbw"><span class="nav-number">2.2.</span> <span class="nav-text">Define Loss from Training Data （function of parameters L(b,w)）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#optimization"><span class="nav-number">2.3.</span> <span class="nav-text">Optimization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sigmoid-function"><span class="nav-number">2.4.</span> <span class="nav-text">Sigmoid Function</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#general-guidance"><span class="nav-number">3.</span> <span class="nav-text">General Guidance</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#model-bias"><span class="nav-number">3.1.</span> <span class="nav-text">Model Bias</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#optimization-issue"><span class="nav-number">3.2.</span> <span class="nav-text">Optimization Issue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#overfitting"><span class="nav-number">3.3.</span> <span class="nav-text">Overfitting</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E5%90%91"><span class="nav-number">3.3.1.</span> <span class="nav-text">解决方向</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mismatch"><span class="nav-number">3.4.</span> <span class="nav-text">mismatch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#when-gradient-is-small"><span class="nav-number">4.</span> <span class="nav-text">When gradient is small</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#tayler-series-approximation"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">Tayler Series Approximation</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#batch-and-momentum"><span class="nav-number">5.</span> <span class="nav-text">Batch and Momentum</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#small-batch-v.s.-large-batch"><span class="nav-number">5.1.</span> <span class="nav-text">Small Batch v.s. Large Batch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#noisy-update-is-better-for-training"><span class="nav-number">5.2.</span> <span class="nav-text">“Noisy” update is better for training</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#noisy-update-is-better-for-generalization"><span class="nav-number">5.3.</span> <span class="nav-text">“Noisy” update is better for generalization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#momentum"><span class="nav-number">5.4.</span> <span class="nav-text">Momentum</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#small-gradient"><span class="nav-number">5.4.1.</span> <span class="nav-text">Small Gradient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vanilla-gradient-descent%E4%B8%80%E8%88%AC%E7%9A%84-gradient-descent"><span class="nav-number">5.4.2.</span> <span class="nav-text">Vanilla Gradient Descent：一般的 Gradient Descent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gradient-descent-momentum"><span class="nav-number">5.4.3.</span> <span class="nav-text">Gradient Descent + Momentum</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.5.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -166,7 +192,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -241,7 +267,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          机器学习
+          机器学习 by 李宏毅(1)
         </h1>
 
         <div class="post-meta-container">
@@ -259,7 +285,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-06-21 18:44:43" itemprop="dateModified" datetime="2021-06-21T18:44:43+08:00">2021-06-21</time>
+        <time title="修改时间：2021-06-29 13:44:52" itemprop="dateModified" datetime="2021-06-29T13:44:52+08:00">2021-06-29</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -279,14 +305,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>508</span>
+      <span>4.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
@@ -300,33 +326,168 @@
         <h2 id="introduction">Introduction</h2>
 <p>机器具备拟合复杂数据的能力</p>
 <ul>
-<li>Regression：function outputs a scalar</li>
+<li>Regression：function outputs a scalar. <span id="more"></span>例如：假设预测未来某一个时间PM2.5的数值,找一个函数<strong>f</strong>,f 输出是明天中午的PM2.5的数值,输入可能是种种跟预测PM2.5 有关的指数，包括今天的PM2.5的数值,今天的平均温度,今天平均的臭氧浓度等等,输出明天中午的PM2.5的数值,那建立这个函数的任务,叫作Regression。</li>
 <li>Classification：given options(classes), the function outputs the correct one.</li>
 <li>Structured Learning: create something with structure (image, document)</li>
 </ul>
-<span id="more"></span>
-<hr />
-<ol type="1">
-<li><p>Function with Unknown Parameters (Model) <span class="math display">\[
+<h2 id="case-study">Case Study</h2>
+<p>YouTube观看次数预测</p>
+<p><strong>输入是youtube后台资讯,输出就是某一天这个频道会有的总观看的次数</strong>.</p>
+<h3 id="function-with-unknown-parameters-model">Function with Unknown Parameters (Model)</h3>
+<p><span class="math display">\[
 y = b + w * x_{1}
 \]</span> Example:</p>
 <p><img src="1.png" alt="1" style="zoom:40%;" /></p>
 <p><span class="math display">\[
 x: feature \\
 W\ C^TB\ b : unknown\ parameters
-\]</span></p></li>
-<li><p>Define Loss from Training Data （function of parameters L(b,w)）</p>
+\]</span></p>
+<h3 id="define-loss-from-training-data-function-of-parameters-lbw">Define Loss from Training Data （function of parameters L(b,w)）</h3>
 <p>MAE : mean absolute error</p>
 <p>MSE : mean square error</p>
 <p>Cross-entropy</p>
-<p><img src="2.png" alt="2" style="zoom:40%;" /></p></li>
-<li><p>Optimization</p>
-<p>Gradient Descent - hyper parameter : learning rate, sigmoid, batch size</p>
-<p>Problem - local minima、Gradient disappear</p>
+<p><img src="2.png" alt="2" style="zoom:40%;" /></p>
+<p>Loss 反映了当前参数的表现，Loss越大表示当前一组参数越差</p>
+<p><strong>Error Surface</strong>：为不同的w跟b的组合计算Loss,然后就可以画出以下等高线图.</p>
+<p><img src="5.png" alt="5" style="zoom:60%;" /></p>
+<p><strong>越偏红色,代表计算出来的Loss越大,就代表这一组w跟b越差,如果越偏蓝色,就代表Loss越小,就代表这一组w跟b越好，模型的预测越精确</strong></p>
+<h3 id="optimization">Optimization</h3>
+<blockquote>
+<p>最佳化的问题，最佳化模型的未知参数</p>
+<p>优化方法：Gradient Descent - hyper parameter : learning rate, sigmoid, batch size</p>
+<p>存在的问题：local minima、Gradient disappear</p>
+</blockquote>
+<p><strong>模型有两个参数,有w跟b</strong>,那有两个参数的情况下,Gradient Descent：</p>
+<ul>
+<li><p><strong>随机初始化参数，即为<span class="math inline">\(w^0\)</span>和<span class="math inline">\(b^0\)</span></strong></p></li>
+<li><p><strong>分别计算w跟loss的微分,b对loss的微分</strong></p></li>
+<li><p>更新w跟b,把w⁰减掉learning rate,乘上微分的结果得到w¹,把b⁰减掉learning rate,乘上微分的结果得到b¹</p>
+<p><img src="6.png" alt="6" style="zoom:50%;" /></p>
+<p><img src="7.png" alt="7" style="zoom:50%;" /></p></li>
+</ul>
+<h3 id="sigmoid-function">Sigmoid Function</h3>
+<p><img src="8.png" alt="8" style="zoom:70%;" /></p>
+<p>调整的 b 跟 w 跟 c, 就可以制造各种不同形状的 Sigmoid Function</p>
+<ul>
+<li>如果改w就会改变<strong>斜率</strong>你就会改变斜坡的坡度</li>
+<li>如果改b 就可以把 Sigmoid Function 左右移动</li>
+<li>如果你改c 你就可以改变 Sigmoid Function 的高度</li>
+</ul>
+<p><strong>不同的 w 不同的 b 不同的 c,你就可以製造出不同的 Sigmoid Function</strong>,把<strong>不同的 Sigmoid Function 叠起来以后,就可以逼近各种不同的,Piecewise Linear 的 Function，从而逼近各种连续函数</strong></p>
+<p><img src="9.png" alt="8" style="zoom:70%;" /></p>
 <p><img src="3.png" alt="3" style="zoom:40%;" /></p>
-<p><img src="4.png" alt="4" style="zoom:40%;" /></p></li>
-</ol>
-<hr />
+<p>​ <strong>θ 是一个长向量</strong>,表示成 θ1 θ2 θ3 等等等,我们现在就是要<strong>找一组 θ,这个 θ 可以让我们的 Loss 越小越好</strong></p>
+<ul>
+<li>我们一开始要<strong>随机选一个初始的数值,这边叫做<span class="math inline">\(θ_0\)</span></strong><br />
+</li>
+<li>接下来计算微分, 用 θ1 θ2 θ3 来表示,每一个未知的参数,都去计算它对 L 的微分,把每一个参数都拿去计算对 L 的微分以后,集合起来它就是一个向量, 用 g 来表示它, 叫做 Gradient,</li>
+<li>算出 g 以后, Update 参数,本来有一个参数叫 θ1,<strong>上标 0</strong> 代表它是一个<strong>起始的值</strong>,它是一个随机选的起始的值,把这个 <strong>减掉 η 乘上微分的值,得到 ,代表 θ1 更新过一次的结果</strong>, 减掉微分乘以,减掉 η 乘上微分的值,得到,以此类推</li>
+</ul>
+<h2 id="general-guidance">General Guidance</h2>
+<p><img src="10.png" alt="8" style="zoom:70%;" /></p>
+<h3 id="model-bias">Model Bias</h3>
+<p>Model 过于简单，不能拟合数据，此时需要增加Model的复杂性</p>
+<p><img src="11.png" alt="8" style="zoom:70%;" /></p>
+<h3 id="optimization-issue">Optimization Issue</h3>
+<p>gradient descent 只能找到局部最小值，而非全局最小值。</p>
+<p>Start from shallower networks (or other models), which are easier to train，If deeper networks do not obtain smaller loss on training data, then there is optimization issue.</p>
+<h3 id="overfitting">Overfitting</h3>
+<p><strong>model的自由度很大,它可以產生非常奇怪的曲线,导致训练集上的结果好,但是测试集上的loss很大</strong></p>
+<p><img src="12.png" alt="8" style="zoom:50%;" /></p>
+<h4 id="解决方向">解决方向</h4>
+<ul>
+<li>增加训练集，如 <strong>data augmentation</strong>：图片左右翻转、缩放、裁剪等.</li>
+</ul>
+<p><img src="13.png" alt="8" style="zoom:70%;" /></p>
+<ul>
+<li><p>model constrain</p>
+<ul>
+<li>less parameters or sharing parameters</li>
+<li>less features</li>
+<li>Early stopping</li>
+<li>Dropout</li>
+</ul></li>
+<li><p>Cross Validation: <strong>把Training分成两半,一部分叫作Training Set,一部分是Validation Set</strong></p></li>
+<li><p>N-fold Cross Validation: <strong>把训练集切成N等份,其中一份当作Validation Set,其当Training Set</strong>,然后这件事情你要重复N次</p>
+<p><img src="14.png" alt="14" style="zoom:60%;" /></p></li>
+</ul>
+<h3 id="mismatch">mismatch</h3>
+<p><strong>训练集跟测试集的分布不一样，增加训练集的数量并不会使模型更好</strong></p>
+<h2 id="when-gradient-is-small">When gradient is small</h2>
+<p>Optimization的时候,<strong>随著参数不断的update,training的loss不会再下降。</strong>常见的一个猜想,是这个地方参数对loss的微分为零,<strong>gradient descent</strong>就无法update参数,这个时候training停止, loss当然就不会再下降了。</p>
+<p><img src="15.png" alt="14" style="zoom:70%;" /></p>
+<p>gradient为零的点,统称为<strong>critical point</strong>，包括<strong>local minima</strong> and <strong>saddle point</strong></p>
+<ul>
+<li>区分<strong>local minima</strong> and <strong>saddle point</strong></li>
+</ul>
+<h5 id="tayler-series-approximation">Tayler Series Approximation</h5>
+<p>在<span class="math inline">\(θ^{&#39;}\)</span>附近的loss function,可以被写出来</p>
+<p><img src="16.png" alt="14" style="zoom:70%;" /></p>
+<p><strong>H里面放的是L的二次微分</strong>,<strong>它第i个row,第j个column的值,就是把θ的第i个component,对L作微分,再把θ的第j个component,对L作微分,再把θ的第i个component,对L作微分,做两次微分以后的结果</strong></p>
+<p>如果走到了一个critical point,意味着gradient为零,绿色的这一项为0，所以当在critical point的时候,这个loss function,它可以被近似为,L(θ)加上红色的一项</p>
+<p><img src="17.png" alt="14" style="zoom:70%;" /></p>
+<p><img src="18.png" alt="14" style="zoom:80%;" /></p>
+<p>如果今天,positive definite的矩阵,<strong>它所有的eigen value特征值都是正的</strong></p>
+<ul>
+<li>对所有的v而言,都大于零,矩阵叫做<strong>positive definite 正定矩阵。</strong>算出hessian metric,它的eigen value特征值发现都是正的,它就是local minima。</li>
+<li>如果对所有的v而言,小于零, hessian metric是negative definite,所有<strong>eigen value都是负的</strong>,就保证他是local maxima</li>
+<li><strong>那如果eigen value有正有负</strong>,那就代表是saddle point</li>
+</ul>
+<p>H不只可以帮助我们判断saddle point,它还指出了参数可以update的方向</p>
+<p><img src="19.png" alt="14" style="zoom:80%;" /></p>
+<p><strong>你在θ'的位置加上u,沿著u的方向做update得到θ,你就可以让loss变小，</strong>也就是eigen vector的方向</p>
+<h2 id="batch-and-momentum">Batch and Momentum</h2>
+<p><img src="4.png" alt="4" style="zoom:40%;" /></p>
+<p>把所有的 Data 分成一个一个的 <strong>Batch</strong>,或者叫<strong>Mini Batch</strong>。每一个 Batch 的大小为<strong>batch_size</strong>, 每次<strong>在 Update 参数的时候,分别对 batch 计算 Loss, 计算 Gradient, 然后Update 参数。所有的batch计算一遍称为一个epoch</strong>。（batch 进行 Shuffle）</p>
+<h3 id="small-batch-v.s.-large-batch">Small Batch v.s. Large Batch</h3>
+<p><img src="20.png" alt="14" style="zoom:60%;" /></p>
+<p><strong>Larger batch size does not require longer time to compute gradient</strong>，GPU具有平行计算能力</p>
+<p><img src="21.png" alt="14" style="zoom:60%;" /></p>
+<p><strong>Smaller batch requires longer time for one epoch</strong>，,当 <strong>Batch Size 小的时候,跑完一个 Epoch,花的时间是比大的 Batch Size 还要多</strong></p>
+<p><img src="22.png" alt="14" style="zoom:80%;" /></p>
+<p><strong>Noisy 的 Gradient,反而可以帮助 Training，拿不同的 Batch 来训练你的模型，左边在 MNIST 上,右边在 CIFAR-10 上</strong></p>
+<p><img src="23.png" alt="14" style="zoom:40%;" /></p>
+<ul>
+<li>横轴代表的是 Batch Size</li>
+<li>纵轴代表的是正确率</li>
+</ul>
+<h3 id="noisy-update-is-better-for-training">“Noisy” update is better for training</h3>
+<blockquote>
+<p>Small Batch 因为每次选 Batch ,计算 Loss,所以相当于每一次 Update 你的参数的时候,用的 Loss Function 都是越有差异</p>
+<p>Full Batch, 在 Update 参数的时候,就是沿著一个 Loss Function 来 Update 参数, 走到一个 Local Minima,走到一个 Saddle Point时, Gradient = 0,如果不去看Hession Matrix ，用 Gradient Descent 的方法, 无法再 Update Parameters</p>
+</blockquote>
+<p><img src="24.png" alt="14" style="zoom:70%;" /></p>
+<h3 id="noisy-update-is-better-for-generalization">“Noisy” update is better for generalization</h3>
+<blockquote>
+<p><strong>Small Batch, Testing 的时候效果比较好</strong>,以下实验结果是引用自,<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1609.04836">On Large-Batch Training For Deep Learning,Generalization Gap And Sharp Minima</a></p>
+</blockquote>
+<p><img src="25.png" alt="14" style="zoom:90%;" /></p>
+<h3 id="momentum">Momentum</h3>
+<blockquote>
+<p>解决 Saddle Point,或 Local Minima 的技术</p>
+</blockquote>
+<h4 id="small-gradient">Small Gradient</h4>
+<p><img src="26.png" alt="14" style="zoom:70%;" /></p>
+<p>在物理的世界裡,一个球如果从高处滚下来,就算滚到 Saddle Point,如果有<strong>惯性</strong>,它还是会继续往右走,直到它走到一个 Local Minima。</p>
+<h4 id="vanilla-gradient-descent一般的-gradient-descent">Vanilla Gradient Descent：一般的 Gradient Descent</h4>
+<p><img src="27.png" alt="14" style="zoom:70%;" /></p>
+<h4 id="gradient-descent-momentum">Gradient Descent + Momentum</h4>
+<p>加上 Momentum 以后,每一次在 Update 参数的时候,我们不是只往 Gradient Descent,我们不是只往 Gradient 的反方向来移动参数, 而是 <strong>Gradient 的反方向,加上前一步移动的方向, 两者加起来的结果, 更新参数,</strong></p>
+<p><img src="28.png" alt="14" style="zoom:70%;" /></p>
+<p><img src="29.png" alt="14" style="zoom:50%;" /></p>
+<p>Momentum 也是 Update 的方向,不是只考虑现在的 Gradient,而是考虑过去所有 Gradient 的总和.</p>
+<p><img src="30.png" alt="14" style="zoom:60%;" /></p>
+<h3 id="总结">总结</h3>
+<ul>
+<li>Critical points have zero gradients.</li>
+<li>Critical points can be either saddle points or local minima.
+<ul>
+<li>Can be determined by the Hessian matrix.</li>
+<li>Local minima may be rare.</li>
+<li>It is possible to escape saddle points along the direction of eigenvectors of the Hessian matrix</li>
+</ul></li>
+<li>Smaller batch size and momentum help escape critical points.</li>
+</ul>
 
     </div>
 
@@ -383,14 +544,14 @@ W\ C^TB\ b : unknown\ parameters
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">629k</span>
+    <span title="站点总字数">633k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">9:32</span>
+    <span title="站点阅读时长">9:36</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
