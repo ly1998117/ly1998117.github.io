@@ -249,7 +249,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-07-02 00:53:15" itemprop="dateModified" datetime="2021-07-02T00:53:15+08:00">2021-07-02</time>
+        <time title="修改时间：2021-07-02 00:54:41" itemprop="dateModified" datetime="2021-07-02T00:54:41+08:00">2021-07-02</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -289,61 +289,14 @@
     <div class="post-body" itemprop="articleBody">
           <h2 id="convolutional-neural-network">Convolutional Neural Network</h2>
 <p>常用于图像领域</p>
-<h3 id="image-classification">Image Classification</h3>
-<p>All the images to be classified have the same size</p>
-<p>One-hot encoding, Dimension 对于识别的种类</p>
-<p><img src="1.png" alt="1" style="zoom:60%;" /></p>
-<p>对于一个 Machine 来说,<strong>一张图片其实是一个三维的 Tensor</strong>，一维代表图片的<strong>宽</strong>,另外一维代表图片的<strong>高</strong>,还有一维代表图片的 <strong>Channel</strong></p>
-<p><strong>把这一个三维的 Tensor 展平, 就可以输入到一个 Network </strong></p>
-<p><img src="2.png" alt="1" style="zoom:60%;" /></p>
-<p>每一个 Neuron 跟输入的向量的每一个数值都有一个 Weight, 所以如果输入的向量长度是 100 × 100×3, 有 1000 个 Neuron,那第一层的 Weight,就有 1000×100 × 100×3,也就是 3×10 的 7 次方</p>
-<p><img src="3.png" alt="1" style="zoom:60%;" /></p>
-<h3 id="simplification1-on-full-connected">Simplification1 on Full Connected</h3>
-<p>设定一个区域 Receptive Field,<strong>每一个 Neuron 都只关心自己的 Receptive Field</strong>，如图所示Receptive Field 里面有 3×3×3 个pixel</p>
-<p><img src="4.png" alt="1" style="zoom:60%;" /></p>
-<ul>
-<li>把这 3×3×3 的数值Flatten, 变成一个长度是 3×3×3 的 27 维的向量,再输入到neuron中</li>
-<li>Neuron 会给 27 维的向量的,<strong>每一个 Dimension 一个 Weight, </strong>所以这个 Neuron 有 3×3×3 27个 Weight,</li>
-<li>再<strong>加上 Bias</strong> 得到的输出,这个输出再送给下一层的 Neuron 当作输入</li>
-</ul>
-<h3 id="typical-setting">Typical Setting</h3>
-<ul>
-<li>考虑所有的channel</li>
-</ul>
-<p>一般在做影像识别的时候会看全部的 Channel，我们在描述一个 Receptive Field 的时候,**只讲它的高跟宽*, 不用讲它的深度,反正<strong>深度一定是考虑全部的 Channel</strong>,而这个高跟宽合起来叫做 Kernel Size</p>
-<p><strong>一般同一个 Receptive Field,不会只有一个 Neuron 去考虑它,往往会有一组 Neuron </strong></p>
-<ul>
-<li>Stride</li>
-</ul>
-<p>把你在最左上角的这个 Receptive Field,往右移一点,然后製造一个另外一个 Receptive Field,这个移动的量叫做 Stride。Receptive Field 高度重叠从而获取所有的 Pattern</p>
-<ul>
-<li>Padding</li>
-</ul>
-<p>超出范围你就做 <strong>Padding</strong>,<strong>Padding 就是补数值</strong></p>
-<p><img src="5.png" alt="1" style="zoom:70%;" /></p>
-<h3 id="simplification2">Simplification2</h3>
-<p><strong>同样的 Pattern,它可能会出现在不同的Receptive Field</strong>，所以不同 Receptive Field 的 Neuron共享参数,也就是 <strong>Parameter Sharing权值共享，两个 Neuron 它们的 weights完全是一样</strong></p>
-<p><img src="6.png" alt="1" style="zoom:60%;" /></p>
-<p>每一个 Receptive Field,它都有一组 Neuron，不同的Receptive Field 的neuron之间共享参数</p>
-<p><img src="7.png" alt="1" style="zoom:60%;" /></p>
-<h3 id="benifit-of-convolutional-layer">Benifit of Convolutional Layer</h3>
-<p><img src="8.png" alt="1" style="zoom:60%;" /></p>
-<h3 id="卷积">卷积</h3>
-<p>Filter的做法就是,先把 Filter 放在图片的左上角,然后<strong>把 Filter 裡面所有的值,跟左上角这个范围内的 9 个值做相乘</strong></p>
-<p><img src="9.gif" alt="1" style="zoom:60%;" /></p>
-<p>Filter 每次移动的距离叫做 Stride，如果我们有 64 个 Filter,我们就得到 64 组的数字,叫做 <strong>Feature Map</strong>，可以看成是,另外一张新的图片，只是这个图片的 Channel 有 64 个。</p>
-<p>虽然例子 Filter 只有 3 × 3,但它在图像上考虑的范围是比较大的 是 5 × 5, 所以 N<strong>etwork 越深,同样是 3 × 3 的大小的 Filter, 它看的范围就会越来越大</strong>, 所以 Network 够深就可以侦测到比较大的 Pattern</p>
-<p><img src="10.png" alt="1" style="zoom:60%;" /></p>
-<h3 id="pooling">Pooling</h3>
-<p>图像的放缩不影响对图像中对象的识别</p>
-<p>Pooling 本身没有参数,所以它不是一个 Layer, 没有 Weight, 没有要 Learn 的东西, 所以 Pooling 比较像是一个 Activation Function,比较像是 Sigmoid ， ReLU ,它就是一个 Operator, 它的行為都是固定好的,没有要根据 Data 学任何东西。</p>
-<p><img src="11.png" alt="1" style="zoom:60%;" /></p>
-<p><img src="12.png" alt="1" style="zoom:60%;" /></p>
-<p>不过 <strong>Pooling, 对于你的 Performance, 还是可能会带来一点伤害的</strong>,因為假设要侦测的是非常微细的东西, 那你随便做 Subsampling,Performance 可能会稍微差一点</p>
-<p>所以近年来, 很多影像电视的 Network 的设计,往往也开始丢弃 Pooling ,他会做 Full Convolution 的 Neural Network, 整个 Network 统统都是 Convolution，例如 AlphaGo</p>
-<h2 id="whole-cnn">Whole CNN</h2>
-<p><img src="13.png" alt="1" style="zoom:60%;" /></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/07/01/ML3-CNN/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
