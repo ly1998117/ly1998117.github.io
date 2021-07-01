@@ -85,7 +85,7 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">20</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-count">40</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -170,7 +170,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -218,6 +218,307 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/07/01/Machine-Learning2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/07/01/Machine-Learning2/" class="post-title-link" itemprop="url">机器学习 by 李宏毅(2)</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-07-01 09:43:54 / 修改时间：19:14:58" itemprop="dateCreated datePublished" datetime="2021-07-01T09:43:54+08:00">2021-07-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="adaptive-learning-rate">Adaptive Learning Rate</h2>
+<p>each parameters different learning rate</p>
+<h3 id="training-stuck-small-gradient">Training stuck != Small Gradient</h3>
+<p>训练过程中，随着不断地update，loss逐渐变小直到不再下降，此时不一定是<strong>critical poin</strong>t但gradient不一定很小</p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/1.png" alt="1" style="zoom:40%;" /></p>
+<p><strong>gradient</strong> 有可能在<strong>error surface</strong> 来回震荡，loss 不能在下降。</p>
+<h3 id="training-can-be-difficult-even-without-critical-points">Training can be difficult even without critical points</h3>
+<p>如图 **Error Surface是convex形状（ Convex Optimization）， 最低点在黄色X处，</p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/2.png" alt="1" style="zoom:40%;" /></p>
+<p>lr = 0.01，gradient 震荡，loss无法达到local minima。lr=<span class="math inline">\(10^{-7}\)</span>，停止震荡但由于lr太小无法到达</p>
+<h3 id="different-parameters-needs-different-learning-rate">Different parameters needs different learning rate</h3>
+<p><strong>如果在某一个方向上, gradient 的值很小,非常的平坦,那 learning rate 调大一点,如果在某一个方向上非常的陡峭,坡度很大, learning rate 可以小一点</strong></p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/3.png" alt="1" style="zoom:40%;" /></p>
+<p><strong>不同的参数我们要给它不同的σ,同时它也是iteration dependent的,不同的iteration也会有不同的σ</strong>，σ的计算常见类型</p>
+<h4 id="root-mean-square">Root mean square</h4>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/4.png" alt="1" style="zoom:40%;" /></p>
+<p><strong>坡度比较大的时候,learning rate就减小,坡度比较小的时候,learning rate就大</strong></p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/5.png" alt="1" style="zoom:40%;" /></p>
+<h4 id="rmsprop">RMSProp</h4>
+<p>RMS Prop方法,<strong>第一步跟oot Mean Square,（Apagrad）一样</strong>，<strong>但在RMS Prop裡面, 你可以自己调整 gradient 的重要性</strong></p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/6.png" alt="1" style="zoom:40%;" /></p>
+<p><strong>α 是一个hyperparameter</strong></p>
+<ul>
+<li>如果α 很小趋近於0<strong>,就代表我觉得</strong>gᵢ¹相较於之前所算出来的gradient而言,比较重要**</li>
+<li><strong>α 很大趋近於1</strong>,那就代表我觉得<strong>现在算出来的gᵢ¹比较不重要,之前算出来的gradient比较重要</strong></li>
+</ul>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/7.png" alt="1" style="zoom:40%;" /></p>
+<p>原来的<strong>Adagrad</strong> 相比于 <strong>RMSProp</strong> 对当前的gradient的反应要慢</p>
+<h4 id="adam">Adam</h4>
+<p>今天最常用的optimization的策略（optimizer），就是<strong>Adam：PMSProp+Momentum</strong></p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/8.png" alt="1" style="zoom:50%;" /></p>
+<h4 id="learning-rate-scheduling">Learning Rate Scheduling</h4>
+<p><strong>Adagrad</strong></p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/9.png" alt="1" style="zoom:50%;" /></p>
+<p>快走到终点的时候突然在纵轴震荡？</p>
+<ul>
+<li><p>纵轴方向,初始的gradient很大</p></li>
+<li><p>走到谷底,纵轴的方向,gradient算出来都很小,所以纵轴这个方向,就累积了很小的σ，累积到一个地步以后, step 变大,然后就向纵轴偏离</p></li>
+<li><p>因為偏移出去以后, gradient 变大, σ又慢慢的变大, 参数 update 的步伐就慢慢的变小，所以不会永远就是震荡,不会做简谐运动停不下来,有摩擦力让它慢慢地又回到中间这个峡谷来。</p></li>
+<li><p>累计一段时间以后周而复始</p></li>
+</ul>
+<p>一个方法可以解决这个问题,叫做<strong>learning rate scheduling</strong>，<strong>不把η当一个常数, 让它跟时间有关</strong>最常见的策略叫做Learning Rate Decay，<strong>随著时间的不断地进行, 随著参数不断的update, 使η越来越小</strong></p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/10.png" alt="1" style="zoom:40%;" /></p>
+<h4 id="warm-up">Warm Up</h4>
+<p><strong>让learning rate, 先变大后变小</strong></p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/11.png" alt="1" style="zoom:50%;" /></p>
+<h3 id="summary">Summary</h3>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/12.png" alt="1" style="zoom:50%;" /></p>
+<ul>
+<li>有Momentum, 现在不是完全顺著 gradient 的方向,现在不是完全顺著这一个时间点算出来的gradient的方向,来update参数,而是把过去,所有算出来gradient的方向,做一个加总当作update的方向,这个是momentum</li>
+<li>update 多大的步伐, 要除掉 gradient 的<strong>Root Mean Square</strong></li>
+<li><strong>Momentum是直接把所有的 gradient 通通都加起来, 有考虑方向和gradient正负号，但是 Root Mean Square 不考虑gradient的方向了,它只考虑gradient的大小</strong></li>
+</ul>
+<h2 id="classification-as-regression">Classification as Regression</h2>
+<p><strong>把Classification,当作是Regression来看输入一个东西以后,我们的输出仍然是一个scaler y，我们要让它跟正确答案越接近越好,但是 y 是一个数字，我们必须把Class也变成数字</strong></p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/13.png" style="zoom:70%"/></p>
+<p>假设说Class one就是编号1,Class two就是编号2,Class3就是编号3,意味<strong>Class1跟Class2比较像,Class1跟Class3 比较不像</strong>,像这样子的表示Class的方式,有时候不可行</p>
+<h3 id="class-as-one-hot-vector">Class as one-hot vector</h3>
+<p>常见的做法是把Class,用 One-hot vector来表示</p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/14.png" style="zoom:50%"/></p>
+<p>用One-hot vector来表示的话,就没有Class1跟Class2比较接近,Class1跟Class3比较远这样子的问题,<strong>如果计算Class之间的距离 两两它们的距离都是一样</strong>。使用one-hot vector，network要Output的维度也是三个数字</p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/15.png" style="zoom:70%"/></p>
+<p><strong>Regression的问题,只需要Output一个数字，其实从一个数值改到三个数值,本质上没有什么不同</strong></p>
+<h3 id="softmaxlogistic-regression">Softmax（Logistic Regression）</h3>
+<p>Classification的时候,往往会<strong>把y再通过一个叫做Soft-max的function得到y'</strong>,然后我们才去计算,y'跟y hat之间的距离</p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/16.png" style="zoom:70%"/></p>
+<p>Softmax 除了Normalized,让 y₁' y₂' y₃',<strong>变成0到1之间</strong>,还有<strong>和为1</strong>以外, 还会让大的值跟小的值的差距更大</p>
+<p>然后这个Softmax的输入,往往称之为 logit</p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/17.png" style="zoom:40%"/></p>
+<p>两个class 用sigmoid,跟softmax两个class 是等价的</p>
+<h3 id="loss-of-classification">Loss of Classification</h3>
+<ul>
+<li>Mean Square Error (MSE)</li>
+<li>Cross-entropy</li>
+</ul>
+<p><span class="math display">\[
+e =- \sum_{i} \hat{y_i}  ln{y_i}&#39; 
+\]</span></p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/18.png" style="zoom:60%"/></p>
+<h2 id="quick-introduction-of-batch-normalization">Quick Introduction of Batch Normalization</h2>
+<p><strong>Error surface</strong> 如果很崎嶇的时候,它比较难 train,那我们能不能够直接改变 <strong>landscape</strong>,让它变得比较好 <strong>train</strong> 呢？<strong>固定的 learning rate</strong>,可能很难得到好的结果,所以需要 adaptive 的 learning rate、 Adam 等等比较好的 optimization 的方法,才能够得到好的结果。</p>
+<p>假设两个参数啊对 <strong>Loss 的斜率差别非常大</strong>,在<span class="math inline">\(w_1\)</span>这个方向上面,你的斜率变化很小,在<span class="math inline">\(w_2\)</span>这个方向上面斜率变化很大</p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/20.png" style="zoom:40%"/></p>
+<p>什么情况会产生像上面这种<strong>难 train 的 error surface</strong> ？</p>
+<ul>
+<li><span class="math inline">\(x_1\)</span> input 中的值都很小，所以输出对y的影响也很小，对Loss的影响也会小</li>
+<li><span class="math inline">\(x_2\)</span> 中的值都很大，以输出对y的影响也很大，对Loss的影响也会大</li>
+</ul>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/19.png" style="zoom:40%"/></p>
+<p>当我们 input 的 feature,<strong>每一个 dimension 的值,它的 scale 差距很大</strong>的时候,就可能产生像这样的 error surface,就可能产生<strong>不同方向,斜率非常不同,坡度非常不同的 error surface</strong></p>
+<p>所以可能给 feature不同的 dimension,让它有同样的数值的范围，从而使error surface 更加平坦。这些不同的方法,往往就合起来统称 Feature Normalization</p>
+<h3 id="feature-normalization">Feature Normalization</h3>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/21.png" style="zoom:40%"/></p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/22.png" style="zoom:40%"/></p>
+<p>对z或者a进行normalization差别不大</p>
+<p>如何对z ？ <span class="math display">\[
+\mu =\frac{1}{3} \sum_{i=1}^{3} z^i \ \ \ \ \ \ \ \  \ \sigma =\sqrt{\frac{1}{3} \sum_{i=1}^{3}(z_i-\mu )^2}
+\]</span> <img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/23.png" style="zoom:40%"/></p>
+<p>所以如果没有 Feature Normalization , 改变了 <span class="math inline">\(z^1\)</span> 的值, 就会改变 <span class="math inline">\(a^1\)</span> 的值</p>
+<p>但由于 Feature Normalization 是在 dimension 上操作的, 所以当改变<span class="math inline">\(z^1\)</span>的值的时候, <span class="math inline">\(\mu 和 \sigma\)</span> 也会跟着改变, <span class="math inline">\(\mu 和 \sigma\)</span> 改变以后, <span class="math inline">\(z^2 a^2 z^3 a^3\)</span> 的值,也会跟着改变，三个 example,变得<strong>彼此关联</strong>。Feature Normalization 的时候, 把这一整个 process,就是收集一堆 feature,把这堆 feature 算出 <span class="math inline">\(\mu 和 \sigma\)</span> ,当做是 network 的一部分。</p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/24.png" style="zoom:60%"/></p>
+<p>实际的数据无法全部放入network中，所以只对一个 batch 中的data 进行 normalization，称为<code>Batch Normalization</code>，适用batch size 比较大的时候, 只有 batch size 比较大,<strong>这个 batch size data, 才有可能足以表示整个 corpus 的分布</strong></p>
+<p>在 Batch Normalization 的时候,往往还会有这样的设计，算出 $ $ 以后</p>
+<ul>
+<li>再乘上另外一个向量 <span class="math inline">\(\gamma\)</span> , 做 element wise 的相乘</li>
+<li>再加上向量 <span class="math inline">\(\beta\)</span>,得到 <span class="math inline">\(\hat{z}\)</span> , <span class="math inline">\(\beta\)</span>和<span class="math inline">\(\hat{z}\)</span> 是需要 Network learn</li>
+</ul>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/25.png" style="zoom:60%"/></p>
+<p>让 Network 训练的时候决定feature的平均，而不是限制为0</p>
+<h3 id="testing-inference">Testing （ inference）</h3>
+<p>假如在 testing 的时候,根本就没有 batch,那我们要怎么计算 <span class="math inline">\(\mu \ \ \sigma\)</span>?</p>
+<p>在 training 的时候, 每一个 batch 计算出来的 <span class="math inline">\(\mu \ \ \sigma\)</span> ,都会拿出来算 <strong>moving average</strong></p>
+<p><img src="/Users/liuyang/blog/source/_posts/Machine-Learning2/26.png" style="zoom:60%"/></p>
+<p>Pytorch 中设置 p 为0.1，testing中直接使用<span class="math inline">\(\bar\mu\)</span> 和 <span class="math inline">\(\bar\sigma\)</span></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/06/30/summary1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/06/30/summary1/" class="post-title-link" itemprop="url">Learning Summary（1）</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-30 16:55:14" itemprop="dateCreated datePublished" datetime="2021-06-30T16:55:14+08:00">2021-06-30</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-01 09:44:25" itemprop="dateModified" datetime="2021-07-01T09:44:25+08:00">2021-07-01</time>
+      </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="公开课">公开课</h2>
+<p>Machine Learning 2021 Spring：（p1-p20）</p>
+<ul>
+<li>machine learning还有deep learning的基本概念（机器学习类别：<strong>Regression</strong> <strong>Classification</strong> <strong>Structured Learning</strong>）</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/06/30/summary1/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/06/28/NLP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -241,10 +542,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-06-28 14:41:56 / 修改时间：14:55:07" itemprop="dateCreated datePublished" datetime="2021-06-28T14:41:56+08:00">2021-06-28</time>
+      <time title="创建时间：2021-06-28 14:41:56" itemprop="dateCreated datePublished" datetime="2021-06-28T14:41:56+08:00">2021-06-28</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-01 09:44:40" itemprop="dateModified" datetime="2021-07-01T09:44:40+08:00">2021-07-01</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -283,13 +590,14 @@
     <div class="post-body" itemprop="articleBody">
           <h2 id="introduction">Introduction</h2>
 <p>近年来，自然语言处理（NLP）作为一个领域经历了快速增长，主要是因为语言模型的性能取决于其 "理解 "文本的整体能力，并且可以在大型文本库上以无监督的方式进行训练。因此，预训练的文本模型，如BERT，简化了许多NLP任务，并极大地提高了性能。</p>
-<p>本文专注于在PyTorch中把NLP表示为张量的基本方面，以及经典的NLP架构，如 bag-of-words, embeddings and recurrent neural networks</p>
-<h3 id="natural-language-tasks">Natural Language Tasks</h3>
-<ul>
-<li><p><strong>Text Classification</strong>: 常用于需要将文本片段分类为几个预定义类之一的场景，例如，垃圾邮件检测、新闻分类、将支持请求分配给其中一个类别等等。</p></li>
-<li><p><strong>Intent Classification：</strong>Text Classification 的特例，将对话式人工智能系统中的输入语料映射到代表该短语实际含义的意图之一，或用户的 intent。</p></li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/06/28/NLP/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1028,213 +1336,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2020/03/14/Maven-%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="LiuYang">
-      <meta itemprop="description" content="人与人的悲欢并不相通">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LiuYang's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/03/14/Maven-%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">Maven 项目管理</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-03-14 13:55:32" itemprop="dateCreated datePublished" datetime="2020-03-14T13:55:32+08:00">2020-03-14</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-05-26 22:34:27" itemprop="dateModified" datetime="2021-05-26T22:34:27+08:00">2021-05-26</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>184</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="maven">Maven</h1>
-<p>Apache 旗下项目管理工具，由纯 Java 语言开发，可以更方便的帮助我们管理和构建 Java 项目</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/14/Maven-%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2020/03/13/%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB%E7%B3%BB%E7%BB%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="LiuYang">
-      <meta itemprop="description" content="人与人的悲欢并不相通">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LiuYang's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/03/13/%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">人脸识别系统</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-03-13 16:45:41" itemprop="dateCreated datePublished" datetime="2020-03-13T16:45:41+08:00">2020-03-13</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-05-27 11:03:18" itemprop="dateModified" datetime="2021-05-27T11:03:18+08:00">2021-05-27</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB/" itemprop="url" rel="index"><span itemprop="name">人脸识别</span></a>
-        </span>
-    </span>
-
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>16k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>15 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="人脸识别的一般系统框架">人脸识别的一般系统框架</h1>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/13/%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB%E7%B3%BB%E7%BB%9F/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
@@ -1260,14 +1361,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">633k</span>
+    <span title="站点总字数">638k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">9:36</span>
+    <span title="站点阅读时长">9:40</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
