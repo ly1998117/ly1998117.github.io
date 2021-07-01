@@ -32,6 +32,8 @@
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/5.png">
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/6.png">
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/31.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/32.png">
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/8.png">
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/9.png">
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/3.png">
@@ -58,7 +60,7 @@
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/29.png">
 <meta property="og:image" content="https://ly1998117.github.io/2021/05/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/30.png">
 <meta property="article:published_time" content="2021-05-07T02:36:22.000Z">
-<meta property="article:modified_time" content="2021-06-29T05:44:52.509Z">
+<meta property="article:modified_time" content="2021-07-01T15:47:52.238Z">
 <meta property="article:author" content="LiuYang">
 <meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary">
@@ -177,7 +179,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#case-study"><span class="nav-number">2.</span> <span class="nav-text">Case Study</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#function-with-unknown-parameters-model"><span class="nav-number">2.1.</span> <span class="nav-text">Function with Unknown Parameters (Model)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#define-loss-from-training-data-function-of-parameters-lbw"><span class="nav-number">2.2.</span> <span class="nav-text">Define Loss from Training Data （function of parameters L(b,w)）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#optimization"><span class="nav-number">2.3.</span> <span class="nav-text">Optimization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sigmoid-function"><span class="nav-number">2.4.</span> <span class="nav-text">Sigmoid Function</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#general-guidance"><span class="nav-number">3.</span> <span class="nav-text">General Guidance</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#model-bias"><span class="nav-number">3.1.</span> <span class="nav-text">Model Bias</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#optimization-issue"><span class="nav-number">3.2.</span> <span class="nav-text">Optimization Issue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#overfitting"><span class="nav-number">3.3.</span> <span class="nav-text">Overfitting</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E5%90%91"><span class="nav-number">3.3.1.</span> <span class="nav-text">解决方向</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mismatch"><span class="nav-number">3.4.</span> <span class="nav-text">mismatch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#when-gradient-is-small"><span class="nav-number">4.</span> <span class="nav-text">When gradient is small</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#tayler-series-approximation"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">Tayler Series Approximation</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#batch-and-momentum"><span class="nav-number">5.</span> <span class="nav-text">Batch and Momentum</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#small-batch-v.s.-large-batch"><span class="nav-number">5.1.</span> <span class="nav-text">Small Batch v.s. Large Batch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#noisy-update-is-better-for-training"><span class="nav-number">5.2.</span> <span class="nav-text">“Noisy” update is better for training</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#noisy-update-is-better-for-generalization"><span class="nav-number">5.3.</span> <span class="nav-text">“Noisy” update is better for generalization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#momentum"><span class="nav-number">5.4.</span> <span class="nav-text">Momentum</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#small-gradient"><span class="nav-number">5.4.1.</span> <span class="nav-text">Small Gradient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vanilla-gradient-descent%E4%B8%80%E8%88%AC%E7%9A%84-gradient-descent"><span class="nav-number">5.4.2.</span> <span class="nav-text">Vanilla Gradient Descent：一般的 Gradient Descent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gradient-descent-momentum"><span class="nav-number">5.4.3.</span> <span class="nav-text">Gradient Descent + Momentum</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.5.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#case-study"><span class="nav-number">2.</span> <span class="nav-text">Case Study</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#function-with-unknown-parameters-model"><span class="nav-number">2.1.</span> <span class="nav-text">Function with Unknown Parameters (Model)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#define-loss-from-training-data-function-of-parameters-lbw"><span class="nav-number">2.2.</span> <span class="nav-text">Define Loss from Training Data （function of parameters L(b,w)）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#optimization"><span class="nav-number">2.3.</span> <span class="nav-text">Optimization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sgdstochastic-gradient-descent"><span class="nav-number">2.4.</span> <span class="nav-text">SGD（stochastic gradient descent）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sgdm-stochastic-gradient-descent-with-momentum"><span class="nav-number">2.5.</span> <span class="nav-text">SGDM (Stochastic Gradient Descent with Momentum)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sigmoid-function"><span class="nav-number">2.6.</span> <span class="nav-text">Sigmoid Function</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#general-guidance"><span class="nav-number">3.</span> <span class="nav-text">General Guidance</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#model-bias"><span class="nav-number">3.1.</span> <span class="nav-text">Model Bias</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#optimization-issue"><span class="nav-number">3.2.</span> <span class="nav-text">Optimization Issue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#overfitting"><span class="nav-number">3.3.</span> <span class="nav-text">Overfitting</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E5%90%91"><span class="nav-number">3.3.1.</span> <span class="nav-text">解决方向</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mismatch"><span class="nav-number">3.4.</span> <span class="nav-text">mismatch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#when-gradient-is-small"><span class="nav-number">4.</span> <span class="nav-text">When gradient is small</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#tayler-series-approximation"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">Tayler Series Approximation</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#batch-and-momentum"><span class="nav-number">5.</span> <span class="nav-text">Batch and Momentum</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#small-batch-v.s.-large-batch"><span class="nav-number">5.1.</span> <span class="nav-text">Small Batch v.s. Large Batch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#noisy-update-is-better-for-training"><span class="nav-number">5.2.</span> <span class="nav-text">“Noisy” update is better for training</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#noisy-update-is-better-for-generalization"><span class="nav-number">5.3.</span> <span class="nav-text">“Noisy” update is better for generalization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#momentum"><span class="nav-number">5.4.</span> <span class="nav-text">Momentum</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#small-gradient"><span class="nav-number">5.4.1.</span> <span class="nav-text">Small Gradient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vanilla-gradient-descent%E4%B8%80%E8%88%AC%E7%9A%84-gradient-descent"><span class="nav-number">5.4.2.</span> <span class="nav-text">Vanilla Gradient Descent：一般的 Gradient Descent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gradient-descent-momentum"><span class="nav-number">5.4.3.</span> <span class="nav-text">Gradient Descent + Momentum</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.5.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -192,7 +194,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-count">41</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -285,7 +287,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-06-29 13:44:52" itemprop="dateModified" datetime="2021-06-29T13:44:52+08:00">2021-06-29</time>
+        <time title="修改时间：2021-07-01 23:47:52" itemprop="dateModified" datetime="2021-07-01T23:47:52+08:00">2021-07-01</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -365,6 +367,10 @@ W\ C^TB\ b : unknown\ parameters
 <p><img src="6.png" alt="6" style="zoom:50%;" /></p>
 <p><img src="7.png" alt="7" style="zoom:50%;" /></p></li>
 </ul>
+<h3 id="sgdstochastic-gradient-descent">SGD（stochastic gradient descent）</h3>
+<p><img src="31.png" alt="7" style="zoom:40%;" /></p>
+<h3 id="sgdm-stochastic-gradient-descent-with-momentum">SGDM (Stochastic Gradient Descent with Momentum)</h3>
+<p><img src="32.png" alt="7" style="zoom:50%;" /></p>
 <h3 id="sigmoid-function">Sigmoid Function</h3>
 <p><img src="8.png" alt="8" style="zoom:70%;" /></p>
 <p>调整的 b 跟 w 跟 c, 就可以制造各种不同形状的 Sigmoid Function</p>
@@ -544,14 +550,14 @@ W\ C^TB\ b : unknown\ parameters
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">638k</span>
+    <span title="站点总字数">640k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">9:40</span>
+    <span title="站点阅读时长">9:42</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
