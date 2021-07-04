@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Introduction 近年来，自然语言处理（NLP）作为一个领域经历了快速增长，主要是因为语言模型的性能取决于其 &quot;理解 &quot;文本的整体能力，并且可以在大型文本库上以无监督的方式进行训练。因此，预训练的文本模型，如BERT，简化了许多NLP任务，并极大地提高了性能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Natural Language Processing - Bag of Word &amp;&amp; Embedding">
+<meta property="og:url" content="https://ly1998117.github.io/2021/07/01/NLP/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="Introduction 近年来，自然语言处理（NLP）作为一个领域经历了快速增长，主要是因为语言模型的性能取决于其 &quot;理解 &quot;文本的整体能力，并且可以在大型文本库上以无监督的方式进行训练。因此，预训练的文本模型，如BERT，简化了许多NLP任务，并极大地提高了性能。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/01/NLP/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/01/NLP/1.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/01/NLP/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/01/NLP/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/01/NLP/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/01/NLP/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/01/NLP/7.png">
+<meta property="article:published_time" content="2021-07-01T06:41:56.000Z">
+<meta property="article:modified_time" content="2021-07-04T11:50:15.044Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="PyTorch">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ly1998117.github.io/2021/07/01/NLP/4.png">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2021/07/01/NLP/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;01&#x2F;NLP&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;07&#x2F;01&#x2F;NLP&#x2F;&quot;,&quot;title&quot;:&quot;Natural Language Processing - Bag of Word &amp;&amp; Embedding&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Natural Language Processing - Bag of Word && Embedding | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#natural-language-tasks"><span class="nav-number">1.1.</span> <span class="nav-text">Natural Language Tasks</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#text-classification"><span class="nav-number">2.</span> <span class="nav-text">Text Classification</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#representing-text-as-tensors"><span class="nav-number">2.1.</span> <span class="nav-text">Representing text as Tensors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dataset"><span class="nav-number">2.2.</span> <span class="nav-text">Dataset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bag-of-words-text-representatiion"><span class="nav-number">2.3.</span> <span class="nav-text">bag of words text representatiion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#training-bow-classifier"><span class="nav-number">2.4.</span> <span class="nav-text">Training BoW classifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#one-linear-layer"><span class="nav-number">2.5.</span> <span class="nav-text">One linear layer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#training"><span class="nav-number">2.6.</span> <span class="nav-text">training</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bigrams-trigrams-and-n-grams"><span class="nav-number">2.7.</span> <span class="nav-text">BiGrams, TriGrams and N-Grams</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#term-frequency-inverse-document-frequency-tf-idf"><span class="nav-number">2.8.</span> <span class="nav-text">Term Frequency Inverse Document Frequency (TF-IDF)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#represent-words-with-embeddings"><span class="nav-number">2.9.</span> <span class="nav-text">Represent words with embeddings</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dealing-with-variable-sequence-size"><span class="nav-number">2.10.</span> <span class="nav-text">Dealing with variable sequence size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#embedding-bag-layer-and-variable-length-sequence-representation"><span class="nav-number">2.11.</span> <span class="nav-text">Embedding Bag Layer and Variable-Length Sequence Representation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#semantic-embeddings-word2vec"><span class="nav-number">2.12.</span> <span class="nav-text">Semantic Embeddings: Word2Vec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#using-pre-trained-embeddings-in-pytorch"><span class="nav-number">2.13.</span> <span class="nav-text">Using Pre-Trained Embeddings in PyTorch</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/07/01/NLP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Natural Language Processing - Bag of Word && Embedding
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-01 14:41:56" itemprop="dateCreated datePublished" datetime="2021-07-01T14:41:56+08:00">2021-07-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-04 19:50:15" itemprop="dateModified" datetime="2021-07-04T19:50:15+08:00">2021-07-04</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/PyTorch/" itemprop="url" rel="index"><span itemprop="name">PyTorch</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>21k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>19 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="introduction">Introduction</h2>
+<p>近年来，自然语言处理（NLP）作为一个领域经历了快速增长，主要是因为语言模型的性能取决于其 "理解 "文本的整体能力，并且可以在大型文本库上以无监督的方式进行训练。因此，预训练的文本模型，如BERT，简化了许多NLP任务，并极大地提高了性能。</p>
+<span id="more"></span>
+<p>本文专注于在PyTorch中把NLP表示为张量的基本方面，以及经典的NLP架构，如 bag-of-words, embeddings and recurrent neural networks</p>
+<h3 id="natural-language-tasks">Natural Language Tasks</h3>
+<ul>
+<li><p><strong>Text Classification</strong>: 常用于需要将文本片段分类为几个预定义类之一的场景，例如，垃圾邮件检测、新闻分类、将支持请求分配给其中一个类别等等。</p></li>
+<li><p><strong>Intent Classification：</strong>Text Classification 的特例，将对话式人工智能系统中的输入语料映射到代表该短语实际含义的意图之一，或用户的 intent。</p></li>
+<li><p><strong>Sentiment Analysis</strong>：一个回归任务，我们想了解给定文本的消极程度。我们可能想把数据集中的文本从最负面的（-1）到最正面的（+1）进行标记，并训练一个模型，输出一个文本的 "正面性 "数字。</p></li>
+<li><p><strong>Named Entity Recognition</strong> (NER)：从文本中提取一些实体的任务，如日期、地址、人名等。与意图分类一起，NER经常被用于对话系统，从用户的话语中提取参数。</p></li>
+<li><p><strong>keyword extraction</strong> ：在文本中找到最有意义的词，然后可以将其用作标签。</p></li>
+<li><p><strong>Text Summarization</strong>：提取最有意义的文本片段，为用户提供包含大部分含义的摘要</p></li>
+<li><p><strong>Question/Answer</strong>： This model gets text fragment and a question as an input, and needs to find exact place within the text that contains answer. For example, the text "<em>John is a 22 year old student who loves to use Microsoft Learn</em>", and the question <em>How old is John</em> should provide us with the answer <em>22</em>.</p></li>
+</ul>
+<h2 id="text-classification">Text Classification</h2>
+<ul>
+<li>Understand how text is processed for natural language processing tasks</li>
+<li>Get introduced to Recurrent Neural Networks (RNNs) and Generative Neural Networks (GNNs)</li>
+<li>Learn about Attention Mechanisms</li>
+<li>Learn how to build text classification models</li>
+</ul>
+<h3 id="representing-text-as-tensors">Representing text as Tensors</h3>
+<p>In order to solve NLP tasks with neural networks, we need some way to represent text as tensors. Computers already represent textual characters as numbers that map to fonts on your screen using encodings such as ASCII or UTF-8</p>
+<p>Computers by themselves do not have such an understanding of what each letter represents, neural network has to learn the meaning during train</p>
+<p>Approaches of representing text:</p>
+<ul>
+<li>Character-level representation: treating each charater as a number. Given that we have C different characters in our text corpus, the word <em>Hello</em> would be represented by 5xC tensor (One-Hot encoding).</li>
+<li>Word-level representation: creating a <strong>vocabulary</strong> of all words in text, then representing words using one-hot encoding. This approach is somehow better, because each letter by itself does not have much meaning, and thus by using higher-level semantic concepts - words - we simplify the task for the neural network. However, given large dictionary size, we need to deal with high-dimensional sparse tensor.</li>
+</ul>
+<h3 id="dataset">Dataset</h3>
+<p>Start with a simple text classification task based on <strong>AG_NEWS</strong> dataset, which is to classify news headlines into one of 4 categories: World, Sports, Business and Sci/Tech. This dataset is built into <code>torchtext</code> module</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">os.makedirs(root, exist_ok=<span class="literal">True</span>)</span><br><span class="line">training_iter, test_iter = torchtext.datasets.AG_NEWS(root=root)</span><br></pre></td></tr></table></figure>
+<p><code>train_dataset</code> and <code>test_dataset</code> contain iterators that return pairs of label (number of class) and text respectively, if we want to use the data multiple times we need to convert it to list</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torchtext.data.functional <span class="keyword">import</span> to_map_style_dataset</span><br><span class="line"></span><br><span class="line">builtins.classes = [<span class="string">&#x27;World&#x27;</span>, <span class="string">&#x27;Sports&#x27;</span>, <span class="string">&#x27;Business&#x27;</span>, <span class="string">&#x27;Sci/Tech&#x27;</span>]</span><br><span class="line">builtins.training_data, test_data = to_map_style_dataset(training_iter), to_map_style_dataset(test_iter)</span><br><span class="line">num_train = <span class="built_in">int</span>(<span class="built_in">len</span>(builtins.training_data) * <span class="number">0.8</span>)</span><br><span class="line"><span class="comment"># 获取训练集的 vocab</span></span><br><span class="line">builtins.vocab = get_vocab()</span><br><span class="line">builtins.vocab_size = <span class="built_in">len</span>(builtins.vocab)</span><br><span class="line"><span class="comment"># 训练集细分训练集和验证集</span></span><br><span class="line">training_data, valid_data = random_split(builtins.training_data, [num_train, <span class="built_in">len</span>(builtins.training_data) - num_train])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Convert text into numbers so that can be represented as tensor. (Word-level representation)</p>
+<ul>
+<li>use tokenizer to split text into tokens</li>
+<li>build a vocabulary of these tokens</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_vocab</span>(<span class="params"><span class="built_in">type</span>=<span class="string">&#x27;bow&#x27;</span></span>):</span></span><br><span class="line">    counter = collections.Counter()</span><br><span class="line">    <span class="keyword">for</span> (label, line) <span class="keyword">in</span> training_data:</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">type</span> == <span class="string">&#x27;bow&#x27;</span>:</span><br><span class="line">            counter.update(tokenizer(line))</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">type</span> == <span class="string">&#x27;ngram&#x27;</span>:</span><br><span class="line">            counter.update(torchtext.data.utils.ngrams_iterator(line, ngrams=<span class="number">2</span>))</span><br><span class="line">    vocab = torchtext.vocab.vocab(counter, min_freq=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> vocab</span><br><span class="line">  </span><br><span class="line"><span class="comment"># Using vocabulary, we can easily encode out tokenized string into a set of numbers</span></span><br><span class="line">[vocab.get_stoi()[i] <span class="keyword">for</span> i <span class="keyword">in</span> tokenizer(<span class="string">&quot;I love u&quot;</span>)]</span><br><span class="line"><span class="comment"># [599, 3279, 294]</span></span><br></pre></td></tr></table></figure>
+<h3 id="bag-of-words-text-representatiion">bag of words text representatiion</h3>
+<p>Because words represent meaning, sometimes we can figure out the meaning of a text by just looking at the individual words, regardless of their order in the sentence. For example, when classifying news, words like <em>weather</em>, <em>snow</em> are likely to indicate <em>weather forecast</em>, while words like <em>stocks</em>, <em>dollar</em> would count towards <em>financial news</em>.</p>
+<p><strong>Bag of Words</strong> (BoW) vector representation is the most commonly used traditional vector representation. Each word is linked to a vector index, vector element contains the number of occurrences of a word in a given document. But, <strong>BoW</strong> does not consider the sequence of words in text</p>
+<p>Example:</p>
+<blockquote>
+<p>John likes to watch movies. Mary likes too.</p>
+<p>John also likes to watch football games.</p>
+</blockquote>
+<p>Dictionary:</p>
+<blockquote>
+<p>{"John": 1, "likes": 2, "to": 3, "watch": 4, "movies": 5, "also": 6, "football": 7, "games": 8, "Mary": 9, "too": 10}</p>
+</blockquote>
+<p>Transform : the vector element means the number of occurrences of a word in a given sentence</p>
+<blockquote>
+<p>[1, 2, 1, 1, 1, 0, 0, 0, 1, 1]</p>
+<p>[1, 1, 1, 1, 0, 1, 1, 1, 0, 0]</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bag_on_words</span>(<span class="params">x</span>):</span></span><br><span class="line">    vocab_size = <span class="built_in">len</span>(vocab)</span><br><span class="line">    <span class="comment"># each word location in vocab</span></span><br><span class="line">    location_on_vocab = [vocab[i] <span class="keyword">for</span> i <span class="keyword">in</span> tokenizer(x)]</span><br><span class="line">    bow = torch.zeros(vocab_size, dtype=torch.float32)</span><br><span class="line">    <span class="keyword">for</span> l <span class="keyword">in</span> location_on_vocab:</span><br><span class="line">        <span class="keyword">if</span> l &lt; vocab_size:</span><br><span class="line">            bow[l] += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> bow</span><br></pre></td></tr></table></figure>
+<p>Since often vocabulary size is pretty big, we can limit the size of the vocabulary to most frequent words.</p>
+<h3 id="training-bow-classifier">Training BoW classifier</h3>
+<p>convert dataset for training in such a way, that all positional vector representations are converted to bag-of-words representation. This can be achieved by passing <code>bowify</code> function as <code>collate_fn</code> parameter to standard torch <code>DataLoader</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># this collate function gets list of batch_size tuples, and needs to</span></span><br><span class="line"><span class="comment"># return a pair of label-feature tensors for the whole minibatch</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bowify</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        torch.stack([bag_on_words(t[<span class="number">1</span>]) <span class="keyword">for</span> t <span class="keyword">in</span> x]),</span><br><span class="line">        torch.LongTensor([t[<span class="number">0</span>] - <span class="number">1</span> <span class="keyword">for</span> t <span class="keyword">in</span> x])</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">builtins.training_dataloader = DataLoader(training_data, batch_size=batch_size, collate_fn=bowify, shuffle=<span class="literal">True</span>)</span><br><span class="line">builtins.valid_dataloader = DataLoader(valid_data, batch_size=batch_size, collate_fn=bowify, shuffle=<span class="literal">True</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="one-linear-layer">One linear layer</h3>
+<p>Now let's define a simple classifier neural network that contains one linear layer. The size of the input vector equals to <code>vocab_size</code>, and output size corresponds to the number of classes (4). Because we are solving classification task, the final activation function is <code>LogSoftmax()</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OneLinearLayer</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(OneLinearLayer, self).__init__()</span><br><span class="line">        self.linear = nn.Sequential(</span><br><span class="line">            nn.Linear(in_features=vocab_size, out_features=<span class="number">4</span>),</span><br><span class="line">            nn.LogSoftmax(dim=<span class="number">1</span>)</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.linear(x)</span><br></pre></td></tr></table></figure>
+<h3 id="training">training</h3>
+<p>Standard training loop</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">net, training_dataloader, test_dataloader, optimizer=<span class="literal">None</span>, loss_fn=nn.CrossEntropyLoss(<span class="params"></span>)</span>):</span></span><br><span class="line">    hist = &#123;<span class="string">&#x27;train_loss&#x27;</span>: [], <span class="string">&#x27;train_acc&#x27;</span>: [], <span class="string">&#x27;val_loss&#x27;</span>: [], <span class="string">&#x27;val_acc&#x27;</span>: []&#125;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, epoch + <span class="number">1</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;epoch: <span class="subst">&#123;i&#125;</span>\n------------------------------------------&quot;</span>)</span><br><span class="line">        net.train()</span><br><span class="line">        size, acc, total_loss, batch = <span class="built_in">len</span>(training_dataloader.dataset), <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">        optimizer = op.Adam(net.parameters(), lr=learning_rate) <span class="keyword">if</span> optimizer <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">else</span> optimizer</span><br><span class="line">        <span class="keyword">for</span> batch, (x, y) <span class="keyword">in</span> <span class="built_in">enumerate</span>(training_dataloader):</span><br><span class="line">            pred_y = net(x)</span><br><span class="line">            loss = loss_fn(pred_y, y)</span><br><span class="line">            optimizer.zero_grad()</span><br><span class="line">            loss.backward()</span><br><span class="line">            optimizer.step()</span><br><span class="line"></span><br><span class="line">            total_loss += loss.item()</span><br><span class="line">            acc += (pred_y.argmax(<span class="number">1</span>) == y).<span class="built_in">type</span>(torch.<span class="built_in">float</span>).<span class="built_in">sum</span>().item()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> batch % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;train loss: <span class="subst">&#123;loss:&gt;5f&#125;</span>   [<span class="subst">&#123;batch * batch_size&#125;</span>/<span class="subst">&#123;size&#125;</span>]&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;train_loss: <span class="subst">&#123;total_loss / batch:&gt;5f&#125;</span>     train_acc: <span class="subst">&#123;acc / size:&gt;5f&#125;</span>     <span class="subst">&#123;size&#125;</span>&quot;</span>)</span><br><span class="line">        hist[<span class="string">&#x27;train_loss&#x27;</span>].append(total_loss / batch)</span><br><span class="line">        hist[<span class="string">&#x27;train_acc&#x27;</span>].append(acc / size)</span><br><span class="line">        net.<span class="built_in">eval</span>()</span><br><span class="line">        size, acc, total_loss, count = <span class="built_in">len</span>(test_dataloader.dataset), <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">        <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">            <span class="keyword">for</span> x, y <span class="keyword">in</span> test_dataloader:</span><br><span class="line">                pred_y = net(x)</span><br><span class="line">                total_loss += loss_fn(pred_y, y).item()</span><br><span class="line">                acc += (pred_y.argmax(dim=<span class="number">1</span>) == y).<span class="built_in">type</span>(torch.<span class="built_in">float</span>).<span class="built_in">sum</span>().item()</span><br><span class="line">                count += <span class="number">1</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;val_loss: <span class="subst">&#123;total_loss / count:&gt;5f&#125;</span>     val_acc: <span class="subst">&#123;acc / size:&gt;5f&#125;</span>     <span class="subst">&#123;size&#125;</span>\n&quot;</span>)</span><br><span class="line">            hist[<span class="string">&#x27;val_loss&#x27;</span>].append(total_loss / count)</span><br><span class="line">            hist[<span class="string">&#x27;val_acc&#x27;</span>].append(acc / size)</span><br><span class="line">    <span class="keyword">return</span> hist</span><br><span class="line">  </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    load_data()</span><br><span class="line">    model = OneLinearLayer()</span><br><span class="line">    summary(model, input_size=(<span class="number">1</span>, vocab_size))</span><br><span class="line">    hist = train(model, training_dataloader, valid_dataloader, print_step=<span class="number">1000</span>)</span><br><span class="line">    plot_acc_loss(hist)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="4.png" alt="1" style="zoom:50%;" /></p>
+<h3 id="bigrams-trigrams-and-n-grams">BiGrams, TriGrams and N-Grams</h3>
+<blockquote>
+<p><strong>Bag-of-Words</strong> 方法的一个局限性是，有些词是多词表达的一部分，例如，"热狗 "这个词与其他语境中的 "热 "和 "狗 "的含义完全不同。如果我们总是用相同的向量来表示 "热 "和 "狗 "这两个词，就会使我们的模型混乱。</p>
+<p><strong>N-gram</strong> 表示经常用于文档分类的方法中，其中每个word、bi-word 或 tri-word 的频率是训练分类器的有用特征。例如，在大词表征中，除了原始词之外，我们将把所有的词对加入到<strong>vocabulary</strong>中。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">bigram_vectorizer = CountVectorizer(ngram_range=(<span class="number">1</span>, <span class="number">2</span>), token_pattern=<span class="string">r&#x27;\b\w+\b&#x27;</span>, min_df=<span class="number">1</span>)</span><br><span class="line">corpus = [</span><br><span class="line">        <span class="string">&#x27;I like hot dogs.&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;The dog ran fast.&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Its hot outside.&#x27;</span>,</span><br><span class="line">    ]</span><br><span class="line">bigram_vectorizer.fit_transform(corpus)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Vocabulary:\n&quot;</span>,bigram_vectorizer.vocabulary_)</span><br><span class="line">bigram_vectorizer.transform([<span class="string">&#x27;My dog likes hot dogs on a hot day.&#x27;</span>]).toarray()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">---------------------------------------------------------------------</span><br><span class="line">Vocabulary:</span><br><span class="line"> &#123;<span class="string">&#x27;i&#x27;</span>: <span class="number">7</span>, <span class="string">&#x27;like&#x27;</span>: <span class="number">11</span>, <span class="string">&#x27;hot&#x27;</span>: <span class="number">4</span>, <span class="string">&#x27;dogs&#x27;</span>: <span class="number">2</span>, <span class="string">&#x27;i like&#x27;</span>: <span class="number">8</span>, <span class="string">&#x27;like hot&#x27;</span>: <span class="number">12</span>, <span class="string">&#x27;hot dogs&#x27;</span>: <span class="number">5</span>, <span class="string">&#x27;the&#x27;</span>: <span class="number">16</span>, <span class="string">&#x27;dog&#x27;</span>: <span class="number">0</span>, <span class="string">&#x27;ran&#x27;</span>: <span class="number">14</span>, <span class="string">&#x27;fast&#x27;</span>: <span class="number">3</span>, <span class="string">&#x27;the dog&#x27;</span>: <span class="number">17</span>, <span class="string">&#x27;dog ran&#x27;</span>: <span class="number">1</span>, <span class="string">&#x27;ran fast&#x27;</span>: <span class="number">15</span>, <span class="string">&#x27;its&#x27;</span>: <span class="number">9</span>, <span class="string">&#x27;outside&#x27;</span>: <span class="number">13</span>, <span class="string">&#x27;its hot&#x27;</span>: <span class="number">10</span>, <span class="string">&#x27;hot outside&#x27;</span>: <span class="number">6</span>&#125;</span><br><span class="line"></span><br><span class="line">array([[<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>N-gram方法的主要缺点是，词汇量开始极速增长。在实践中，我们需要将N-gram表示法与一些降维技术结合起来，如embeddings 技术。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tokenizer = torchtext.data.utils.get_tokenizer(<span class="string">&#x27;basic_english&#x27;</span>)</span><br><span class="line">counter = collections.Counter()</span><br><span class="line"><span class="keyword">for</span> (label, line) <span class="keyword">in</span> training_data:</span><br><span class="line">		counter.update(torchtext.data.utils.ngrams_iterator(line, ngrams=<span class="number">2</span>))</span><br><span class="line">bi_vocab = torchtext.vocab.vocab(counter, min_freq=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="term-frequency-inverse-document-frequency-tf-idf">Term Frequency Inverse Document Frequency (TF-IDF)</h3>
+<blockquote>
+<p>在BoW表示法中，无论单词本身如何，单词出现的权重是均匀的。然而，很明显，频繁出现的词，如a、in等，对于分类来说，其重要性远远低于专业术语。事实上，在大多数NLP任务中，有些词比其他词更有意义。</p>
+<p>TF-IDF是 bag of words 的一个变种，用一个浮点值代替表示一个词在文档中出现的二进制0/1值，它与语料库中的词出现频率有关。</p>
+<p>the weight <span class="math inline">\(w_{ij}\)</span> of a word <span class="math inline">\(i\)</span> in the document <span class="math inline">\(j\)</span> is defined as:</p>
+</blockquote>
+<p><span class="math display">\[
+w_{ij} = tf_{ij}\times\log({N\over df_i})
+\]</span></p>
+<blockquote>
+<p>where</p>
+<ul>
+<li><span class="math inline">\(tf_{ij}\)</span> is the number of occurrences of <span class="math inline">\(i\)</span> in <span class="math inline">\(j\)</span>, i.e. the BoW value we have seen before</li>
+<li><span class="math inline">\(N\)</span> is the number of documents in the collection</li>
+<li><span class="math inline">\(df_i\)</span> is the number of documents containing the word <span class="math inline">\(i\)</span> in the whole collection</li>
+</ul>
+<p>TF-IDF value <span class="math inline">\(w_{ij}\)</span> increases proportionally to the number of times a word appears in a document and is offset by the number of documents in the corpus that contains the word, which helps to adjust for the fact that some words appear more frequently than others.</p>
+<p>For example, if the word appears in <strong>every</strong> document in the collection, <span class="math inline">\(df_i=N\)</span>, then <span class="math inline">\(w_{ij}=0\)</span>, and those terms would be completely disregarded.</p>
+<p>然而，即使TF-IDF表示法为不同的词提供频率权重，它们也无法表示意义或顺序。正如著名的语言学家J.R.Firth在1935年所说："一个词的完整意义总是与上下文有关的，离开了上下文，对意义的研究就无法认真对待"。</p>
+</blockquote>
+<h3 id="represent-words-with-embeddings">Represent words with embeddings</h3>
+<blockquote>
+<p>One-hot 表示法不具有记忆效率，此外，每个词都是独立处理的，即 one-hot 编码向量不表达词之间的任何语义相似性。Enbedding 的想法是用低维的密集向量来表示 word ，这在某种程度上反映了一个词的语义。我们将在后面讨论如何建立有意义的单词嵌入，但现在我们只把嵌入看作是降低单词向量维度的一种方法。</p>
+<p>embedding layer 将接受一个词作为输入，并产生一个 embedding_size 的输出向量。从某种意义上说，它与线性层非常相似，但它不是取一个 one-hot 的向量，而是取一个 <strong>word number ( word 在vocabulary 中出现的位置 ) </strong>作为输入。</p>
+<p>embedding向量的性质是能使距离相近的向量对应的物体有相近的含义，比如 Embedding(复仇者联盟)和Embedding(钢铁侠)之间的距离就会很接近，但 Embedding(复仇者联盟)和Embedding(乱世佳人)的距离就会远一些。</p>
+<p>通过使用<strong>embedding layer</strong>作为我们网络中的第一层，我们可以从 <strong>bag of words model</strong>转换为<strong>embedding bag model </strong>，我们首先将文本中的每个字转换为相应的<strong>embeddings</strong>，然后计算所有这些 embeddings 的一些集合函数，如sum、average或最max。</p>
+</blockquote>
+<p><img src="1.png" alt="1" style="zoom:20%;" /></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EmbedClassifier</span>(<span class="params">torch.nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vocab_size, embed_dim, num_class</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.embedding = torch.nn.Embedding(vocab_size, embed_dim)</span><br><span class="line">        self.fc = torch.nn.Linear(embed_dim, num_class)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        x = self.embedding(x)</span><br><span class="line">        x = torch.mean(x,dim=<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> self.fc(x)</span><br><span class="line">       </span><br></pre></td></tr></table></figure>
+<h3 id="dealing-with-variable-sequence-size">Dealing with variable sequence size</h3>
+<blockquote>
+<p>由于这种架构，对我们的网络的<strong>minibatches</strong>需要以某种方式创建。在上一个单元中，当使用<strong>bag of words</strong>时，不管我们的文本序列的实际长度如何，minibatch中的所有BoW张量都具有相同的大小vocab_size。</p>
+<p>一旦我们使用 embedding，我们最终会发现每个文本样本中的字数是不一样的，当把这些样本合并成minibatch时，我们必须应用一些填充。这可以通过向数据源提供collate_fn函数的相同技术来完成。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">padify</span>(<span class="params">b</span>):</span></span><br><span class="line">    <span class="comment"># b is the list of tuples of length batch_size</span></span><br><span class="line">    <span class="comment">#   - first element of a tuple = label,</span></span><br><span class="line">    <span class="comment">#   - second = feature (text sequence)</span></span><br><span class="line">    <span class="comment"># build vectorized sequence</span></span><br><span class="line">    v = [encode(x[<span class="number">1</span>]) <span class="keyword">for</span> x <span class="keyword">in</span> b]</span><br><span class="line">    <span class="comment"># first, compute max length of a sequence in this minibatch</span></span><br><span class="line">    l = <span class="built_in">max</span>(<span class="built_in">map</span>(<span class="built_in">len</span>, v))</span><br><span class="line">    <span class="keyword">return</span> (  <span class="comment"># tuple of two tensors - labels and features</span></span><br><span class="line">        torch.stack(</span><br><span class="line">            [torch.nn.functional.pad(torch.tensor(t), (<span class="number">0</span>, l - <span class="built_in">len</span>(t)), mode=<span class="string">&#x27;constant&#x27;</span>, value=<span class="number">0</span>) <span class="keyword">for</span> t <span class="keyword">in</span> v]),</span><br><span class="line">        torch.LongTensor([t[<span class="number">0</span>] - <span class="number">1</span> <span class="keyword">for</span> t <span class="keyword">in</span> b]),</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=<span class="number">16</span>, collate_fn=padify, shuffle=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>train</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    load_data()</span><br><span class="line">    <span class="comment"># Embedding 到 32 dimension</span></span><br><span class="line">    model = EmbedClassifier(<span class="number">32</span>, <span class="built_in">len</span>(classes))</span><br><span class="line">    summary(model)    <span class="comment"># print(model)</span></span><br><span class="line">    hist = train(model, training_dataloader, valid_dataloader, print_step=<span class="number">1000</span>)</span><br><span class="line">    plot_acc_loss(hist)</span><br><span class="line">    </span><br><span class="line">---------------------------------------------------------</span><br><span class="line">=================================================================</span><br><span class="line">Layer (<span class="built_in">type</span>:depth-idx)                   Param <span class="comment">#</span></span><br><span class="line">=================================================================</span><br><span class="line">EmbedClassifier                          --</span><br><span class="line">├─Embedding: <span class="number">1</span>-<span class="number">1</span>                         <span class="number">3</span>,065,<span class="number">920</span></span><br><span class="line">├─Linear: <span class="number">1</span>-<span class="number">2</span>                            <span class="number">132</span></span><br><span class="line">=================================================================</span><br><span class="line">Total params: <span class="number">3</span>,066,052</span><br><span class="line">Trainable params: <span class="number">3</span>,066,052</span><br><span class="line">Non-trainable params: <span class="number">0</span></span><br><span class="line">=================================================================</span><br><span class="line">....</span><br><span class="line">epoch: <span class="number">10</span></span><br><span class="line">------------------------------------------</span><br><span class="line">train loss: <span class="number">0.118139</span>   [<span class="number">0</span>/<span class="number">96000</span>]</span><br><span class="line">train loss: <span class="number">0.083000</span>   [<span class="number">32000</span>/<span class="number">96000</span>]</span><br><span class="line">train loss: <span class="number">0.061542</span>   [<span class="number">64000</span>/<span class="number">96000</span>]</span><br><span class="line">train_loss: <span class="number">0.131295</span>     train_acc: <span class="number">0.959406</span>     <span class="number">96000</span></span><br><span class="line">val_loss: <span class="number">0.258924</span>     val_acc: <span class="number">0.916708</span>     <span class="number">24000</span></span><br></pre></td></tr></table></figure>
+<p><img src="5.png" alt="1" style="zoom:50%;" /></p>
+<h3 id="embedding-bag-layer-and-variable-length-sequence-representation">Embedding Bag Layer and Variable-Length Sequence Representation</h3>
+<p>上面，我们需要将所有序列填充到相同的长度，以便将它们装入 minibatch 中。 这不是表示可变长度序列的最有效的方法 - 另一个apporach是使用 <strong>offset vector</strong>，这将所有序列的偏移存储在一个大的向量。</p>
+<p><img src="2.png" alt="1" style="zoom:20%;" /></p>
+<p>To work with offset representation, we use <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.EmbeddingBag.html"><code>EmbeddingBag</code></a> layer. It is similar to <code>Embedding</code>, but it takes content vector and offset vector as input, and it also includes averaging layer, which can be <code>mean</code>, <code>sum</code> or <code>max</code>.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EmbedClassifier</span>(<span class="params">torch.nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, vocab_size, embed_dim, num_class</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.embedding = torch.nn.EmbeddingBag(vocab_size, embed_dim)</span><br><span class="line">        self.fc = torch.nn.Linear(embed_dim, num_class)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, text, off</span>):</span></span><br><span class="line">        x = self.embedding(text, off)</span><br><span class="line">        <span class="keyword">return</span> self.fc(x)</span><br></pre></td></tr></table></figure>
+<p>To prepare the dataset for training, we need to provide a conversion function that will prepare the offset vector:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">offsetify</span>(<span class="params">b</span>):</span></span><br><span class="line">    <span class="comment"># first, compute data tensor from all sequences</span></span><br><span class="line">    x = [torch.tensor(encode(t[<span class="number">1</span>])) <span class="keyword">for</span> t <span class="keyword">in</span> b]</span><br><span class="line">    <span class="comment"># now, compute the offsets by accumulating the tensor of sequence lengths</span></span><br><span class="line">    o = [<span class="number">0</span>] + [<span class="built_in">len</span>(t) <span class="keyword">for</span> t <span class="keyword">in</span> x]</span><br><span class="line">    o = torch.tensor(o[:-<span class="number">1</span>]).cumsum(dim=<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> ( </span><br><span class="line">        torch.LongTensor([t[<span class="number">0</span>]-<span class="number">1</span> <span class="keyword">for</span> t <span class="keyword">in</span> b]), <span class="comment"># labels</span></span><br><span class="line">        torch.cat(x), <span class="comment"># text </span></span><br><span class="line">        o</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=<span class="number">16</span>, collate_fn=offsetify, shuffle=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Note, that unlike in all previous examples, our network now accepts two parameters: data vector and offset vector, which are of different sizes. Sililarly, our data loader also provides us with 3 values instead of 2: both text and offset vectors are provided as features. Therefore, we need to slightly adjust our training function to take care of that:</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">net = EmbedClassifier(vocab_size,<span class="number">32</span>,<span class="built_in">len</span>(classes)).to(device)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_epoch_emb</span>(<span class="params">net,dataloader,lr=<span class="number">0.01</span>,optimizer=<span class="literal">None</span>,loss_fn = torch.nn.CrossEntropyLoss(<span class="params"></span>),epoch_size=<span class="literal">None</span>, report_freq=<span class="number">200</span></span>):</span></span><br><span class="line">    optimizer = optimizer <span class="keyword">or</span> torch.optim.Adam(net.parameters(),lr=lr)</span><br><span class="line">    loss_fn = loss_fn.to(device)</span><br><span class="line">    net.train()</span><br><span class="line">    total_loss,acc,count,i = <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> labels,text,off <span class="keyword">in</span> dataloader:</span><br><span class="line">        optimizer.zero_grad()</span><br><span class="line">        labels,text,off = labels.to(device), text.to(device), off.to(device)</span><br><span class="line">        out = net(text, off)</span><br><span class="line">        loss = loss_fn(out,labels) <span class="comment">#cross_entropy(out,labels)</span></span><br><span class="line">        loss.backward()</span><br><span class="line">        optimizer.step()</span><br><span class="line">        total_loss+=loss</span><br><span class="line">        _,predicted = torch.<span class="built_in">max</span>(out,<span class="number">1</span>)</span><br><span class="line">        acc+=(predicted==labels).<span class="built_in">sum</span>()</span><br><span class="line">        count+=<span class="built_in">len</span>(labels)</span><br><span class="line">        i+=<span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> i%report_freq==<span class="number">0</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;count&#125;</span>: acc=<span class="subst">&#123;acc.item()/count&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> epoch_size <span class="keyword">and</span> count&gt;epoch_size:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> total_loss.item()/count, acc.item()/count</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">train_epoch_emb(net,train_loader, lr=<span class="number">4</span>, epoch_size=<span class="number">25000</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="6.png" alt="1" style="zoom:50%;" /></p>
+<h3 id="semantic-embeddings-word2vec">Semantic Embeddings: Word2Vec</h3>
+<blockquote>
+<p>在之前的例子中，模型的嵌入层学会了将单词映射为矢量表示，然而，这种表示并没有太多的语义意义。如果能学会这样的向量表示，即类似的词或症状词将对应于在某些向量距离（例如，欧几里得距离）上彼此接近的向量。</p>
+<p>要做到这一点，我们需要以一种特定的方式在大量的文本集合上预训练我们的嵌入模型。训练语义嵌入的最初方式之一被称为Word2Vec。它是基于两个主要的架构，用来产生单词的分布式表示。</p>
+<p>- <strong>Continuous bag-of-words</strong> (CBoW) — in this architecture, we train the model to predict a word from surrounding context. Given the ngram <span class="math inline">\((W_{-2},W_{-1},W_0,W_1,W_2)\)</span>, the goal of the model is to predict <span class="math inline">\(W_0\)</span> from <span class="math inline">\((W_{-2},W_{-1},W_1,W_2)\)</span>.</p>
+<p>- <strong>Continuous skip-gram</strong> is opposite to CBoW. The model uses surrounding window of context words to predict the current word.</p>
+</blockquote>
+<p><img src="3.png" alt="1" style="zoom:80%;" /></p>
+<blockquote>
+<p>To experiment with word2vec embedding pre-trained on Google News dataset, we can use <strong>gensim</strong> library. Below we find the words most similar to 'neural'</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">w2v = api.load(<span class="string">&#x27;word2vec-google-news-300&#x27;</span>)</span><br><span class="line">    <span class="keyword">for</span> w, p <span class="keyword">in</span> w2v.most_similar(<span class="string">&#x27;neural&#x27;</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;w&#125;</span> -&gt; <span class="subst">&#123;p&#125;</span>&quot;</span>)</span><br><span class="line">      </span><br><span class="line">----------------------------------------------------------</span><br><span class="line">neuronal -&gt; <span class="number">0.7804799675941467</span></span><br><span class="line">neurons -&gt; <span class="number">0.7326499819755554</span></span><br><span class="line">neural_circuits -&gt; <span class="number">0.7252851128578186</span></span><br><span class="line">neuron -&gt; <span class="number">0.7174385786056519</span></span><br><span class="line">cortical -&gt; <span class="number">0.6941086649894714</span></span><br><span class="line">brain_circuitry -&gt; <span class="number">0.6923246383666992</span></span><br><span class="line">synaptic -&gt; <span class="number">0.669911801815033</span></span><br><span class="line">neural_circuitry -&gt; <span class="number">0.6638562679290771</span></span><br><span class="line">neurochemical -&gt; <span class="number">0.6555314660072327</span></span><br><span class="line">neuronal_activity -&gt; <span class="number">0.6531826257705688</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>We can also extract vector embeddings from the word, to be used in training classification model (we only show first 20 components of the vector for clarity):</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">print</span>(w2v.get_vector(<span class="string">&#x27;play&#x27;</span>)[:<span class="number">20</span>])</span><br><span class="line">&lt;<span class="built_in">input</span>&gt;:<span class="number">1</span>: DeprecationWarning: Call to deprecated `word_vec` (Use get_vector instead).</span><br><span class="line">[ <span class="number">0.01226807</span>  <span class="number">0.06225586</span>  <span class="number">0.10693359</span>  <span class="number">0.05810547</span>  <span class="number">0.23828125</span>  <span class="number">0.03686523</span></span><br><span class="line">  <span class="number">0.05151367</span> -<span class="number">0.20703125</span>  <span class="number">0.01989746</span>  <span class="number">0.10058594</span> -<span class="number">0.03759766</span> -<span class="number">0.1015625</span></span><br><span class="line"> -<span class="number">0.15820312</span> -<span class="number">0.08105469</span> -<span class="number">0.0390625</span>  -<span class="number">0.05053711</span>  <span class="number">0.16015625</span>  <span class="number">0.2578125</span></span><br><span class="line">  <span class="number">0.10058594</span> -<span class="number">0.25976562</span>]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Great thing about semantical embeddings is that you can manipulate vector encoding to change the semantics. For example, we can ask to find a word, whose vector representation would be as close as possible to words <em>king</em> and <em>woman</em>, and as far away from the word <em>man</em>:</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>w2v.most_similar(positive=[<span class="string">&#x27;king&#x27;</span>,<span class="string">&#x27;woman&#x27;</span>],negative=[<span class="string">&#x27;man&#x27;</span>])[<span class="number">0</span>]</span><br><span class="line">(<span class="string">&#x27;queen&#x27;</span>, <span class="number">0.7118193507194519</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Both CBOW and Skip-Grams are “predictive” embeddings, in that they only take local contexts into account. Word2Vec does not take advantage of global context.</p>
+<p><strong>FastText</strong>, builds on Word2Vec by learning vector representations for each word and the charachter n-grams found within each word. The values of the representations are then averaged into one vector at each training step. While this adds a lot of additional computation to pre-training it enables word embeddings to encode sub-word information.</p>
+<p>Another method, <strong>GloVe</strong>, leverages the idea of co-occurence matrix, uses neural methods to decompose co-occurrence matrix into more expressive and non linear word vectors.</p>
+</blockquote>
+<h3 id="using-pre-trained-embeddings-in-pytorch">Using Pre-Trained Embeddings in PyTorch</h3>
+<blockquote>
+<p>We can modify the example above to pre-populate the matrix in our embedding layer with semantical embeddings, such as Word2Vec. We need to take into account that vocabularies of pre-trained embedding and our text corpus will likely not match, so we will initialize weights for the missing words with random values:</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PreTrainedW2VEmbed</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, w2v, embed_dim, num_class</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(PreTrainedW2VEmbed, self).__init__()</span><br><span class="line">        self.embed_size = <span class="built_in">len</span>(w2v.get_vector(<span class="string">&#x27;Hello&#x27;</span>))</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;Embedding size: <span class="subst">&#123;self.embed_size&#125;</span>&#x27;</span>)</span><br><span class="line">        self.embed_classifier = EmbedOffsetClassifier(embed_dim, num_class)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Populating matrix, this will take some time...&#x27;</span>, end=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        found, not_found = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i, w <span class="keyword">in</span> <span class="built_in">enumerate</span>(vocab.get_stoi()):</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                self.embed_classifier.embedding.weight[i].data = torch.tensor(w2v.get_vector(w))</span><br><span class="line">                found += <span class="number">1</span></span><br><span class="line">            <span class="keyword">except</span>:</span><br><span class="line">                self.embed_classifier.embedding.weight[i].data = torch.normal(<span class="number">0.0</span>, <span class="number">1.0</span>, (self.embed_size,))</span><br><span class="line">                not_found += <span class="number">1</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;Done, found <span class="subst">&#123;found&#125;</span> words, <span class="subst">&#123;not_found&#125;</span> words missing&quot;</span>)</span><br><span class="line">        self.embed_classifier.to(device)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x, o</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.embed_classifier(x, o)</span><br><span class="line">      </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_w2v_embed_off</span>():</span></span><br><span class="line">    load_data(<span class="string">&#x27;embedding_offset&#x27;</span>)</span><br><span class="line">    w2v = api.load(<span class="string">&#x27;word2vec-google-news-300&#x27;</span>)</span><br><span class="line">    <span class="comment"># Embedding 到 32 dimension</span></span><br><span class="line">    model = PreTrainedW2VEmbed(w2v, <span class="number">32</span>, <span class="built_in">len</span>(classes))</span><br><span class="line">    summary(model)  <span class="comment"># print(model)</span></span><br><span class="line">    hist = train_embed_offset(model, training_dataloader, valid_dataloader, print_step=<span class="number">1000</span>)</span><br><span class="line">    plot_acc_loss(hist)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    train_w2v_embed_off()</span><br><span class="line">   </span><br><span class="line">Embedding size: <span class="number">300</span></span><br><span class="line">Populating matrix, this will take some time...Done, found <span class="number">41080</span> words, <span class="number">54730</span> words missing</span><br><span class="line">=================================================================</span><br><span class="line">Layer (<span class="built_in">type</span>:depth-idx)                   Param <span class="comment">#</span></span><br><span class="line">=================================================================</span><br><span class="line">PreTrainedW2VEmbed                       --</span><br><span class="line">├─EmbedOffsetClassifier: <span class="number">1</span>-<span class="number">1</span>             --</span><br><span class="line">│    └─EmbeddingBag: <span class="number">2</span>-<span class="number">1</span>                 <span class="number">3</span>,065,<span class="number">920</span></span><br><span class="line">│    └─Linear: <span class="number">2</span>-<span class="number">2</span>                       <span class="number">132</span></span><br><span class="line">=================================================================</span><br><span class="line">Total params: <span class="number">3</span>,066,052</span><br><span class="line">Trainable params: <span class="number">3</span>,066,052</span><br><span class="line">Non-trainable params: <span class="number">0</span></span><br><span class="line">=================================================================</span><br></pre></td></tr></table></figure>
+<p><img src="7.png" alt="1" style="zoom:60%;" /></p>
+<blockquote>
+<p>In our case we do not see huge increase in accuracy, which is likely to quite different vocalularies. To overcome the problem of different vocabularies, we can use one of the following solutions:</p>
+<ul>
+<li>Re-train word2vec model on our vocabulary</li>
+<li>Load our dataset with the vocabulary from the pre-trained word2vec model. Vocabulary used to load the dataset can be specified during loading.</li>
+</ul>
+<p>The latter approach seems easiter, especially because PyTorch <code>torchtext</code> framework contains built-in support for embeddings. We can, for example, instantiate GloVe-based vocabulary in the following manner:</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vocab = torchtext.vocab.GloVe(name=<span class="string">&#x27;6B&#x27;</span>, dim=<span class="number">50</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Loaded vocabulary has the following basic operations:</p>
+<ul>
+<li><code>vocab.stoi</code> dictionary allows us to convert word into its dictionary index</li>
+<li><code>vocab.itos</code> does the opposite - converts number into word</li>
+<li><code>vocab.vectors</code> is the array of embedding vectors, so to get the embedding of a word <code>s</code> we need to use <code>vocab.vectors[vocab.stoi[s]]</code></li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_with_gloVe_vocab</span>():</span></span><br><span class="line">    <span class="comment"># Process finished with exit code 137 (interrupted by signal 9: SIGKILL) 内存不足</span></span><br><span class="line">    vocab = torchtext.vocab.GloVe(name=<span class="string">&#x27;6B&#x27;</span>, dim=<span class="number">50</span>)</span><br><span class="line">    load_data(<span class="string">&#x27;embedding_offset&#x27;</span>, vocab=vocab)</span><br><span class="line">    net = EmbedOffsetClassifier(vocab_size, <span class="built_in">len</span>(classes))</span><br><span class="line">    net.embedding.weight.data = vocab.vectors</span><br><span class="line">    hist = train_embed_offset(net,training_dataloader, valid_dataloader)</span><br><span class="line">    plot_acc_loss(hist)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    train_with_gloVe_vocab()</span><br></pre></td></tr></table></figure>
+<p>训练过程电脑内存不足，vocab_size=400000，参数过多</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PyTorch/" rel="tag"># PyTorch</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/01/Machine-Learning2/" rel="prev" title="机器学习 by 李宏毅(2)">
+                  <i class="fa fa-chevron-left"></i> 机器学习 by 李宏毅(2)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/01/ML3-CNN/" rel="next" title="机器学习 by 李宏毅(3)">
+                  机器学习 by 李宏毅(3) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">666k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:06</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;01&#x2F;NLP&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>
