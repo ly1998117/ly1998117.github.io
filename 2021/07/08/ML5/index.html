@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Unsupervised Learning --- Word Embedding  World Class : 对 word vector 进行聚类 Word Embedding：将每一个word project 到 High dimensional space 中，使得含义相近的 word 在空间的距离相近，且不同的dimension 代表不同的含义">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习 by 李宏毅(5)">
+<meta property="og:url" content="https://ly1998117.github.io/2021/07/08/ML5/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="Unsupervised Learning --- Word Embedding  World Class : 对 word vector 进行聚类 Word Embedding：将每一个word project 到 High dimensional space 中，使得含义相近的 word 在空间的距离相近，且不同的dimension 代表不同的含义">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/1.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/8.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/9.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/10.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/11.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/12.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/13.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/14.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/15.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/16.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/17.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/18.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/19.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/20.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/21.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/22.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/23.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/24.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/25.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/26.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/27.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/28.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/29.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/30.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/31.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/32.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/33.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/34.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/35.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/36.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/37.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/38.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/39.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/40.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/41.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/42.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/43.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/44.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/45.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/46.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/47.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/48.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/49.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/50.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/51.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/52.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/53.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/54.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/55.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/56.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/57.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/58.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/59.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/60.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/61.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/62.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/63.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/64.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/65.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/66.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/67.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/68.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/69.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/70.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/71.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/08/ML5/72.png">
+<meta property="article:published_time" content="2021-07-08T07:02:19.000Z">
+<meta property="article:modified_time" content="2021-07-09T14:50:41.317Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ly1998117.github.io/2021/07/08/ML5/1.png">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2021/07/08/ML5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;08&#x2F;ML5&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;07&#x2F;08&#x2F;ML5&#x2F;&quot;,&quot;title&quot;:&quot;机器学习 by 李宏毅(5)&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>机器学习 by 李宏毅(5) | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">24</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#unsupervised-learning-----word-embedding"><span class="nav-number">1.</span> <span class="nav-text">Unsupervised Learning --- Word Embedding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spatial-transformer-layer"><span class="nav-number">2.</span> <span class="nav-text">Spatial Transformer Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#how-to-transform-an-imagefeature-map"><span class="nav-number">2.1.</span> <span class="nav-text">How to transform an image&#x2F;feature map</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#recurrent-neural-network"><span class="nav-number">3.</span> <span class="nav-text">Recurrent Neural Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#long-short-term-memory"><span class="nav-number">3.1.</span> <span class="nav-text">Long Short-term Memory</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gragh-neural-network"><span class="nav-number">4.</span> <span class="nav-text">Gragh Neural Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#introduction"><span class="nav-number">4.1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#question"><span class="nav-number">4.2.</span> <span class="nav-text">Question</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#embed-node-into-a-feature-space-using-convolution"><span class="nav-number">4.3.</span> <span class="nav-text">embed node into a feature space using convolution</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tasks-dataset-and-benchmark"><span class="nav-number">4.4.</span> <span class="nav-text">Tasks, Dataset, and Benchmark</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spatial-based-gnn"><span class="nav-number">4.5.</span> <span class="nav-text">Spatial-based GNN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gragh-signal-processing-and-spectral-based-gnn"><span class="nav-number">4.6.</span> <span class="nav-text">Gragh Signal Processing and Spectral-based GNN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#how-to-tansform"><span class="nav-number">4.7.</span> <span class="nav-text">How to tansform？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filtering"><span class="nav-number">4.8.</span> <span class="nav-text">Filtering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chebnet"><span class="nav-number">4.9.</span> <span class="nav-text">ChebNet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gcn-%E5%B8%B8%E7%94%A8"><span class="nav-number">4.10.</span> <span class="nav-text">GCN （常用）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#benchmark-tasks"><span class="nav-number">4.11.</span> <span class="nav-text">Benchmark tasks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#result"><span class="nav-number">4.12.</span> <span class="nav-text">Result</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/07/08/ML5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习 by 李宏毅(5)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-08 15:02:19" itemprop="dateCreated datePublished" datetime="2021-07-08T15:02:19+08:00">2021-07-08</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-09 22:50:41" itemprop="dateModified" datetime="2021-07-09T22:50:41+08:00">2021-07-09</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="unsupervised-learning-----word-embedding">Unsupervised Learning --- Word Embedding</h2>
+<blockquote>
+<p>World Class : 对 word vector 进行聚类</p>
+<p>Word Embedding：将每一个word project 到 High dimensional space 中，使得含义相近的 word 在空间的距离相近，且不同的dimension 代表不同的含义</p>
+<span id="more"></span>
+</blockquote>
+<p><img src="1.png" alt="1" style="zoom:40%;" /></p>
+<ul>
+<li><p>Machine learn the meaning of word by reading lots of documents without supervison</p>
+<ul>
+<li><p>Generateing Word Vector is <strong>unsupervised</strong>. （unkown what to output）</p></li>
+<li><p><img src="2.png" alt="1" style="zoom:40%;" /></p></li>
+<li><p>A word can be understood by its context</p>
+<ul>
+<li>E.g： 相同的句式中的词大概率有相同的词性</li>
+</ul></li>
+<li><p>How to exploit the context?</p>
+<ul>
+<li><p>Count based: If two words <span class="math inline">\(w_i\)</span> and <span class="math inline">\(w_j\)</span> frequently co-occur, <span class="math inline">\(V(w_i)\)</span>and <span class="math inline">\(V(w_j)\)</span>would be close to each other</p>
+<ul>
+<li>E.g. <a target="_blank" rel="noopener" href="http://nlp.stanford.edu/projects/glove/">Glove Vector</a></li>
+<li><img src="3.png" alt="1" style="zoom:40%;" /></li>
+</ul></li>
+<li><p>Prediction-based</p>
+<ul>
+<li><p>train a model</p></li>
+<li><p><span class="math inline">\(W_i\)</span> as Inout, <span class="math inline">\(W_j\)</span> as output</p></li>
+<li><p>Take out the first input Z of hidden layer, Use Z present a word</p></li>
+<li><p><img src="4.png" alt="1" style="zoom:30%;" /></p></li>
+<li><p>E.g : Training Text: (1) <span class="math inline">\(W_{i,1} W_j\)</span> (2) <span class="math inline">\(W_{i,2} W_j\)</span></p>
+<p>​ if Model(<span class="math inline">\(W_{i,1}\)</span>) = Model(<span class="math inline">\(W_{j,2}\)</span>) =&gt; <span class="math inline">\(W_{i,1}\)</span> 与 <span class="math inline">\(W_{i,2}\)</span> 属于一类</p></li>
+<li><p>对其扩展，输入多个<span class="math inline">\(W_i\)</span>作为参数，需要进行 Sharing Parameters。将word vector flatten 后，相同维度的输入共享参数</p></li>
+<li><p><img src="5.png" alt="1" style="zoom:30%;" /></p></li>
+<li><p>The length of <span class="math inline">\(X_{i-1}\)</span> and <span class="math inline">\(X_{i-2}\)</span> are both |V|. The length of z is |Z|</p></li>
+<li><p><span class="math display">\[
+  Z = W_1X_{i-2} + W_2X_{i-1}
+  \]</span></p></li>
+<li><p>The weight matrix <span class="math inline">\(W_1\)</span> and <span class="math inline">\(W_2\)</span> are both |Z| X |V| matrices</p></li>
+<li><p><span class="math display">\[
+  W_1 = W_2 = W \ \ \ \ =&gt; \ \ \ \ z=W(X_{i-2}+X_{i-1})
+  \]</span></p></li>
+<li><p>如何保证在 train 的过程中 W矩阵一致？</p></li>
+<li><p><img src="6.png" alt="1" style="zoom:30%;" /></p></li>
+<li><p>Training Process</p></li>
+<li><p><img src="7.png" alt="1" style="zoom:30%;" /></p></li>
+<li><p>Various Architectures</p>
+<ul>
+<li><img src="8.png" alt="1" style="zoom:30%;" /></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><p>Multi-lingual Embedding: 额外train model进行 transform，transform的在dimension space的位置应该与原语言的词汇一致</p></li>
+<li><p>Document Embedding ( document to Bag-of-Word )</p>
+<ul>
+<li><p>word sequences with different lengths -&gt; the vector with the same length</p></li>
+<li><p>The vector representing the meaning of the word Sequence</p></li>
+<li><p>A word sequence can be a document or a paragraph</p></li>
+<li><p>Beyond Bag of Word: 要理解一个词序的含义，不能忽视词的顺序。</p></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="spatial-transformer-layer">Spatial Transformer Layer</h2>
+<blockquote>
+<p>对 input image 进行旋转缩放，使其具有不变性</p>
+</blockquote>
+<ul>
+<li>CNN is not invariant to scaling and rotation</li>
+<li><img src="9.png" alt="1" style="zoom:30%;" /></li>
+<li>还可以 transform CNN 的 feature map</li>
+</ul>
+<h3 id="how-to-transform-an-imagefeature-map">How to transform an image/feature map</h3>
+<p>E.g 对图像进行平移只需要改变 W 参数矩阵</p>
+<p><img src="10.png" alt="1" style="zoom:30%;" /></p>
+<p>Train 一个NN，使Layer l-1 变为 Layer l</p>
+<p><img src="11.png" alt="1" style="zoom:30%;" /></p>
+<p>线性代数中用变换矩阵可以进行图像的变换</p>
+<ul>
+<li>缩放</li>
+<li><img src="12.png" alt="1" style="zoom:30%;" /></li>
+<li>旋转</li>
+<li><img src="13.png" alt="1" style="zoom:30%;" /></li>
+</ul>
+<p>在NN中只需要6个参数就可以实现平移和旋转</p>
+<p><img src="14.png" alt="1" style="zoom:30%;" /></p>
+<p>x，y 为value的下标，在旋转时会出现问题，如果四舍五入x，y，导致小的变化得到结果不变，所以微分为0，无法梯度下降。</p>
+<p><img src="15.png" alt="1" style="zoom:30%;" /></p>
+<p>进行 Interpolation</p>
+<p><img src="16.png" alt="1" style="zoom:30%;" /></p>
+<p>Spacial Transformer 将Input 进行变换为CNN可以识别的图像</p>
+<p><img src="17.png" alt="1" style="zoom:30%;" /></p>
+<h2 id="recurrent-neural-network">Recurrent Neural Network</h2>
+<p>Store the older value in the memory</p>
+<ul>
+<li>Elman Network</li>
+</ul>
+<p><img src="18.png" alt="1" style="zoom:40%;" /></p>
+<ul>
+<li>Jordan Network, 可以清楚放入memory的是什么</li>
+</ul>
+<p><img src="19.png" alt="1" style="zoom:50%;" /></p>
+<ul>
+<li>Bidirection RNN，双向，根据整个input 输出 y</li>
+</ul>
+<p><img src="20.png" alt="1" style="zoom:40%;" /></p>
+<h3 id="long-short-term-memory">Long Short-term Memory</h3>
+<p>引入3个gate：forget gate，input gate，output gate</p>
+<p><img src="21.png" alt="1" style="zoom:40%;" /></p>
+<p><img src="22.png" alt="1" style="zoom:40%;" /></p>
+<p>LSTM的参数量是一般NN的4倍</p>
+<p><img src="23.png" alt="1" style="zoom:40%;" /></p>
+<p><img src="24.png" alt="1" style="zoom:40%;" /></p>
+<h2 id="gragh-neural-network">Gragh Neural Network</h2>
+<h3 id="introduction">Introduction</h3>
+<p>Gragh: Node + edge (interaction)</p>
+<p>GNN: Gragh as Input, let NN know the structure of Gragh</p>
+<p>Application:</p>
+<ul>
+<li>Classification</li>
+<li><img src="25.png" alt="1" style="zoom:40%;" />
+<ul>
+<li>Identity analysis：根据人物关系分析凶手</li>
+</ul></li>
+<li>Generation</li>
+<li>化学分子生成：输入 noise + y</li>
+<li><img src="26.png" alt="1" style="zoom:40%;" /></li>
+</ul>
+<p>Data have underlying structure and relationship</p>
+<h3 id="question">Question</h3>
+<ul>
+<li>How do we utilize the structures and relationship to help our model?</li>
+<li>What if the graph is larger, like 20k nodes?</li>
+<li>What if we don t have the all the labels?
+<ul>
+<li>E.g 利用相邻节点</li>
+<li><img src="27.png" alt="1" style="zoom:40%;" /></li>
+<li>How to embed node into a feature space using <strong>convolution</strong>?
+<ul>
+<li>Solution 1 Generalize the concept of convolution (correlation) to graph &gt;&gt; Spatial-based convolution</li>
+<li>Solution 2 Back to the definition of convolution in signal processing &gt;&gt; Spectral-based convolution</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="embed-node-into-a-feature-space-using-convolution">embed node into a feature space using <strong>convolution</strong></h3>
+<p><img src="28.png" alt="1" style="zoom:40%;" /></p>
+<h3 id="tasks-dataset-and-benchmark">Tasks, Dataset, and Benchmark</h3>
+<p>Tasks + semi-supervised node classification + Regression + Graph classification + Graph representation learning + Link prediction</p>
+<p>Common dataset</p>
+<ul>
+<li>CORA: citation network. 2.7k nodes and 5.4k links</li>
+<li>TU-MUTAG: 188 molecules with 18 nodes on average</li>
+</ul>
+<h3 id="spatial-based-gnn">Spatial-based GNN</h3>
+<p>Convolution:</p>
+<p><img src="29.png" alt="1" style="zoom:40%;" /></p>
+<p><strong>Aggregate: How to update the hidden state of next layer with neighbor feature</strong></p>
+<p><strong>Readout: collect all node feature to represent the graph</strong></p>
+<p><img src="30.png" alt="1" style="zoom:40%;" /></p>
+<ul>
+<li>NN4G (Neural Network for Gragh)
+<ul>
+<li>Input layer : Inout gragh node <span class="math inline">\(V_i\)</span>, node feature <span class="math inline">\(X_i\)</span></li>
+<li>Hidden layer 0: 对 node feature <span class="math inline">\(X_i\)</span> 进行 embedding （Embedding matrix）</li>
+<li><img src="31.png" alt="1" style="zoom:40%;" /></li>
+<li>Hidden Layer1：aggregate</li>
+<li><img src="32.png" alt="1" style="zoom:40%;" /></li>
+<li>Readout : each layer node feature 加起来</li>
+<li><img src="33.png" alt="1" style="zoom:40%;" /></li>
+</ul></li>
+<li>DCNN ( Diffusion-Convolution Neural Network )
+<ul>
+<li><strong>将距离v3节点距离为1的 feature 相加再取平均</strong></li>
+<li><img src="34.png" alt="1" style="zoom:35%;" /></li>
+<li><strong>将距离v3节点距离为2的 feature 相加再取平均</strong></li>
+<li><img src="35.png" alt="1" style="zoom:35%;" /></li>
+<li>分别将每层的节点的feature拼接矩阵H</li>
+<li><img src="36.png" alt="1" style="zoom:35%;" /></li>
+<li>transform之后输出 y</li>
+<li><img src="37.png" alt="1" style="zoom:35%;" /></li>
+</ul></li>
+<li>MoNET（Mixture Model Networks）
+<ul>
+<li>Define a measure on node distances</li>
+<li><img src="38.png" alt="1" style="zoom:35%;" /></li>
+<li>Use weighted sum (mean)instead of simply summing up(averaging neighbor features</li>
+<li><img src="39.png" alt="1" style="zoom:35%;" /></li>
+</ul></li>
+<li>GAN（Gragh Attention Network）<strong>常用</strong>
+<ul>
+<li>对 neighbor node 进行 attention</li>
+<li><img src="40.png" alt="1" style="zoom:35%;" /></li>
+<li>f means feature、e means energy</li>
+<li><img src="41.png" alt="1" style="zoom:35%;" /></li>
+</ul></li>
+<li>GIN（Gragh Isomorphism Network）
+<ul>
+<li>A GNN can be at most as powerful as WL isomorphic test</li>
+<li>Theoretical proofs were provided
+<ul>
+<li>mean or max pooling will fail</li>
+<li><img src="42.png" alt="1" style="zoom:45%;" /></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="gragh-signal-processing-and-spectral-based-gnn">Gragh Signal Processing and Spectral-based GNN</h3>
+<p>对Graph和Filter进行Transform到 Fourier domain 中做 Multiplication，得到结果再inverse Transform，实现Convolution</p>
+<p><img src="43.png" alt="1" style="zoom:45%;" /></p>
+<ul>
+<li>Fourier transform</li>
+</ul>
+<p><img src="44.png" alt="1" style="zoom:35%;" /></p>
+<ul>
+<li>Spectual Graph Theory：</li>
+</ul>
+<p>adjacency matrix 表示相连节点的权值，degree matrix (对角阵) 表示每个节点有几个邻居</p>
+<p><img src="45.png" alt="1" style="zoom:45%;" /></p>
+<p>U 为 eigen vector, <span class="math inline">\(\lambda\)</span> 代表eigen value</p>
+<p><img src="46.png" alt="1" style="zoom:45%;" /></p>
+<p>Example:</p>
+<p><img src="47.png" alt="1" style="zoom:35%;" /></p>
+<p><img src="48.png" alt="1" style="zoom:35%;" /></p>
+<p>频率越大，相邻点的变化量越大.</p>
+<p><img src="49.png" alt="1" style="zoom:35%;" /></p>
+<p>Lf 的第i个element表示：<span class="math inline">\(V_i\)</span> 的 frequency 分别与 neighbor node 的frequency差的总和 <span class="math display">\[
+Lf(v_i) = \sum_{v_j\in V} w_{i,j}(f(v_i)-f(v_j)), where\ w_{i,j}\ is\ the\ (i,j)^{th}\ entry\  of\ A
+\]</span> 所以<strong>"Power" of signal variation between nodes i.e smoothness of graph signal</strong> <span class="math display">\[
+f^TLf=f^T \sum_{v_j\in V} w_{i,j}(f(v_i)-f(v_j))=\sum_{v_i \in V}f(v_i)\sum_{v_j\in V} w_{i,j}(f(v_i)-f(v_j))
+\]</span></p>
+<p><span class="math display">\[
+=\sum_{v_i \in V}\sum_{v_j\in V}w_{i,j}(f^2(v_i)-f(v_i)f(v_j))
+\]</span></p>
+<p><span class="math display">\[
+=\frac{1}{2}\{ \sum_{v_i \in V}\sum_{v_j\in V}w_{i,j}(f^2(v_i)-f(v_i)f(v_j))+\sum_{v_i \in V}\sum_{v_j\in V}w_{i,j}(f^2(v_j)-f(v_j)f(v_i))\}
+\]</span></p>
+<p><span class="math display">\[
+=\frac{1}{2}\sum_{v_i \in V}\sum_{v_j\in V}w_{i,j}(f(v_i)-f(v_j))^2
+\]</span></p>
+<p><span class="math display">\[f^T Lf\]</span> represents "power" of signal variation between nodes</p>
+<p><img src="50.png" alt="1" style="zoom:35%;" /> <span class="math display">\[
+Thus,let\space u_i = f,\space \space Then  \space \space u_i^TLu_i = u_i^T\lambda_i u_i = \lambda_i
+\]</span> small <span class="math inline">\(\lambda\)</span> means the low-pass part of a graph signal, <span class="math inline">\(u_i\)</span> means the frequency</p>
+<p>例如：如图一个直线graph</p>
+<p><img src="51.png" alt="1" style="zoom:35%;" /></p>
+<h3 id="how-to-tansform">How to tansform？</h3>
+<p><img src="52.png" alt="1" style="zoom:35%;" /></p>
+<p><span class="math inline">\(\hat x\)</span> 表示<span class="math inline">\(x\)</span>在不同频率成分<span class="math inline">\(\lambda\)</span> 上的大小</p>
+<p>Inverse Graph Fourier Transform of signal <span class="math inline">\(\hat x: x=U\hat x\)</span></p>
+<p><img src="53.png" alt="1" style="zoom:35%;" /></p>
+<h3 id="filtering">Filtering</h3>
+<p>modifying the amplitude/ phase of the different frequency components in a signal, including eliminating some frequency components entirely</p>
+<p><img src="54.png" alt="1" style="zoom:35%;" /></p>
+<p>Filter in img --- Impulse response</p>
+<p>E.g , Convolution in time domain is multiplication in frequency domain</p>
+<p><img src="55.png" alt="1" style="zoom:35%;" /></p>
+<p><span class="math inline">\(\hat y\)</span> in spectual domain need to de transformed to vertex domain y <span class="math display">\[
+y = U\hat y = Ug_\theta (\wedge) \hat x = U g_\theta(\wedge)U^Tx=g_\theta(U\wedge U^T)x
+\]</span></p>
+<p><span class="math display">\[
+Let, \space \space L = U\wedge U^T
+\]</span></p>
+<p><span class="math display">\[
+y = g_\theta(L)x
+\]</span></p>
+<p><span class="math display">\[
+where, \space g_\theta(·)\space can\space be\space any\space function, 
+\]</span></p>
+<p><span class="math display">\[
+for\space example, g_\theta (L) = log(1+L)=L-\frac{L^2}{2}+\frac{L^3}{3}...,\lambda_{max}&lt;1
+\]</span></p>
+<p><img src="56.png" alt="1" style="zoom:35%;" /></p>
+<p>Problems :</p>
+<ol type="1">
+<li><p><span class="math inline">\(\theta_i\)</span> is the parameters to be learned, the number of <span class="math inline">\(\theta\)</span> depends on the number of nodes. Learning complexity is O(N)</p></li>
+<li><p><span class="math inline">\(g_\theta (·)\)</span> is not localization,</p>
+<p><img src="57.png" alt="1" style="zoom:35%;" /></p></li>
+</ol>
+<h3 id="chebnet">ChebNet</h3>
+<p>Solution to problem 1 and 2:</p>
+<ul>
+<li>use polynomial to parameterize <span class="math inline">\(g_\theta (L)\)</span></li>
+</ul>
+<p><img src="58.png" alt="1" style="zoom:35%;" /></p>
+<p>Solution to problem 3:</p>
+<ul>
+<li><p>Use a polynomial function that can be computed recursively (递归) from L</p></li>
+<li><p>Chebyshev polynomial: <span class="math inline">\(T_0(x) = 1, T_1(x)=x,T_k(x) = 2xT_{k-1}(x)-T_{k-2}(x), x\in[-1,1]\)</span></p>
+<ul>
+<li><p><span class="math display">\[
+  T_0(\tilde \wedge) = I, T_1(\tilde \wedge)=x,T_k(\tilde \wedge) = 2\tilde \wedge T_{k-1}(\tilde \wedge )-T_{k-2}(\tilde \wedge)
+  \]</span></p></li>
+<li><p><span class="math display">\[
+  where \space \tilde \wedge =\frac{2\wedge}{\lambda_{max}}-I,\space \tilde \wedge \in [-1,1], \space I=indentity \space matrix
+  \]</span></p></li>
+<li><p><img src="59.png" alt="1" style="zoom:35%;" /></p></li>
+<li><p><img src="60.png" alt="1" style="zoom:40%;" /></p></li>
+<li><p><img src="61.png" alt="1" style="zoom:40%;" /></p></li>
+</ul></li>
+</ul>
+<p><img src="62.png" alt="1" style="zoom:40%;" /></p>
+<h3 id="gcn-常用">GCN （常用）</h3>
+<p><img src="63.png" alt="1" style="zoom:35%;" /></p>
+<p><span class="math inline">\(\tilde \space\)</span> means self-loop</p>
+<p><img src="64.png" alt="1" style="zoom:35%;" /></p>
+<h3 id="benchmark-tasks">Benchmark tasks</h3>
+<ul>
+<li>Graph Classification: SuperPixel MNIST and CIFAR10</li>
+</ul>
+<p><img src="65.png" alt="1" style="zoom:35%;" /></p>
+<ul>
+<li>Regression ZINC molecule graphs dataset</li>
+</ul>
+<p><img src="66.png" alt="1" style="zoom:50%;" /></p>
+<ul>
+<li>Node classification: Stochastic Block Model dataset
+<ul>
+<li>graph pattern recognition and semi-supervised graph clustering</li>
+</ul></li>
+</ul>
+<p><img src="67.png" alt="1" style="zoom:50%;" /></p>
+<ul>
+<li>Edge classification: Traveling Salesman Problem</li>
+</ul>
+<p><img src="68.png" alt="1" style="zoom:45%;" /></p>
+<h3 id="result">Result</h3>
+<p><img src="69.png" alt="1" style="zoom:45%;" /></p>
+<p><img src="70.png" alt="1" style="zoom:45%;" /></p>
+<p><img src="71.png" alt="1" style="zoom:45%;" /></p>
+<p><img src="72.png" alt="1" style="zoom:45%;" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/06/summary2/" rel="prev" title="summary2">
+                  <i class="fa fa-chevron-left"></i> summary2
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">706k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:41</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;08&#x2F;ML5&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>

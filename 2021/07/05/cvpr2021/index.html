@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="图像生成领域 Information Bottleneck Disentanglement for Identity Swapping（换脸）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CVPR 2021 论文分享--微软亚洲研究院">
+<meta property="og:url" content="https://ly1998117.github.io/2021/07/05/cvpr2021/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="图像生成领域 Information Bottleneck Disentanglement for Identity Swapping（换脸）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/1.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/8.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/9.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/10.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/11.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/12.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/13.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/14.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/15.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/16.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/17.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/18.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/19.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/20.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/21.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/22.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/23.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/24.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/25.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/26.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/27.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/28.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/29.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/30.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/31.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/32.png">
+<meta property="article:published_time" content="2021-07-05T15:44:56.000Z">
+<meta property="article:modified_time" content="2021-07-09T14:50:37.566Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="CVPR">
+<meta property="article:tag" content="Paper">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/2.png">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2021/07/05/cvpr2021/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;05&#x2F;cvpr2021&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;07&#x2F;05&#x2F;cvpr2021&#x2F;&quot;,&quot;title&quot;:&quot;CVPR 2021 论文分享--微软亚洲研究院&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>CVPR 2021 论文分享--微软亚洲研究院 | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">24</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E7%94%9F%E6%88%90%E9%A2%86%E5%9F%9F"><span class="nav-number">1.</span> <span class="nav-text">图像生成领域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#information-bottleneck-disentanglement-for-identity-swapping%E6%8D%A2%E8%84%B8"><span class="nav-number">1.1.</span> <span class="nav-text">Information Bottleneck Disentanglement for Identity Swapping（换脸）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#leveraging-line-point-consistent-to-preserve-structure-for-wide-parallax-image-stitching-%E8%B4%BE%E6%A3%8B-%E5%9B%BE%E5%83%8F%E6%8B%BC%E6%8E%A5"><span class="nav-number">1.2.</span> <span class="nav-text">Leveraging Line-point Consistent to Preserve Structure for Wide Parallax Image Stitching 贾棋 （图像拼接）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#facelnpainter-high-fidelity-face-adaptation-to-heterogeneous-domains%E5%BC%82%E6%9E%84%E5%9F%9F%E6%8D%A2%E8%84%B8"><span class="nav-number">1.3.</span> <span class="nav-text">Facelnpainter: High Fidelity Face Adaptation to Heterogeneous Domains（异构域换脸）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">图像处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#deep-homography-for-efficient-stereo-image-compressioncvpr-2021-oral-%E5%9F%BA%E4%BA%8E%E5%8D%95%E5%BA%94%E6%80%A7%E5%8F%98%E6%8D%A2%E7%9A%84%E9%AB%98%E6%95%88%E5%8F%8C%E7%9B%AE%E5%9B%BE%E5%83%8F%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">Deep Homography for Efficient Stereo Image Compression（CVPR-2021 oral） 基于单应性变换的高效双目图像压缩算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#learning-scalable-ell_infty-constrained-near-lossless-image-compression-via-joint-lossy-image-and-residual-compression-%E5%9B%BE%E5%83%8F%E5%8E%8B%E7%BC%A9"><span class="nav-number">2.2.</span> <span class="nav-text">Learning Scalable \(\ell_\infty\)-constrained Near-lossless Image Compression via Joint Lossy Image and Residual Compression (图像压缩)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%95%E5%B1%82%E8%A7%86%E8%A7%89"><span class="nav-number">3.</span> <span class="nav-text">底层视觉</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#neighbor2-neighbor-self-supervised-denoising-from-single-noisy-images%E5%9B%BE%E5%83%8F%E5%8E%BB%E5%99%AA"><span class="nav-number">3.1.</span> <span class="nav-text">Neighbor2 Neighbor Self-supervised Denoising from Single Noisy Images(图像去噪)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#event-based-synthetic-aperture-imaging-with-a-hybrid-network%E5%90%88%E6%88%90%E5%AD%94%E5%BE%84%E6%88%90%E5%83%8F"><span class="nav-number">3.2.</span> <span class="nav-text">Event-based Synthetic Aperture Imaging with a Hybrid Network（合成孔径成像）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deep-animation-video-interpolation-in-the-wild-%E5%8A%A8%E6%BC%AB%E8%A7%86%E9%A2%91%E8%A7%86%E9%A2%91%E6%8B%86%E5%88%86"><span class="nav-number">3.3.</span> <span class="nav-text">Deep Animation Video Interpolation in the Wild (动漫视频视频拆分)</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/07/05/cvpr2021/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CVPR 2021 论文分享--微软亚洲研究院
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-05 23:44:56" itemprop="dateCreated datePublished" datetime="2021-07-05T23:44:56+08:00">2021-07-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-09 22:50:37" itemprop="dateModified" datetime="2021-07-09T22:50:37+08:00">2021-07-09</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CVPR/" itemprop="url" rel="index"><span itemprop="name">CVPR</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="图像生成领域">图像生成领域</h2>
+<h3 id="information-bottleneck-disentanglement-for-identity-swapping换脸"><strong>Information Bottleneck Disentanglement for Identity Swapping</strong>（换脸）</h3>
+<span id="more"></span>
+<ul>
+<li><p>Introdution</p>
+<ul>
+<li><p>Definition: Identity Swapping: a person in an existing image or video is replaced with someone else's likeness.</p></li>
+<li><p>Main Dificultites &amp; Previous Works</p>
+<ul>
+<li><blockquote>
+<p>Exchanging Face in Images ( 2004 ) : Large differences in viewpoint &amp; illumination</p>
+<p>Face to Face (2016) : Preservation of target expression</p>
+<p>On Face Segmentation Face Swapping, and Face Perception (2017): Robust face swapping</p>
+<p>FaceSwap (2017) : Real-time subject-aware identity swapping</p>
+<p>FSGAN (2019) : Subject agnostic</p>
+<p>FaceShifter (2020): Occusion Aware</p>
+</blockquote></li>
+</ul></li>
+</ul></li>
+<li><p>the focus of this work：<strong>Disentanglement（解耦）从 target face 解耦出 target perception</strong></p>
+<ul>
+<li>Generated face = source identity + target perception(expression, pose, background, lighting...)</li>
+</ul>
+<p><img src="2.png" alt="1" style="zoom:40%;" /></p>
+<ul>
+<li><p>Identity mixed</p>
+<p><img src="1.png" alt="1" style="zoom:40%;" /></p></li>
+</ul></li>
+<li><p>Methods：Measurement</p>
+<ul>
+<li>Discrimination 量化标准</li>
+<li><img src="3.png" alt="1" style="zoom:40%;" /></li>
+<li>generated identity 和 target identity 之间距离足够远，与source identity 距离足够进</li>
+<li><img src="4.png" alt="1" style="zoom:40%;" /></li>
+</ul></li>
+<li><p>Disentangled representation learning</p>
+<p><img src="5.png" alt="1" style="zoom:35%;" /></p>
+<p>Perception的组成复杂，所以学习对最小身份信息的最小表征间接得到与身份信息相关度低的部分</p>
+<ul>
+<li>Information Bottleneck（IB） Principle</li>
+<li><img src="6.png" alt="1" style="zoom:40%;" /></li>
+<li>model： InfoSwap：预训练网络，输出Compressed Itentity Information. R 为中间特征</li>
+<li><img src="7.png" alt="1" style="zoom:40%;" /></li>
+</ul></li>
+</ul>
+<p>信息瓶颈层：预测信息控制层 <span class="math inline">\(\lambda\)</span>，控制 Identity Information 的输出，范围0-1. 从与当前瓶颈层的中间特征均值方差一致的高斯分布抽样噪声，得到 Z Identity vector</p>
+<p><img src="8.png" alt="1" style="zoom:40%;" /></p>
+<p>Loss</p>
+<p><img src="9.png" alt="1" style="zoom:40%;" /></p>
+<p><img src="10.png" alt="1" style="zoom:40%;" /></p>
+<h3 id="leveraging-line-point-consistent-to-preserve-structure-for-wide-parallax-image-stitching-贾棋-图像拼接">Leveraging Line-point Consistent to Preserve Structure for Wide Parallax Image Stitching 贾棋 （图像拼接）</h3>
+<ul>
+<li>Motivation
+<ul>
+<li>Points and lines are matched separately --&gt; Inconsistently and non-uniformly stretched or compressed --&gt; artifacts in the stitched images</li>
+<li>Limited matched point pairs --&gt; limited constrants for warping</li>
+<li>Lacking global linear structure constraints</li>
+<li>Conflicts on maintaining local and global structures</li>
+<li>Existing metrics (RMSE /SSIM) can't reflect the alignment of points on linear structures or the collinearity of matched line segments</li>
+</ul></li>
+<li>Contributions
+<ul>
+<li>Consistant line-point constraints (匹配共面区域)
+<ul>
+<li>射映不变量 characteristic number（cn) 寻找共面匹配区域</li>
+<li><img src="11.png" alt="1" style="zoom:30%;" /></li>
+<li>计算单应矩阵H</li>
+</ul></li>
+<li>Maintain and balance both local shape and global linear structures （Mesh Deformation）
+<ul>
+<li>Energy Function：Line Preserving Term + Point-Line Alignment Term + Distortion Control Term</li>
+<li><img src="12.png" alt="1" style="zoom:30%;" /></li>
+</ul></li>
+<li>Evaluation on linear structures
+<ul>
+<li>Quality Matrix</li>
+<li><img src="13.png" alt="1" style="zoom:30%;" /></li>
+</ul></li>
+</ul></li>
+<li>Experiments</li>
+</ul>
+<h3 id="facelnpainter-high-fidelity-face-adaptation-to-heterogeneous-domains异构域换脸">Facelnpainter: High Fidelity Face Adaptation to Heterogeneous Domains（异构域换脸）</h3>
+<ul>
+<li>Motivation
+<ul>
+<li>Identity modification</li>
+<li>Attribute preservation (pose, expression, lighting, occlusion, background) - 3D ， Contextual loss</li>
+<li>Boundary artifacts - AdaRes</li>
+<li>Low quality - DFT</li>
+<li>Face-swapping video synthesis</li>
+<li>Heterogeneous domains - FaceInpainter</li>
+</ul></li>
+<li>Approach
+<ul>
+<li><img src="14.png" alt="1" style="zoom:40%;" /></li>
+</ul></li>
+</ul>
+<h2 id="图像处理">图像处理</h2>
+<h3 id="deep-homography-for-efficient-stereo-image-compressioncvpr-2021-oral-基于单应性变换的高效双目图像压缩算法"><a target="_blank" rel="noopener" href="http://buaamc2.net/pdf/cvpr21hesic.pdf">Deep Homography for Efficient Stereo Image Compression（CVPR-2021 oral）</a> 基于单应性变换的高效双目图像压缩算法</h3>
+<ul>
+<li><p>研究背景及思路</p>
+<ul>
+<li>双目图像联合压缩：双目摄影设备拍摄图片具有高重复性、相似性</li>
+<li>深度学习的双目图像压缩-DSIC</li>
+<li>传统双目图像匹配——单应性变换 H （双目图片基本为刚性变换）</li>
+<li>基于深度学习的双目图像匹配 —— 预测图像的 Homographic 矩阵</li>
+</ul></li>
+<li><p>研究方法</p>
+<ul>
+<li><p>设计思想：将左目图像作为主视图，进行正常的Encode 和 Decode， 右目图像以左目为先验知识，关注压缩和解压缩左目不存在的信息</p></li>
+<li><p>网络结构设计： H计算及压缩+双目编码、主视眼优先解码+指导辅助眼解码+交叉质量增强</p>
+<p><img src="15.png" alt="1" style="zoom:50%;" /></p>
+<ul>
+<li>Regression Model 计算 H 矩阵，将左目变换到右目图像再进行 congnition，右目图像质量优于左目</li>
+<li>Cross Quality Enhancement （QCE) ：
+<ul>
+<li>解压的左目、右目、Hmatrix 作为输入</li>
+<li>联合指导：左目图像变换后指导右目图像，右目图像变换后指导左目。实现左右目图像均衡提升</li>
+</ul></li>
+<li>熵编码模型 HESIC
+<ul>
+<li>混合高斯双目熵模型——适应于GPU并行加速 （y1左目，y2右目）</li>
+<li><img src="16.png" alt="1" style="zoom:50%;" /></li>
+<li>基于上下文双目高斯熵模型</li>
+<li><img src="17.png" alt="1" style="zoom:50%;" /></li>
+</ul></li>
+<li>Loss</li>
+<li><img src="18.png" alt="1" style="zoom:50%;" /></li>
+</ul></li>
+<li><p>贡献</p>
+<ul>
+<li>提出基于深度学习的单应性双目图像压缩算法，利用神经网络计算 H 矩阵提高压缩效率</li>
+<li>熵模型预测编码解码的概率分布</li>
+<li>提出CQE模块，提高解码性能</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="learning-scalable-ell_infty-constrained-near-lossless-image-compression-via-joint-lossy-image-and-residual-compression-图像压缩">Learning Scalable <span class="math inline">\(\ell_\infty\)</span>-constrained Near-lossless Image Compression via Joint Lossy Image and Residual Compression (图像压缩)</h3>
+<ul>
+<li><p>Introduction</p>
+<ul>
+<li><p>Loss Image Compression</p>
+<ul>
+<li>Trade-off between bit-rates and distortion(high compression ratio)</li>
+<li>DIstortion measures :
+<ul>
+<li>PSNR or MS-SSIM (average quality)</li>
+<li>Potential problem: small average distortion but large local distortion</li>
+</ul></li>
+<li>Weakness: 不可靠
+<ul>
+<li>在专业图像领域：医学影响、遥感影像、图像归档</li>
+</ul></li>
+</ul></li>
+<li><p>Lossless Image Compression</p>
+<ul>
+<li>可靠</li>
+<li>理论限制：bit-rates &gt;= entropy.<br />
+</li>
+<li>实际：bit-rates ~= cross entropy</li>
+<li>低压缩率</li>
+</ul></li>
+<li><p>Near-lossless Image Compression</p>
+<ul>
+<li><p>image compression under a tight <span class="math inline">\(\ell_\infty\)</span>error bound</p></li>
+<li><p>If <span class="math inline">\(\tau = 0\)</span>, special case: lossless compression</p></li>
+<li><p>Advantages: More reliable &amp;&amp; Higher compression ratio</p></li>
+<li><p>Challenges: <span class="math inline">\(\ell_\infty\)</span> 不可导 &amp; 有损压缩策略不能严格保证满足 <span class="math inline">\(\ell_\infty\)</span> 失真约束</p></li>
+<li><p>schemes：将有损+残差编码建模为联合优化的无监督学习问题</p>
+<ul>
+<li><img src="19.png" alt="1" style="zoom:50%;" /></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><p>Algorithm</p>
+<ul>
+<li>提出隐变量模型<span class="math inline">\(p_\theta\)</span>, y 为隐变量</li>
+</ul></li>
+</ul>
+<p><img src="20.png" alt="1" style="zoom:40%;" /></p>
+<p><img src="21.png" alt="1" style="zoom:40%;" /></p>
+<p><img src="22.png" alt="1" style="zoom:40%;" /></p>
+<h2 id="底层视觉">底层视觉</h2>
+<h3 id="neighbor2-neighbor-self-supervised-denoising-from-single-noisy-images图像去噪">Neighbor2 Neighbor Self-supervised Denoising from Single Noisy Images(图像去噪)</h3>
+<ul>
+<li>Research Background
+<ul>
+<li>Image Noise： Shot noise(Poisson) 、read noise(Gaussian) 、Dark current noise 、Row/Column noise</li>
+<li>Synthetic paired data based methods</li>
+<li>Real-world paired data based methods</li>
+<li>GroundTruth-free based methods
+<ul>
+<li>ztraditional methods BM3D. NLM</li>
+<li>noisy-pairs based methods Noise 2noise</li>
+<li>Self-supervised methods
+<ul>
+<li>Regularization-based methods Deep Image Prior</li>
+<li>Blind-spot Network based methods Noise2self. Noise2void Laine19</li>
+<li>Pseudo-noisy-pairs based methods Noisy-as-clean, Noiser2noise, Self2self</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>Proposed Method
+<ul>
+<li>Revisit Noise 2noise：两个含噪声图像训练模型和干净图像训练的模型参数一致</li>
+<li><img src="23.png" alt="1" style="zoom:30%;" /></li>
+<li>Generalization to noisy pairs with Similar clean images</li>
+<li><img src="24.png" alt="1" style="zoom:30%;" /></li>
+<li>Application to single Noisy Images：设计采样器人为构造一个相近的含噪声观测
+<ul>
+<li><img src="25.png" alt="1" style="zoom:30%;" /></li>
+</ul></li>
+<li>Neighbor2Neighbor Framework</li>
+<li><img src="26.png" alt="1" style="zoom:50%;" /></li>
+</ul></li>
+</ul>
+<h3 id="event-based-synthetic-aperture-imaging-with-a-hybrid-network合成孔径成像">Event-based Synthetic Aperture Imaging with a Hybrid Network（合成孔径成像）</h3>
+<ul>
+<li><p>Frame-based SAL: Principle</p></li>
+<li><p><img src="27.png" alt="1" style="zoom:40%;" /></p></li>
+<li><p>limits</p></li>
+<li><p><img src="28.png" alt="1" style="zoom:40%;" /></p></li>
+<li><p>Event Camera：Biology has no notion of frames, and works continuously and asynchronously</p>
+<ul>
+<li>Each event contains: 1. time stamp; 2. pixel location; 3. polarity(ON, OFF</li>
+<li><img src="29.png" alt="1" style="zoom:40%;" /></li>
+</ul></li>
+</ul>
+<p><img src="30.png" alt="1" style="zoom:40%;" /></p>
+<p><img src="31.png" alt="1" style="zoom:40%;" /></p>
+<ul>
+<li>Framework
+<ul>
+<li>Refocus：Align signal events, while scatter out noise events</li>
+<li>Hybrid NN：SNN（encoder）+CNN（decoder)</li>
+<li><img src="32.png" alt="1" style="zoom:40%;" /></li>
+</ul></li>
+</ul>
+<h3 id="deep-animation-video-interpolation-in-the-wild-动漫视频视频拆分">Deep Animation Video Interpolation in the Wild (动漫视频视频拆分)</h3>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CVPR/" rel="tag"># CVPR</a>
+              <a href="/tags/Paper/" rel="tag"># Paper</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/04/RNN/" rel="prev" title="Recurrent Neural Network">
+                  <i class="fa fa-chevron-left"></i> Recurrent Neural Network
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/06/summary2/" rel="next" title="summary2">
+                  summary2 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">706k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:41</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;05&#x2F;cvpr2021&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>
