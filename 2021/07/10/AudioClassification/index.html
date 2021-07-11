@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Introduction The steps all voice assistants likely use:  First, the assistant must convert the speech to text. The text is run through a natural language processing (NLP) step, which turns the words i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AudioClassification">
+<meta property="og:url" content="https://ly1998117.github.io/2021/07/10/AudioClassification/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="Introduction The steps all voice assistants likely use:  First, the assistant must convert the speech to text. The text is run through a natural language processing (NLP) step, which turns the words i">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/10/AudioClassification/1.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/10/AudioClassification/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/10/AudioClassification/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/10/AudioClassification/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/10/AudioClassification/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/10/AudioClassification/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/10/AudioClassification/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/10/AudioClassification/8.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/10/AudioClassification/9.png">
+<meta property="article:published_time" content="2021-07-09T17:28:46.000Z">
+<meta property="article:modified_time" content="2021-07-11T12:19:19.859Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="PyTorch">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ly1998117.github.io/2021/07/10/AudioClassification/1.png">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2021/07/10/AudioClassification/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;10&#x2F;AudioClassification&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;07&#x2F;10&#x2F;AudioClassification&#x2F;&quot;,&quot;title&quot;:&quot;AudioClassification&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>AudioClassification | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">24</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#audio-data"><span class="nav-number">2.</span> <span class="nav-text">Audio Data</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#get-setup-with-torchaudio"><span class="nav-number">2.1.</span> <span class="nav-text">Get setup with TorchAudio</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#download-data"><span class="nav-number">2.2.</span> <span class="nav-text">Download Data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#show-classes-of-dataset"><span class="nav-number">2.3.</span> <span class="nav-text">Show Classes of dataset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#convert-the-sound-to-tensor"><span class="nav-number">2.4.</span> <span class="nav-text">Convert the sound to tensor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plot-waveform"><span class="nav-number">2.5.</span> <span class="nav-text">plot waveform</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#data-visualization-and-transformation"><span class="nav-number">3.</span> <span class="nav-text">Data visualization and transformation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#load-the-dataset-folders-into-a-dataloader"><span class="nav-number">3.1.</span> <span class="nav-text">Load the Dataset folders into a DataLoader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transform-and-visualize"><span class="nav-number">3.2.</span> <span class="nav-text">Transform and visualize</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#waveform"><span class="nav-number">3.2.1.</span> <span class="nav-text">waveform</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spectrogram"><span class="nav-number">3.2.2.</span> <span class="nav-text">Spectrogram</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mel-spectrogram"><span class="nav-number">3.2.3.</span> <span class="nav-text">Mel Spectrogram</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mel-frequency-cepstral-coefficients-mfcc"><span class="nav-number">3.2.4.</span> <span class="nav-text">Mel-frequency cepstral coefficients (MFCC)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#create-an-image-from-a-spectrogram"><span class="nav-number">3.2.5.</span> <span class="nav-text">Create an image from a Spectrogram</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#build-speech-model"><span class="nav-number">4.</span> <span class="nav-text">Build Speech Model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#load-spectrogram-images-into-a-dataloader-for-training"><span class="nav-number">4.1.</span> <span class="nav-text">Load Spectrogram images into a DataLoader for training</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#create-nn"><span class="nav-number">4.2.</span> <span class="nav-text">Create NN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#create-train-and-test-functions"><span class="nav-number">4.3.</span> <span class="nav-text">Create Train and Test functions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plot-the-average-accuracy-and-loss"><span class="nav-number">4.4.</span> <span class="nav-text">Plot the average accuracy and Loss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#train-and-validation"><span class="nav-number">4.5.</span> <span class="nav-text">Train and Validation</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/07/10/AudioClassification/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AudioClassification
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-10 01:28:46" itemprop="dateCreated datePublished" datetime="2021-07-10T01:28:46+08:00">2021-07-10</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-11 20:19:19" itemprop="dateModified" datetime="2021-07-11T20:19:19+08:00">2021-07-11</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/PyTorch/" itemprop="url" rel="index"><span itemprop="name">PyTorch</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>17k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>16 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="introduction">Introduction</h2>
+<p>The steps all voice assistants likely use:</p>
+<ol type="1">
+<li><p>First, the assistant must convert the speech to text.</p></li>
+<li><p>The text is run through a natural language processing (NLP) step, which turns the words into numeric data.</p></li>
+<li><p>Finally, there's a classification of the <em>utterance</em> - what people say to the <em>intent</em> - what they want the voice assistant to do.</p>
+<p><span id="more"></span></p></li>
+</ol>
+<blockquote>
+<p>We will be building a simple model that can understand <code>yes</code> and <code>no</code>. The dataset we will be using is the open dataset <a target="_blank" rel="noopener" href="https://pytorch.org/audio/stable/datasets.html#speechcommands">Speech Commands</a> which is built into PyTorch <a target="_blank" rel="noopener" href="https://pytorch.org/audio/stable/datasets.html">datasets</a>. This dataset has 36 total different words/sounds to be used for classification. Each utterance is stored as a one-second (or less) WAVE format file. We will only be using <code>yes</code> and <code>no</code> for binary classification</p>
+</blockquote>
+<h2 id="audio-data">Audio Data</h2>
+<blockquote>
+<p>Just like with images we need to take our physical world and convert it to numbers or a digital representation for a computer to understand.</p>
+<p>For audio, a microphone is used to capture the sound and then its converted from analog sound to digital sound by sampling at consistent intervals of time. This is called the <code>sample rate</code>.The higher the <code>sample rate</code> the higher the quality of the sound however after a certain point the difference is not able to be detected by the human ear. The average sound sample rate is 48 kHz or 48,000 samples per second. This dataset was sampled at 16kHz so our sample rate is 16,000.</p>
+<p>When the audio is sampled its sampling the <code>frequency</code> or the pitch of the sound and the <code>amplitude</code> or how loud the audio is. We can then take our sample rate and frequency and represent the signal visually. This signal can be represented as a <code>waveform</code> which is the <code>signal</code> representation over time in a graphical format. The audio can be recorded in different <code>channels</code>. For example stereo recording have 2 channels, right and left.</p>
+<p>how we might want to parse out a file? if you have longer audio files you may want to split it out into <code>frames</code> or sections of the audio to be classified individually. For this dataset we don't need to set any frames of our audio samples as each sample is only one second and one word. Another processing step might be an <code>offset</code> which means the number of frames from the start of the file to begin data loading.</p>
+</blockquote>
+<h3 id="get-setup-with-torchaudio">Get setup with TorchAudio</h3>
+<blockquote>
+<p>TorchAudio is a library that is part of the PyTorch ecosystem that has I/O functionality, popular open datasets and common audio transformations that we will need to build our model. We will use this library to work with our audio data.</p>
+</blockquote>
+<h3 id="download-data">Download Data</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">folder = <span class="string">&#x27;data&#x27;</span></span><br><span class="line">filename = <span class="string">&quot;data/SpeechCommands/speech_commands_v0.02/yes/00f0204f_nohash_0.wav&quot;</span></span><br><span class="line">default_dir = os.getcwd()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Data directory: <span class="subst">&#123;default_dir&#125;</span>/<span class="subst">&#123;folder&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(folder):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;create directory&quot;</span>)</span><br><span class="line">    os.mkdir(folder)</span><br><span class="line">    speech_comments = torchaudio.datasets.SPEECHCOMMANDS(folder, download=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Directory  exists&quot;</span>)</span><br><span class="line">    speech_comments = torchaudio.datasets.SPEECHCOMMANDS(folder, download=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="show-classes-of-dataset">Show Classes of dataset</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">visualize_classes</span>():</span></span><br><span class="line">    os.chdir(<span class="string">f&quot;<span class="subst">&#123;folder&#125;</span>/SpeechCommands/speech_commands_v0.02/&quot;</span>)</span><br><span class="line">    labels = [name <span class="keyword">for</span> name <span class="keyword">in</span> os.listdir() <span class="keyword">if</span> os.path.isdir(name)]</span><br><span class="line">    os.chdir(default_dir)</span><br><span class="line">    <span class="built_in">print</span>(labels)</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">[<span class="string">&#x27;right&#x27;</span>, <span class="string">&#x27;eight&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>, <span class="string">&#x27;tree&#x27;</span>, <span class="string">&#x27;backward&#x27;</span>, <span class="string">&#x27;learn&#x27;</span>, <span class="string">&#x27;bed&#x27;</span>, <span class="string">&#x27;happy&#x27;</span>, <span class="string">&#x27;go&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>, <span class="string">&#x27;no&#x27;</span>, <span class="string">&#x27;wow&#x27;</span>, <span class="string">&#x27;follow&#x27;</span>, <span class="string">&#x27;nine&#x27;</span>, <span class="string">&#x27;left&#x27;</span>, <span class="string">&#x27;stop&#x27;</span>, <span class="string">&#x27;three&#x27;</span>, <span class="string">&#x27;_background_noise_&#x27;</span>, <span class="string">&#x27;sheila&#x27;</span>, <span class="string">&#x27;one&#x27;</span>, <span class="string">&#x27;bird&#x27;</span>, <span class="string">&#x27;zero&#x27;</span>, <span class="string">&#x27;seven&#x27;</span>, <span class="string">&#x27;up&#x27;</span>, <span class="string">&#x27;visual&#x27;</span>, <span class="string">&#x27;marvin&#x27;</span>, <span class="string">&#x27;two&#x27;</span>, <span class="string">&#x27;house&#x27;</span>, <span class="string">&#x27;down&#x27;</span>, <span class="string">&#x27;six&#x27;</span>, <span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;on&#x27;</span>, <span class="string">&#x27;five&#x27;</span>, <span class="string">&#x27;forward&#x27;</span>, <span class="string">&#x27;off&#x27;</span>, <span class="string">&#x27;four&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="convert-the-sound-to-tensor">Convert the sound to tensor</h3>
+<blockquote>
+<p><strong>Wave file is one format in which we save our digital representation of our analog audio to be shared and played</strong></p>
+<p>使用的语音命令数据集被存储在波形文件中，这些文件都是一秒钟或更短。使用torchaudio.load加载文件，它将一个音频文件加载到一个Torch.Tensor对象中。TorchAudio已经为不同的音频后端抽象了加载函数，</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">waveform, sample_rate = torchaudio.load(filepath=filename)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;waveform tensor:<span class="subst">&#123;waveform&#125;</span>&#x27;</span>)</span><br><span class="line">waveform, sample_rate = torchaudio.load(filepath=filename, num_frames=<span class="number">3</span>, frame_offset =<span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(waveform)</span><br><span class="line">waveform, sample_rate = torchaudio.load(filepath=filename)</span><br><span class="line"><span class="built_in">print</span>(waveform)</span><br><span class="line"></span><br><span class="line">waveform tensor:tensor([[<span class="number">0.0005</span>, <span class="number">0.0007</span>, <span class="number">0.0005</span>]])</span><br><span class="line">tensor([[<span class="number">0.0005</span>, <span class="number">0.0004</span>, <span class="number">0.0007</span>]])</span><br><span class="line">tensor([[<span class="number">0.0005</span>, <span class="number">0.0007</span>, <span class="number">0.0005</span>,  ..., <span class="number">0.0008</span>, <span class="number">0.0008</span>, <span class="number">0.0007</span>]])</span><br></pre></td></tr></table></figure>
+<h3 id="plot-waveform">plot waveform</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlip.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">plt.figure()</span><br><span class="line">plt.plot(waveform.t().numpy())</span><br><span class="line">plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="1.png" alt="1" style="zoom:40%;" /></p>
+<h2 id="data-visualization-and-transformation">Data visualization and transformation</h2>
+<p>orchAudio has many <a target="_blank" rel="noopener" href="https://pytorch.org/tutorials/beginner/audio_preprocessing_tutorial.html#transformations">transforms available</a> in the library. take a deeper look at understanding the following concepts and transforms: <code>Spectrogram</code>, <code>MelSpectrogram</code>, <code>Waveform</code>, and <code>MFCC</code>. Once we understand these concepts we will create our spectrogram images of the yes/no dataset to be used in the computer vision model.</p>
+<p><strong>the list of supported transformations</strong></p>
+<ul>
+<li>Resample: Resample waveform to a different sample rate.</li>
+<li>Spectrogram: Create a spectrogram from a waveform.</li>
+<li>GriffinLim: Compute waveform from a linear scale magnitude spectrogram using the Griffin-Lim transformation.</li>
+<li>ComputeDeltas: Compute delta coefficients of a tensor, usually a spectrogram.</li>
+<li>ComplexNorm: Compute the norm of a complex tensor.</li>
+<li>MelScale: This turns a normal STFT into a Mel-frequency STFT, using a conversion matrix.</li>
+<li>AmplitudeToDB: This turns a spectrogram from the power/amplitude scale to the decibel scale.</li>
+<li>MFCC: Create the Mel-frequency cepstrum coefficients from a waveform.</li>
+<li>MelSpectrogram: Create MEL Spectrograms from a waveform using the STFT function in PyTorch.</li>
+<li>MuLawEncoding: Encode waveform based on mu-law companding.</li>
+<li>MuLawDecoding: Decode mu-law encoded waveform.</li>
+<li>TimeStretch: Stretch a spectrogram in time without modifying pitch for a given rate.</li>
+<li>FrequencyMasking: Apply masking to a spectrogram in the frequency domain.</li>
+<li>TimeMasking: Apply masking to a spectrogram in the time domain.</li>
+</ul>
+<h3 id="load-the-dataset-folders-into-a-dataloader">Load the Dataset folders into a DataLoader</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path</span><br><span class="line"></span><br><span class="line">data_dir = <span class="string">&quot;data/SpeechCommands/speech_commands_v0.02&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_data</span>(<span class="params">path=os.path.join(<span class="params">data_dir, <span class="string">&quot;yes/00f0204f_nohash_0.wav&quot;</span></span>)</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;Data Name: <span class="subst">&#123;os.path.split(path)[<span class="number">1</span>]&#125;</span>&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(folder):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;create directory&quot;</span>)</span><br><span class="line">        os.mkdir(folder)</span><br><span class="line">        torchaudio.datasets.SPEECHCOMMANDS(folder, download=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    waveform, sample_rate = torchaudio.load(filepath=path)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;waveform shape: <span class="subst">&#123;waveform.shape&#125;</span>  sample rate: <span class="subst">&#123;sample_rate&#125;</span>\n&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> waveform, sample_rate</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">load_audio_data</span>(<span class="params">label</span>):</span></span><br><span class="line">    path = os.path.join(data_dir, label)</span><br><span class="line">    dataset = []</span><br><span class="line">    walker = <span class="built_in">sorted</span>(<span class="built_in">str</span>(p) <span class="keyword">for</span> p <span class="keyword">in</span> Path(path).glob(<span class="string">&#x27;*.wav&#x27;</span>))</span><br><span class="line">    <span class="keyword">for</span> i, file_path <span class="keyword">in</span> <span class="built_in">enumerate</span>(walker):</span><br><span class="line">        data = <span class="built_in">dict</span>()</span><br><span class="line">        file_name = os.path.split(file_path)[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># E.g 3d794813_nohash_0</span></span><br><span class="line">        speaker = os.path.splitext(file_name)[<span class="number">0</span>]</span><br><span class="line">        speaker_id, utterance_number = speaker.split(<span class="string">&#x27;_nohash_&#x27;</span>)</span><br><span class="line">        utterance_number = <span class="built_in">int</span>(utterance_number)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># load_audio_data</span></span><br><span class="line">        waveform, sample_rate = get_data(file_path)</span><br><span class="line">        data[<span class="string">&#x27;waveform&#x27;</span>] = waveform</span><br><span class="line">        data[<span class="string">&#x27;sample_rate&#x27;</span>] = sample_rate</span><br><span class="line">        data[<span class="string">&#x27;label&#x27;</span>] = label</span><br><span class="line">        data[<span class="string">&#x27;speaker_id&#x27;</span>] = speaker_id</span><br><span class="line">        data[<span class="string">&#x27;utterance_number&#x27;</span>] = utterance_number</span><br><span class="line">        dataset.append(data)</span><br><span class="line">    <span class="keyword">return</span> dataset</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+<p>load the dataset into a <a target="_blank" rel="noopener" href="https://pytorch.org/tutorials/beginner/basics/data_tutorial.html">DataLoader</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> Dataset, DataLoader</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyDataset</span>(<span class="params">Dataset</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, label</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyDataset, self).__init__()</span><br><span class="line">        self.data = load_audio_data(label)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span>(<span class="params">self, item</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.data[item]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.data)</span><br><span class="line">      </span><br><span class="line">      </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dataloader</span>(<span class="params">labels, batch_size</span>):</span></span><br><span class="line">    dataloaders = <span class="built_in">dict</span>()</span><br><span class="line">    <span class="keyword">for</span> label <span class="keyword">in</span> labels:</span><br><span class="line">        dataset = MyDataset(label)</span><br><span class="line">        dataloaders[label] = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=<span class="literal">True</span>, collate_fn=<span class="keyword">lambda</span> i: i,</span><br><span class="line">                                        num_workers=<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> dataloaders</span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    dataloaders = dataloader([<span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;no&#x27;</span>], <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">for</span> i, data <span class="keyword">in</span> <span class="built_in">enumerate</span>(dataloaders[<span class="string">&#x27;yes&#x27;</span>]):</span><br><span class="line">    		<span class="keyword">if</span> i &gt;= <span class="number">2</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="built_in">print</span>(data)</span><br><span class="line"></span><br><span class="line">-------------------------------------------------------------------------</span><br><span class="line">[&#123;<span class="string">&#x27;waveform&#x27;</span>: tensor([[ <span class="number">0.0005</span>, -<span class="number">0.0010</span>, -<span class="number">0.0008</span>,  ..., -<span class="number">0.0004</span>,  <span class="number">0.0002</span>,  <span class="number">0.0016</span>]]), <span class="string">&#x27;sample_rate&#x27;</span>: <span class="number">16000</span>, <span class="string">&#x27;label&#x27;</span>: <span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;speaker_id&#x27;</span>: <span class="string">&#x27;483e2a6f&#x27;</span>, <span class="string">&#x27;utterance_number&#x27;</span>: <span class="number">1</span>&#125;, &#123;<span class="string">&#x27;waveform&#x27;</span>: tensor([[-<span class="number">0.0012</span>, -<span class="number">0.0047</span>, -<span class="number">0.0022</span>,  ..., -<span class="number">0.0013</span>, -<span class="number">0.0014</span>, -<span class="number">0.0022</span>]]), <span class="string">&#x27;sample_rate&#x27;</span>: <span class="number">16000</span>, <span class="string">&#x27;label&#x27;</span>: <span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;speaker_id&#x27;</span>: <span class="string">&#x27;a60a09cf&#x27;</span>, <span class="string">&#x27;utterance_number&#x27;</span>: <span class="number">0</span>&#125;]</span><br><span class="line">[&#123;<span class="string">&#x27;waveform&#x27;</span>: tensor([[-<span class="number">6.1035e-05</span>, -<span class="number">1.5259e-04</span>, -<span class="number">2.4414e-04</span>,  ..., -<span class="number">2.4414e-04</span>,</span><br><span class="line">         -<span class="number">2.7466e-04</span>, -<span class="number">2.4414e-04</span>]]), <span class="string">&#x27;sample_rate&#x27;</span>: <span class="number">16000</span>, <span class="string">&#x27;label&#x27;</span>: <span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;speaker_id&#x27;</span>: <span class="string">&#x27;87070229&#x27;</span>, <span class="string">&#x27;utterance_number&#x27;</span>: <span class="number">4</span>&#125;, &#123;<span class="string">&#x27;waveform&#x27;</span>: tensor([[-<span class="number">0.0013</span>, -<span class="number">0.0020</span>, -<span class="number">0.0030</span>,  ..., -<span class="number">0.0025</span>, -<span class="number">0.0027</span>, -<span class="number">0.0019</span>]]), <span class="string">&#x27;sample_rate&#x27;</span>: <span class="number">16000</span>, <span class="string">&#x27;label&#x27;</span>: <span class="string">&#x27;yes&#x27;</span>, <span class="string">&#x27;speaker_id&#x27;</span>: <span class="string">&#x27;e1469561&#x27;</span>, <span class="string">&#x27;utterance_number&#x27;</span>: <span class="number">0</span>&#125;]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="transform-and-visualize">Transform and visualize</h3>
+<p>分解一些音频转换和可视化，以更好地理解它们是什么，以及它们告诉我们关于数据的内容。</p>
+<h4 id="waveform">waveform</h4>
+<p>波形是由采样率和频率产生的，并以视觉方式表示信号。这个信号可以用波形来表示，它是以图形格式表示的随时间变化的信号。音频可以被记录在不同的通道中。例如，立体声录音有两个通道，右和左。</p>
+<p>必须使用 <code>resample</code>变换来减少波形的大小，然后用图形来显示新的波形形状。</p>
+<p>绘制重采样后的波形对比图</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_waveform</span>(<span class="params">waveform, sample_rate, new_sample_rate, label</span>):</span></span><br><span class="line">    channel = <span class="number">0</span></span><br><span class="line">    waveform_transformed = torchaudio.transforms.Resample(sample_rate, new_sample_rate)(</span><br><span class="line">        waveform[channel, :].view(<span class="number">1</span>, -<span class="number">1</span>))</span><br><span class="line">    plt.figure(figsize=(<span class="number">13</span>, <span class="number">5</span>))</span><br><span class="line">    plt.subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">    plt.title(<span class="string">f&#x27;sample rate: <span class="subst">&#123;sample_rate&#125;</span>&#x27;</span>)</span><br><span class="line">    plt.plot(waveform.t().numpy())</span><br><span class="line">    plt.subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">    plt.title(<span class="string">f&#x27;new sample rate: <span class="subst">&#123;new_sample_rate&#125;</span>&#x27;</span>)</span><br><span class="line">    plt.plot(waveform_transformed.t().numpy())</span><br><span class="line">    plt.suptitle(<span class="string">f&#x27;label: <span class="subst">&#123;label&#125;</span>&#x27;</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">		waveform, sample_rate = get_data()</span><br><span class="line">    plot_waveform(waveform, sample_rate, sample_rate/<span class="number">100</span>, <span class="string">&#x27;yes&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="2.png" alt="2" style="zoom:60%;" /></p>
+<h4 id="spectrogram">Spectrogram</h4>
+<p>频谱图将音频文件的频率映射到时间上，并允许我们按频率将音频数据可视化。这张图就是我们对音频文件进行计算机视觉分类时要用到的东西。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_spectrogram</span>(<span class="params">waveform</span>):</span></span><br><span class="line">    spectrogram = torchaudio.transforms.Spectrogram()(waveform)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Shape of spectrogram: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(spectrogram.size()))</span><br><span class="line"></span><br><span class="line">    plt.figure()</span><br><span class="line">    plt.imshow(spectrogram.log2()[<span class="number">0</span>, :, :].numpy(), cmap=<span class="string">&#x27;gray&#x27;</span>)</span><br><span class="line">    <span class="comment"># plt.imsave(f&#x27;test/spectrogram_img.png&#x27;, spectrogram.log2()[0,:,:].numpy(), cmap=&#x27;gray&#x27;)</span></span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="3.png" alt="2" style="zoom:50%;" /></p>
+<h4 id="mel-spectrogram">Mel Spectrogram</h4>
+<p>Mel频谱图也是关于时间的频率，但是频率被转换为Mel Scale。Mel Scale 取频率，并根据音阶或旋律的声音感知而改变。这将内部的频率转换为Mel Scale，然后创建频谱图图像。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_melspectrogram</span>(<span class="params">waveform,sample_rate</span>):</span></span><br><span class="line">    mel_spectrogram = torchaudio.transforms.MelSpectrogram(sample_rate)(waveform)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Shape of spectrogram: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(mel_spectrogram.size()))</span><br><span class="line"></span><br><span class="line">    plt.figure()</span><br><span class="line">    plt.imshow(mel_spectrogram.log2()[<span class="number">0</span>,:,:].numpy(), cmap=<span class="string">&#x27;gray&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="4.png" alt="2" style="zoom:50%;" /></p>
+<h4 id="mel-frequency-cepstral-coefficients-mfcc">Mel-frequency cepstral coefficients (MFCC)</h4>
+<p>对MFCC所做的简化解释是，它采取频率，应用变换，其结果是由频率产生的频谱的振幅。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_mfcc</span>(<span class="params">waveform,sample_rate</span>):</span></span><br><span class="line">    mfcc_spectrogram = torchaudio.transforms.MFCC(sample_rate= sample_rate)(waveform)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Shape of spectrogram: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(mfcc_spectrogram.size()))</span><br><span class="line"></span><br><span class="line">    plt.figure()</span><br><span class="line">    plt.gcf()</span><br><span class="line">    plt.imshow(mfcc_spectrogram.log2()[<span class="number">0</span>,:,:].numpy(), cmap=<span class="string">&#x27;gray&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    plt.figure()</span><br><span class="line">    plt.plot(mfcc_spectrogram.log2()[<span class="number">0</span>,:,:].numpy())</span><br><span class="line">    plt.draw()</span><br></pre></td></tr></table></figure>
+<p><img src="5.png" alt="2" style="zoom:50%;" /></p>
+<p><img src="6.png" alt="2" style="zoom:50%;" /></p>
+<h4 id="create-an-image-from-a-spectrogram">Create an image from a Spectrogram</h4>
+<p>我们已经分解了一些理解音频数据的方法，以及我们可以在数据上使用的不同 trandformations。现在让我们创建用于分类的图像。下面是两个不同的函数，用于创建用于分类的频谱图或MFCC图像。在这个例子中，我们将使用频谱图图像，但是，请随意使用下面的MFCC图像功能，玩玩MFCC分类。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_images</span>(<span class="params">training_dataloader, label_dir</span>):</span></span><br><span class="line">    <span class="comment"># make directory</span></span><br><span class="line">    directory = <span class="string">f&#x27;data/spectrograms/<span class="subst">&#123;label_dir&#125;</span>/&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> (os.path.isdir(directory)):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Data exists&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        os.makedirs(directory, mode=<span class="number">0o777</span>, exist_ok=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> batch <span class="keyword">in</span> training_dataloader:</span><br><span class="line">            <span class="keyword">for</span> data <span class="keyword">in</span> batch:</span><br><span class="line">                waveform = data[<span class="string">&#x27;waveform&#x27;</span>]</span><br><span class="line">                <span class="built_in">id</span> = data[<span class="string">&#x27;speaker_id&#x27;</span>]</span><br><span class="line">                utterance_number = data[<span class="string">&#x27;utterance_number&#x27;</span>]</span><br><span class="line"></span><br><span class="line">                <span class="comment"># create transformed waveforms</span></span><br><span class="line">                spectrogram_tensor = torchaudio.transforms.Spectrogram()(waveform)</span><br><span class="line"></span><br><span class="line">                plt.figure()</span><br><span class="line">                plt.imsave(<span class="string">f&#x27;data/spectrograms/<span class="subst">&#123;label_dir&#125;</span>/spec_img_<span class="subst">&#123;<span class="built_in">id</span>&#125;</span>_<span class="subst">&#123;utterance_number&#125;</span>.png&#x27;</span>,</span><br><span class="line">                        spectrogram_tensor.log2()[<span class="number">0</span>, :, :].numpy(), cmap=<span class="string">&#x27;gray&#x27;</span>)</span><br><span class="line">                </span><br><span class="line">         </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_mfcc_images</span>(<span class="params">training_dataloader, label_dir</span>):</span></span><br><span class="line">    <span class="comment"># make directory</span></span><br><span class="line">    directory = <span class="string">f&#x27;data/MfccSpectrograms/<span class="subst">&#123;label_dir&#125;</span>&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> (os.path.isdir(directory)):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Data exists&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        os.makedirs(directory, mode=<span class="number">0o777</span>, exist_ok=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">for</span> batch <span class="keyword">in</span> training_dataloader:</span><br><span class="line">            <span class="keyword">for</span> data <span class="keyword">in</span> batch:</span><br><span class="line">                waveform = data[<span class="string">&#x27;waveform&#x27;</span>]</span><br><span class="line">                <span class="built_in">id</span> = data[<span class="string">&#x27;speaker_id&#x27;</span>]</span><br><span class="line">                sample_rate = data[<span class="string">&#x27;sample_rate&#x27;</span>]</span><br><span class="line">                utterance_number = data[<span class="string">&#x27;utterance_number&#x27;</span>]</span><br><span class="line"></span><br><span class="line">                <span class="comment"># create transformed waveforms</span></span><br><span class="line">                mfcc_spectrogram = torchaudio.transforms.MFCC(sample_rate=sample_rate)(waveform)</span><br><span class="line">                plt.figure()</span><br><span class="line">                fg1 = plt.gcf()</span><br><span class="line">                plt.imshow(mfcc_spectrogram.log2()[<span class="number">0</span>, :, :].numpy(), cmap=<span class="string">&#x27;gray&#x27;</span>)</span><br><span class="line">                plt.draw()</span><br><span class="line">                fg1.savefig(os.path.join(directory, <span class="string">f&#x27;spec_img_<span class="subst">&#123;<span class="built_in">id</span>&#125;</span>_<span class="subst">&#123;utterance_number&#125;</span>.png&#x27;</span>), dpi=<span class="number">100</span>)</span><br><span class="line"></span><br><span class="line">                </span><br></pre></td></tr></table></figure>
+<p><img src="7.png" alt="2" style="zoom:50%;" /></p>
+<p><img src="8.png" alt="2" style="zoom:50%;" /></p>
+<h2 id="build-speech-model">Build Speech Model</h2>
+<p>Now that we have created the spectrogram images its time to build the computer vision model. We will be using the <code>torchvision</code> package to build our vision model.</p>
+<h3 id="load-spectrogram-images-into-a-dataloader-for-training">Load Spectrogram images into a DataLoader for training</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> datasets, models, transforms</span><br><span class="line"></span><br><span class="line">data_path = <span class="string">&#x27;data/spectrograms&#x27;</span></span><br><span class="line"></span><br><span class="line">yes_and_no_data = datasets.ImageFolder(</span><br><span class="line">    root=data_path,</span><br><span class="line">    transform=transforms.Compose([</span><br><span class="line">        transforms.Resize((<span class="number">201</span>, <span class="number">81</span>)),</span><br><span class="line">        transforms.ToTensor()</span><br><span class="line">    ]</span><br><span class="line">    )</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># split data to test and train</span></span><br><span class="line"><span class="comment"># use 80% to train</span></span><br><span class="line">train_size = <span class="built_in">int</span>(<span class="number">0.8</span> * <span class="built_in">len</span>(yes_and_no_data))</span><br><span class="line">training_data, test_data = random_split(yes_and_no_data, [train_size, <span class="built_in">len</span>(yes_and_no_data) - train_size])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;train_size: <span class="subst">&#123;<span class="built_in">len</span>(training_data)&#125;</span>   test_size: <span class="subst">&#123;<span class="built_in">len</span>(test_data)&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line">training_dataloader = DataLoader(dataset=training_data,</span><br><span class="line">                                 batch_size=batch_size,</span><br><span class="line">                                 num_workers=num_workers,</span><br><span class="line">                                 shuffle=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">test_dataloader = DataLoader(dataset=test_data,</span><br><span class="line">                             batch_size=batch_size,</span><br><span class="line">                             num_workers=num_workers,</span><br><span class="line">                             shuffle=<span class="literal">True</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="create-nn">Create NN</h3>
+<p>Using CNN to classify the audio</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CNN</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(CNN, self).__init__()</span><br><span class="line">        self.cnn = nn.Sequential(</span><br><span class="line">            <span class="comment"># size (3, 201, 81)</span></span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">3</span>, out_channels=<span class="number">32</span>, kernel_size=(<span class="number">5</span>, <span class="number">5</span>)),</span><br><span class="line">            <span class="comment"># size (32, 197, 77)</span></span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">32</span>, out_channels=<span class="number">64</span>, kernel_size=(<span class="number">5</span>, <span class="number">5</span>)),</span><br><span class="line">            <span class="comment"># size (64, 193, 73)</span></span><br><span class="line">            nn.MaxPool2d(kernel_size=<span class="number">2</span>),</span><br><span class="line">            <span class="comment"># size (64, 96, 36)</span></span><br><span class="line">            nn.Dropout2d(),</span><br><span class="line">        )</span><br><span class="line">        self.classifier = nn.Sequential(</span><br><span class="line">            nn.Flatten(),</span><br><span class="line">            nn.Linear(in_features=<span class="number">64</span> * <span class="number">96</span> * <span class="number">36</span>, out_features=<span class="number">50</span>),</span><br><span class="line">            nn.Linear(in_features=<span class="number">50</span>, out_features=<span class="number">2</span>)</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        x = self.cnn(x)</span><br><span class="line">        <span class="keyword">return</span> self.classifier(x)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">==========================================================================================</span><br><span class="line">Layer (<span class="built_in">type</span>:depth-idx)                   Output Shape              Param <span class="comment">#</span></span><br><span class="line">==========================================================================================</span><br><span class="line">CNN                                      --                        --</span><br><span class="line">├─Sequential: <span class="number">1</span>-<span class="number">1</span>                        [<span class="number">1</span>, <span class="number">64</span>, <span class="number">96</span>, <span class="number">36</span>]           --</span><br><span class="line">│    └─Conv2d: <span class="number">2</span>-<span class="number">1</span>                       [<span class="number">1</span>, <span class="number">32</span>, <span class="number">197</span>, <span class="number">77</span>]          <span class="number">2</span>,<span class="number">432</span></span><br><span class="line">│    └─Conv2d: <span class="number">2</span>-<span class="number">2</span>                       [<span class="number">1</span>, <span class="number">64</span>, <span class="number">193</span>, <span class="number">73</span>]          <span class="number">51</span>,<span class="number">264</span></span><br><span class="line">│    └─MaxPool2d: <span class="number">2</span>-<span class="number">3</span>                    [<span class="number">1</span>, <span class="number">64</span>, <span class="number">96</span>, <span class="number">36</span>]           --</span><br><span class="line">│    └─Dropout2d: <span class="number">2</span>-<span class="number">4</span>                    [<span class="number">1</span>, <span class="number">64</span>, <span class="number">96</span>, <span class="number">36</span>]           --</span><br><span class="line">├─Sequential: <span class="number">1</span>-<span class="number">2</span>                        [<span class="number">1</span>, <span class="number">2</span>]                    --</span><br><span class="line">│    └─Flatten: <span class="number">2</span>-<span class="number">5</span>                      [<span class="number">1</span>, <span class="number">221184</span>]               --</span><br><span class="line">│    └─Linear: <span class="number">2</span>-<span class="number">6</span>                       [<span class="number">1</span>, <span class="number">50</span>]                   <span class="number">11</span>,059,<span class="number">250</span></span><br><span class="line">│    └─Linear: <span class="number">2</span>-<span class="number">7</span>                       [<span class="number">1</span>, <span class="number">2</span>]                    <span class="number">102</span></span><br><span class="line">==========================================================================================</span><br><span class="line">Total params: <span class="number">11</span>,<span class="number">113</span>,048</span><br><span class="line">Trainable params: <span class="number">11</span>,<span class="number">113</span>,048</span><br><span class="line">Non-trainable params: <span class="number">0</span></span><br><span class="line">Total mult-adds (M): <span class="number">770.21</span></span><br><span class="line">==========================================================================================</span><br></pre></td></tr></table></figure>
+<h3 id="create-train-and-test-functions">Create Train and Test functions</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">net, training_dataloader, valid_dataloader, print_step = <span class="number">100</span>, optimizer=<span class="literal">None</span>, loss_fn=nn.CrossEntropyLoss(<span class="params"></span>)</span>):</span></span><br><span class="line">    hist = &#123;<span class="string">&#x27;train_loss&#x27;</span>: [], <span class="string">&#x27;train_acc&#x27;</span>: [], <span class="string">&#x27;val_loss&#x27;</span>: [], <span class="string">&#x27;val_acc&#x27;</span>: []&#125;</span><br><span class="line">    optimizer = op.Adam(net.parameters(), lr=learning_rate) <span class="keyword">if</span> optimizer <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">else</span> optimizer</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, epoch + <span class="number">1</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;epoch: <span class="subst">&#123;i&#125;</span>\n------------------------------------------&quot;</span>)</span><br><span class="line">        net.train()</span><br><span class="line">        size, acc, total_loss, batch = <span class="built_in">len</span>(training_dataloader.dataset), <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> batch, (x, y) <span class="keyword">in</span> <span class="built_in">enumerate</span>(training_dataloader):</span><br><span class="line">            pred_y = net(x)</span><br><span class="line">            loss = loss_fn(pred_y, y)</span><br><span class="line">            optimizer.zero_grad()</span><br><span class="line">            loss.backward()</span><br><span class="line">            optimizer.step()</span><br><span class="line"></span><br><span class="line">            total_loss += loss.item()</span><br><span class="line">            acc += (pred_y.argmax(<span class="number">1</span>) == y).<span class="built_in">type</span>(torch.<span class="built_in">float</span>).<span class="built_in">sum</span>().item()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> batch % print_step == <span class="number">0</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;train loss: <span class="subst">&#123;loss:&gt;5f&#125;</span>   [<span class="subst">&#123;batch * batch_size&#125;</span>/<span class="subst">&#123;size&#125;</span>]&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;train_loss: <span class="subst">&#123;total_loss / batch:&gt;5f&#125;</span>     train_acc: <span class="subst">&#123;acc / size:&gt;5f&#125;</span>     <span class="subst">&#123;size&#125;</span>&quot;</span>)</span><br><span class="line">        hist[<span class="string">&#x27;train_loss&#x27;</span>].append(total_loss / batch)</span><br><span class="line">        hist[<span class="string">&#x27;train_acc&#x27;</span>].append(acc / size)</span><br><span class="line">        net.<span class="built_in">eval</span>()</span><br><span class="line">        size, acc, total_loss, count = <span class="built_in">len</span>(valid_dataloader.dataset), <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">        <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">            <span class="keyword">for</span> x, y <span class="keyword">in</span> valid_dataloader:</span><br><span class="line">                pred_y = net(x)</span><br><span class="line">                total_loss += loss_fn(pred_y, y).item()</span><br><span class="line">                acc += (pred_y.argmax(dim=<span class="number">1</span>) == y).<span class="built_in">type</span>(torch.<span class="built_in">float</span>).<span class="built_in">sum</span>().item()</span><br><span class="line">                count += <span class="number">1</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;val_loss: <span class="subst">&#123;total_loss / count:&gt;5f&#125;</span>     val_acc: <span class="subst">&#123;acc / size:&gt;5f&#125;</span>     <span class="subst">&#123;size&#125;</span>\n&quot;</span>)</span><br><span class="line">            hist[<span class="string">&#x27;val_loss&#x27;</span>].append(total_loss / count)</span><br><span class="line">            hist[<span class="string">&#x27;val_acc&#x27;</span>].append(acc / size)</span><br><span class="line">    <span class="keyword">return</span> hist</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+<h3 id="plot-the-average-accuracy-and-loss">Plot the average accuracy and Loss</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_acc_loss</span>(<span class="params">hist</span>):</span></span><br><span class="line">    plt.figure(figsize=(<span class="number">12</span>, <span class="number">5</span>))</span><br><span class="line">    plt.subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>)</span><br><span class="line">    plt.plot(hist[<span class="string">&#x27;train_acc&#x27;</span>], label=<span class="string">&#x27;Training acc&#x27;</span>)</span><br><span class="line">    plt.plot(hist[<span class="string">&#x27;val_acc&#x27;</span>], label=<span class="string">&#x27;Validation acc&#x27;</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line">    plt.subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">    plt.plot(hist[<span class="string">&#x27;train_loss&#x27;</span>], label=<span class="string">&#x27;Training loss&#x27;</span>)</span><br><span class="line">    plt.plot(hist[<span class="string">&#x27;val_loss&#x27;</span>], label=<span class="string">&#x27;Validation loss&#x27;</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<h3 id="train-and-validation">Train and Validation</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    device = <span class="string">&#x27;cuda&#x27;</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">&#x27;cpu&#x27;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;device is <span class="subst">&#123;device&#125;</span>&#x27;</span>)</span><br><span class="line">    training_dataloader, val_dataloader = load_train_data()</span><br><span class="line">    model = CNN()</span><br><span class="line">    <span class="built_in">print</span>(summary(model, input_size=(<span class="number">1</span>, <span class="number">3</span>, <span class="number">201</span>, <span class="number">81</span>)))</span><br><span class="line">    hist = train(model, training_dataloader, val_dataloader, print_step=<span class="number">1000</span>)</span><br><span class="line">    plot_acc_loss(hist)</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">epoch: <span class="number">10</span></span><br><span class="line">------------------------------------------</span><br><span class="line">train loss: <span class="number">0.303747</span>   [<span class="number">0</span>/<span class="number">6388</span>]</span><br><span class="line">train loss: <span class="number">0.202990</span>   [<span class="number">3200</span>/<span class="number">6388</span>]</span><br><span class="line">train_loss: <span class="number">0.250494</span>     train_acc: <span class="number">0.908109</span>     <span class="number">6388</span></span><br><span class="line">val_loss: <span class="number">0.242247</span>     val_acc: <span class="number">0.909831</span>     <span class="number">1597</span></span><br></pre></td></tr></table></figure>
+<p><img src="9.png" alt="2" style="zoom:65%;" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PyTorch/" rel="tag"># PyTorch</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/08/ML5/" rel="prev" title="机器学习 by 李宏毅(5)">
+                  <i class="fa fa-chevron-left"></i> 机器学习 by 李宏毅(5)
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">723k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:57</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;10&#x2F;AudioClassification&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>
