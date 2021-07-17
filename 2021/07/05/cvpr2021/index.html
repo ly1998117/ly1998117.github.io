@@ -59,8 +59,14 @@
 <meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/30.png">
 <meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/31.png">
 <meta property="og:image" content="https://ly1998117.github.io/2021/07/05/cvpr2021/32.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/cvpr2021/33.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/cvpr2021/34.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/cvpr2021/35.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/cvpr2021/36.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/cvpr2021/37.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/cvpr2021/38.png">
 <meta property="article:published_time" content="2021-07-05T15:44:56.000Z">
-<meta property="article:modified_time" content="2021-07-09T14:50:37.566Z">
+<meta property="article:modified_time" content="2021-07-13T04:59:25.985Z">
 <meta property="article:author" content="LiuYang">
 <meta property="article:tag" content="CVPR">
 <meta property="article:tag" content="Paper">
@@ -122,7 +128,7 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">24</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">25</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
@@ -180,7 +186,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E7%94%9F%E6%88%90%E9%A2%86%E5%9F%9F"><span class="nav-number">1.</span> <span class="nav-text">图像生成领域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#information-bottleneck-disentanglement-for-identity-swapping%E6%8D%A2%E8%84%B8"><span class="nav-number">1.1.</span> <span class="nav-text">Information Bottleneck Disentanglement for Identity Swapping（换脸）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#leveraging-line-point-consistent-to-preserve-structure-for-wide-parallax-image-stitching-%E8%B4%BE%E6%A3%8B-%E5%9B%BE%E5%83%8F%E6%8B%BC%E6%8E%A5"><span class="nav-number">1.2.</span> <span class="nav-text">Leveraging Line-point Consistent to Preserve Structure for Wide Parallax Image Stitching 贾棋 （图像拼接）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#facelnpainter-high-fidelity-face-adaptation-to-heterogeneous-domains%E5%BC%82%E6%9E%84%E5%9F%9F%E6%8D%A2%E8%84%B8"><span class="nav-number">1.3.</span> <span class="nav-text">Facelnpainter: High Fidelity Face Adaptation to Heterogeneous Domains（异构域换脸）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">图像处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#deep-homography-for-efficient-stereo-image-compressioncvpr-2021-oral-%E5%9F%BA%E4%BA%8E%E5%8D%95%E5%BA%94%E6%80%A7%E5%8F%98%E6%8D%A2%E7%9A%84%E9%AB%98%E6%95%88%E5%8F%8C%E7%9B%AE%E5%9B%BE%E5%83%8F%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">Deep Homography for Efficient Stereo Image Compression（CVPR-2021 oral） 基于单应性变换的高效双目图像压缩算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#learning-scalable-ell_infty-constrained-near-lossless-image-compression-via-joint-lossy-image-and-residual-compression-%E5%9B%BE%E5%83%8F%E5%8E%8B%E7%BC%A9"><span class="nav-number">2.2.</span> <span class="nav-text">Learning Scalable \(\ell_\infty\)-constrained Near-lossless Image Compression via Joint Lossy Image and Residual Compression (图像压缩)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%95%E5%B1%82%E8%A7%86%E8%A7%89"><span class="nav-number">3.</span> <span class="nav-text">底层视觉</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#neighbor2-neighbor-self-supervised-denoising-from-single-noisy-images%E5%9B%BE%E5%83%8F%E5%8E%BB%E5%99%AA"><span class="nav-number">3.1.</span> <span class="nav-text">Neighbor2 Neighbor Self-supervised Denoising from Single Noisy Images(图像去噪)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#event-based-synthetic-aperture-imaging-with-a-hybrid-network%E5%90%88%E6%88%90%E5%AD%94%E5%BE%84%E6%88%90%E5%83%8F"><span class="nav-number">3.2.</span> <span class="nav-text">Event-based Synthetic Aperture Imaging with a Hybrid Network（合成孔径成像）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deep-animation-video-interpolation-in-the-wild-%E5%8A%A8%E6%BC%AB%E8%A7%86%E9%A2%91%E8%A7%86%E9%A2%91%E6%8B%86%E5%88%86"><span class="nav-number">3.3.</span> <span class="nav-text">Deep Animation Video Interpolation in the Wild (动漫视频视频拆分)</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E7%94%9F%E6%88%90%E9%A2%86%E5%9F%9F"><span class="nav-number">1.</span> <span class="nav-text">图像生成领域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#information-bottleneck-disentanglement-for-identity-swapping%E6%8D%A2%E8%84%B8"><span class="nav-number">1.1.</span> <span class="nav-text">Information Bottleneck Disentanglement for Identity Swapping（换脸）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#leveraging-line-point-consistent-to-preserve-structure-for-wide-parallax-image-stitching-%E8%B4%BE%E6%A3%8B-%E5%9B%BE%E5%83%8F%E6%8B%BC%E6%8E%A5"><span class="nav-number">1.2.</span> <span class="nav-text">Leveraging Line-point Consistent to Preserve Structure for Wide Parallax Image Stitching 贾棋 （图像拼接）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#facelnpainter-high-fidelity-face-adaptation-to-heterogeneous-domains%E5%BC%82%E6%9E%84%E5%9F%9F%E6%8D%A2%E8%84%B8"><span class="nav-number">1.3.</span> <span class="nav-text">Facelnpainter: High Fidelity Face Adaptation to Heterogeneous Domains（异构域换脸）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">图像处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#deep-homography-for-efficient-stereo-image-compressioncvpr-2021-oral-%E5%9F%BA%E4%BA%8E%E5%8D%95%E5%BA%94%E6%80%A7%E5%8F%98%E6%8D%A2%E7%9A%84%E9%AB%98%E6%95%88%E5%8F%8C%E7%9B%AE%E5%9B%BE%E5%83%8F%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">Deep Homography for Efficient Stereo Image Compression（CVPR-2021 oral） 基于单应性变换的高效双目图像压缩算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#learning-scalable-ell_infty-constrained-near-lossless-image-compression-via-joint-lossy-image-and-residual-compression-%E5%9B%BE%E5%83%8F%E5%8E%8B%E7%BC%A9"><span class="nav-number">2.2.</span> <span class="nav-text">Learning Scalable \(\ell_\infty\)-constrained Near-lossless Image Compression via Joint Lossy Image and Residual Compression (图像压缩)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%95%E5%B1%82%E8%A7%86%E8%A7%89"><span class="nav-number">3.</span> <span class="nav-text">底层视觉</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#neighbor2-neighbor-self-supervised-denoising-from-single-noisy-images%E5%9B%BE%E5%83%8F%E5%8E%BB%E5%99%AA"><span class="nav-number">3.1.</span> <span class="nav-text">Neighbor2 Neighbor Self-supervised Denoising from Single Noisy Images(图像去噪)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#event-based-synthetic-aperture-imaging-with-a-hybrid-network%E5%90%88%E6%88%90%E5%AD%94%E5%BE%84%E6%88%90%E5%83%8F"><span class="nav-number">3.2.</span> <span class="nav-text">Event-based Synthetic Aperture Imaging with a Hybrid Network（合成孔径成像）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deep-animation-video-interpolation-in-the-wild-%E5%8A%A8%E6%BC%AB%E8%A7%86%E9%A2%91%E8%A7%86%E9%A2%91%E6%8B%86%E5%88%86"><span class="nav-number">3.3.</span> <span class="nav-text">Deep Animation Video Interpolation in the Wild (动漫视频视频拆分)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%8F%8A%E5%A4%9A%E6%A8%A1%E6%80%81"><span class="nav-number">4.</span> <span class="nav-text">机器学习及多模态</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stablenetdeep-stable-learning-for-out-of-distribution-generalization"><span class="nav-number">4.1.</span> <span class="nav-text">StableNet：Deep Stable Learning for Out-of-Distribution Generalization</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -195,7 +201,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">51</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -208,7 +214,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -288,7 +294,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-07-09 22:50:37" itemprop="dateModified" datetime="2021-07-09T22:50:37+08:00">2021-07-09</time>
+        <time title="修改时间：2021-07-13 12:59:25" itemprop="dateModified" datetime="2021-07-13T12:59:25+08:00">2021-07-13</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -308,14 +314,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>4.5k</span>
+      <span>6.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
+      <span>6 分钟</span>
     </span>
 </div>
 
@@ -565,6 +571,57 @@
 </ul></li>
 </ul>
 <h3 id="deep-animation-video-interpolation-in-the-wild-动漫视频视频拆分">Deep Animation Video Interpolation in the Wild (动漫视频视频拆分)</h3>
+<h2 id="机器学习及多模态">机器学习及多模态</h2>
+<h3 id="stablenetdeep-stable-learning-for-out-of-distribution-generalization">StableNet：Deep Stable Learning for Out-of-Distribution Generalization</h3>
+<ul>
+<li><p>Problems of today's DL - Stability</p>
+<ul>
+<li>基本假设：独立同分布 --- 训练数据和测试数据有近似的distribution，否则 训练得到的 model performance 很难保证</li>
+</ul></li>
+<li><p>possible reason：Correlation is Unstable（something wrong in the way we use correlation）</p>
+<ul>
+<li>the source of correlation
+<ul>
+<li>Causation：Causal mechanism（Stable and explainable）</li>
+<li>Confounding：Ignoring X（Spurious Correlation）</li>
+<li>Sample Selection Bias：Conditional on Sample （Spurious Correlation）</li>
+</ul></li>
+<li>由于 Spurious Correlation 导致今天的 model 不稳定性及不可解释性</li>
+</ul>
+<p><img src="/Users/liuyang/blog/source/_posts/cvpr2021/33.png" alt="33" style="zoom:45%;" /></p></li>
+<li><p>Stable Learning：实际应用中的 Test distribution 并不是已知的（Transfer Learning（domain adaptation） 假设是已知的），stable learning 希望在不同的distribution下的average performance 没有很大的下降情况下，使 Variance（acc）降下来，性能保持稳定</p></li>
+<li><p><img src="/Users/liuyang/blog/source/_posts/cvpr2021/34.png" alt="33" style="zoom:45%;" /></p></li>
+<li><p>Stable Learning with causal features</p>
+<ul>
+<li>Stable learning focuses on causal features of the obiect itself instead of the environment</li>
+<li>相对于 Correlation structure，Causal structure 的跨分布，跨环境的不变性更有保障，causal 是更本质的刻画的机制</li>
+<li>如图所示ResNet的 feature 是全局弥散的，StableNet 希望 energy 集中到 object 上</li>
+<li><img src="/Users/liuyang/blog/source/_posts/cvpr2021/35.png" alt="35" style="zoom:50%;" /></li>
+<li>T 的改变不影响X的分布，也即X与T独立时，T和Y的 Correlation = Causality</li>
+<li><img src="/Users/liuyang/blog/source/_posts/cvpr2021/36.png" alt="1" style="zoom:40%;" /></li>
+<li>对全局样本重加权，使得所有变量之间独立，则 Correlation = Causality，可以将 Correlation model 转化成 Causality model</li>
+<li>deep learning 的非线性独立难以计算，引入傅里叶变换 （RFF)
+<ul>
+<li>Measure and eliminate the complex non-linear dependencies among features with Random Fourier Features(RFF)，对特征进行傅里叶随机特征进行增广，当维度足够大时，对增广后的特征进行线性独立，可以保证原特征在低维度的非线性独立。（类似 SVM）</li>
+<li>The computation cost is acceptable</li>
+</ul></li>
+<li>deep learning 是 batch training，但重加权需要针对全局，设计 saving and reloading 策略</li>
+</ul></li>
+<li><p>Learning sample weights globally</p>
+<ul>
+<li><p>Sample weights learning module is an independent module which can be easily assembled with current deep models.</p></li>
+<li><p>Sample weights and the classification model are trained iteratively</p>
+<p><img src="/Users/liuyang/blog/source/_posts/cvpr2021/37.png" alt="1" style="zoom:60%;" /></p></li>
+</ul></li>
+<li><p>Limitaion of Current Domain Generalization</p>
+<ul>
+<li>Domain label need to be known</li>
+<li>High heterogeneity across domains.</li>
+<li>The capacities of different domains are balanced</li>
+</ul></li>
+<li><p>Saliency map</p></li>
+</ul>
+<p><img src="/Users/liuyang/blog/source/_posts/cvpr2021/38.png" alt="1" style="zoom:60%;" /></p>
 
     </div>
 
@@ -622,14 +679,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">723k</span>
+    <span title="站点总字数">736k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:57</span>
+    <span title="站点阅读时长">11:09</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动

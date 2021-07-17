@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Tranformer 本质上是 sequence-to-sequence 的 model sequence2sequence：Input a sequence, output a sequence (The output length is determined by model)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习 by 李宏毅(6)">
+<meta property="og:url" content="https://ly1998117.github.io/2021/07/11/ML6/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="Tranformer 本质上是 sequence-to-sequence 的 model sequence2sequence：Input a sequence, output a sequence (The output length is determined by model)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/1.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/8.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/9.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/10.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/11.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/12.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/13.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/14.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/15.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/16.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/17.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/18.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/19.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/20.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/21.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/22.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/23.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/24.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/25.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/26.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/27.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/28.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/29.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/30.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/11/ML6/31.png">
+<meta property="article:published_time" content="2021-07-11T12:47:58.000Z">
+<meta property="article:modified_time" content="2021-07-16T09:32:32.834Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ly1998117.github.io/2021/07/11/ML6/1.png">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2021/07/11/ML6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;11&#x2F;ML6&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;07&#x2F;11&#x2F;ML6&#x2F;&quot;,&quot;title&quot;:&quot;机器学习 by 李宏毅(6)&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>机器学习 by 李宏毅(6) | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">25</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tranformer"><span class="nav-number">1.</span> <span class="nav-text">Tranformer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sequence-to-sequence-model"><span class="nav-number">1.1.</span> <span class="nav-text">Sequence-to-Sequence model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#encoder"><span class="nav-number">1.2.</span> <span class="nav-text">Encoder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#decoder"><span class="nav-number">1.3.</span> <span class="nav-text">Decoder</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#autoregtressive-e.g-%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB"><span class="nav-number">1.3.1.</span> <span class="nav-text">Autoregtressive （E.g 语音识别）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#non-autoregressive-nat"><span class="nav-number">1.4.</span> <span class="nav-text">Non-autoregressive （NAT)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#the-connection-between-encoder-and-decoder"><span class="nav-number">1.5.</span> <span class="nav-text">The Connection between Encoder and Decoder</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%84%E7%B1%BB-cross-attention"><span class="nav-number">1.5.1.</span> <span class="nav-text">各类 Cross Attention</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#training"><span class="nav-number">1.6.</span> <span class="nav-text">Training</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tips-in-training-seq2seq-model"><span class="nav-number">2.</span> <span class="nav-text">Tips in training seq2seq model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#copy-mechanism"><span class="nav-number">2.1.</span> <span class="nav-text">Copy Mechanism</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#guide-attention"><span class="nav-number">2.2.</span> <span class="nav-text">Guide Attention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#beam-search"><span class="nav-number">2.3.</span> <span class="nav-text">Beam Search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#optimizing-evaluation-metrics"><span class="nav-number">2.4.</span> <span class="nav-text">Optimizing Evaluation Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scheduled-sampling"><span class="nav-number">2.5.</span> <span class="nav-text">Scheduled Sampling</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">结构</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/07/11/ML6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习 by 李宏毅(6)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-11 20:47:58" itemprop="dateCreated datePublished" datetime="2021-07-11T20:47:58+08:00">2021-07-11</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-16 17:32:32" itemprop="dateModified" datetime="2021-07-16T17:32:32+08:00">2021-07-16</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="tranformer">Tranformer</h2>
+<p>本质上是 sequence-to-sequence 的 model</p>
+<p><strong>sequence2sequence：Input a sequence, output a sequence (The output length is determined by model)</strong></p>
+<span id="more"></span>
+<ul>
+<li>Application
+<ul>
+<li>语音识别</li>
+<li><img src="1.png" alt="1" style="zoom:50%;" /></li>
+<li>机器翻译</li>
+<li><img src="2.png" alt="1" style="zoom:50%;" /></li>
+<li>语音翻译 （某些语言没有文字）</li>
+<li><img src="3.png" alt="1" style="zoom:50%;" />
+<ul>
+<li>E.g 闽南语（Hokkien） 不能语音识别</li>
+<li><img src="4.png" alt="1" style="zoom:50%;" /></li>
+</ul></li>
+<li>语音合成（Text-to-Speech Synthesis）</li>
+<li><img src="5.png" alt="1" style="zoom:50%;" /></li>
+<li>聊天机器人（chatbot）</li>
+<li><img src="6.png" alt="1" style="zoom:40%;" /></li>
+<li>Natural Language Processing （NLP)
+<ul>
+<li>seq2seq 在NLP领域应用广泛，很多NLP任务可以看做 Question Answering (QA)，让机器读一段文字，然后输入Q，输出A</li>
+<li>为不同的任务构建特定模型效果会更好</li>
+</ul></li>
+<li>syntactic parsing 语法解析
+<ul>
+<li>Input：sequence output：tree （看做是 sequence）</li>
+<li><img src="7.png" alt="1" style="zoom:20%;" /></li>
+</ul></li>
+<li>multi-label Classification （相同的事物可以属于多个class）：E.g 文章分类，一篇文章可能属于多种类别，不能用 <strong>Multi-Class Classification</strong> 的问题解决，文章对应的 class 数目不确定，所以使用 seq2seq model， 输出的class数目由model决定
+<ul>
+<li><img src="8.png" alt="1" style="zoom:30%;" /></li>
+</ul></li>
+<li>Object Detection</li>
+</ul></li>
+</ul>
+<h3 id="sequence-to-sequence-model">Sequence-to-Sequence model</h3>
+<p>一般的 Seq2seq model 分为Encoder and Decoder 两部分</p>
+<p><img src="9.png" alt="1" style="zoom:20%;" /></p>
+<h3 id="encoder">Encoder</h3>
+<p>Task：输入一排向量，输出一排向量</p>
+<p><img src="10.png" alt="1" style="zoom:20%;" /></p>
+<p>Model：you can use RNN，CNN，self-attention，fulliy-connected</p>
+<p>Transformer 中使用 Self-attention 作为Encoder，Positional Encoding 加入了位置信息</p>
+<p><img src="11.png" alt="1" style="zoom:30%;" /></p>
+<p>Encoder 可以分为多个block的堆叠，每一个 Block 包括多个layer ，如图所示为Transformer的结构</p>
+<p><img src="12.png" alt="1" style="zoom:20%;" /></p>
+<p>在Transformer中，self-attention layer 使用<strong>residual connection</strong>实现，然后将输出进行 <strong>layer normalization</strong>，即对同一个 feature 的不同的 dimension 计算 mean 和 standard deviation 进行normalize （不同于 batch normalization，对不同 feature 的同一个 dimension normalize）</p>
+<p><img src="13.png" alt="1" style="zoom:20%;" /></p>
+<p>Self-attention Normalize 之后的结果作为 fully-connected 的输入，同样进行 residual 的操作，和 layer normalization 得到的结果就是一个 block的输出</p>
+<h3 id="decoder">Decoder</h3>
+<h4 id="autoregtressive-e.g-语音识别">Autoregtressive （E.g 语音识别）</h4>
+<ul>
+<li><p>读入Encoder 的输出， Decoder 产生语音识别的结果，让Decoder 产生一段文字，需要设置一个特殊的开始符号 <strong>BEGIN OF Sentence （BOS）</strong>，可以用 One-hot 方法向量化。</p></li>
+<li><p>Decoder 输出一个向量，长度等于 Vocabulary的长度。经过 Softmax 得到的 Vector 为distribution，Vector 中的 argmax 对应的字为最终的输出 <span class="math inline">\(y_i\)</span></p></li>
+<li><p>将输出 <span class="math inline">\(y_1\)</span>的 one-hot Vector 作为Decoder的下一个输入，得到输出 <span class="math inline">\(y_{i+1}\)</span>。转上一步直到最后一个输出，也就是Decoder 的输入是上一个时间点的输出</p></li>
+<li><p>若一个输出错误，可能会导致接下来的输出全部错误，即Error Propagation问题</p>
+<p><img src="14.png" alt="1" style="zoom:40%;" /></p></li>
+</ul>
+<p>Transformer 中的decoder如图</p>
+<p><img src="15.png" alt="1" style="zoom:50%;" /></p>
+<p>Encoder 和Decoder 的主要差别在于 Masked Multi-head Attention ，Self-Attention 产生b时不能考虑右侧的输入</p>
+<p><img src="16.png" alt="1" style="zoom:40%;" /></p>
+<p><img src="17.png" alt="1" style="zoom:40%;" /></p>
+<p>Why？直觉上，<span class="math inline">\(a^1\)</span> -&gt; <span class="math inline">\(a^4\)</span> 存在先后次序，所以不考虑未输入</p>
+<p>为了使 Decoder 不会永远输出下去，需要一个 END 字符表示终止</p>
+<h3 id="non-autoregressive-nat">Non-autoregressive （NAT)</h3>
+<p>不是一次产生一个字，而是产生整个句子，输入为一列 BEGIN TOKEN</p>
+<p><img src="18.png" alt="1" style="zoom:40%;" /></p>
+<ul>
+<li>如何确定输出的长度？
+<ul>
+<li>另外训练 classifier，输入是Encoder的输出，输出是NAT的 output 的长度</li>
+<li>or 输入足够长的BEGIN，忽略输出中 END 之后的字</li>
+</ul></li>
+<li>NAT 平行化输出，速度更快</li>
+<li>可以控制输出的长度，classifier</li>
+<li>但是performance 往往不如 AT Decoder</li>
+</ul>
+<p><img src="19.png" alt="1" style="zoom:40%;" /></p>
+<h3 id="the-connection-between-encoder-and-decoder">The Connection between Encoder and Decoder</h3>
+<p><strong>Cross Attention</strong>，链接 Encoder 和 Decoder，Encoder 两个输入，Decoder 一个输入</p>
+<p><img src="20.png" alt="1" style="zoom:40%;" /></p>
+<p>Encoder Input：K，V</p>
+<p>Decoder Input：q</p>
+<p>Docoder 输出经过 linear transform 得到 q</p>
+<p><img src="21.png" alt="1" style="zoom:30%;" /></p>
+<p>Decoder 为 auto-regressive ，每输出一个都经过如上运算，将值输出的 FC 中</p>
+<h4 id="各类-cross-attention">各类 Cross Attention</h4>
+<p><img src="22.png" alt="1" style="zoom:40%;" /></p>
+<h3 id="training">Training</h3>
+<p>以 <strong>语音识别</strong> 为例，需要的训练数据：声音信号 + 对应的文字 label</p>
+<p>Ground Truth： One-hot encoding Output：distribution</p>
+<p>计算 GT 与 Output 之间的 CrossEntropy 并 minimize</p>
+<p><img src="23.png" alt="1" style="zoom:25%;" /></p>
+<p><strong>Teacher Forcing：using ground truth as input</strong></p>
+<p>每一个汉字都是一个 one-hot vector，因此分别计算每个输出的 loss 再平均</p>
+<p><img src="24.png" alt="1" style="zoom:25%;" /></p>
+<h2 id="tips-in-training-seq2seq-model">Tips in training seq2seq model</h2>
+<h3 id="copy-mechanism">Copy Mechanism</h3>
+<p>在特定的情况下，Decoder 需要从输入中复制一些信息，而不是完全由 decoder 创造</p>
+<ul>
+<li><p>Chat-Bot （ E.g：decoder 在训练中不会包含所有人名，所以需要从输入中提取 ）</p>
+<ul>
+<li>User：Hi，XXX</li>
+<li>Bot：Hello XXX，nice to meet u</li>
+</ul></li>
+<li><p>Summarization：从文章中摘出句子组成一个摘要</p></li>
+</ul>
+<h3 id="guide-attention">Guide Attention</h3>
+<p>语音合成，产生丢失一个字符的情况。在一些任务中，输入和输出是单调一致的，例如，语音识别、TTS等。</p>
+<p>红色曲线代表Attention分数，越高分数越大，语音合成输入是文字，模型应该从左向右产生声音。</p>
+<p><img src="25.png" alt="25" style="zoom:50%;" /></p>
+<p>但实际上的Attention是乱序的</p>
+<p><img src="26.png" alt="25" style="zoom:50%;" /></p>
+<p>Guide Attention 迫使 Attention 有固定顺序或形式</p>
+<ul>
+<li>Monotonic Attention</li>
+<li>Location-aware Attention</li>
+</ul>
+<h3 id="beam-search">Beam Search</h3>
+<p>假设 Decoder 只产生 2 个字 A and B。<strong>在第一个 Time Step,它在 A B 里面决定一个 distribution 最大输出, 然后决定了 A 以后, 再把 A 当做输入, 然后再决定 A B 要选哪一个</strong>，每次选择分数最高的结果作为输出得到的路径就是 <strong>Greedy Decoding</strong>，但是也有可能存在其他更好的输出，但是不可能暴力计算最好的值</p>
+<p><img src="27.png" alt="25" style="zoom:40%;" /></p>
+<p>Beam Search 就是一种估测最好路径的算法</p>
+<p>问题：如果用 Beam Search , 会发现机器不断输出重复的话，它不断开始陷入无穷重复的话，如果不是用 Beam Search, 而是有加一些随机性, 虽然结果不完全好, 但是看起来至少是比较正常的句子, 所以有时候对 Decorder 来说,没有找出分数最高的路, 反而结果是比较好的</p>
+<p><strong>看任务的本身的特性</strong></p>
+<ul>
+<li><p>假设一个任务,<strong>答案非常地明确</strong></p>
+<p>比如说语音识别, 说一句话识别的结果只有一个可能, 有唯一可能的正确答案。对这种任务而言,通常 Beam Search 就会比较有用</p></li>
+<li><p><strong>需要机器发挥创造力的时候,这时候 Beam Search 作用不大</strong></p>
+<p>例如 Sentence Completion, 给定故事的前半部, 后半部有无穷多可能的发展方式, 这种需要有一些创造力的,有不是只有一个答案的任务,往往需要在 Decoder 中加入随机性,</p>
+<p>例如 语音合成 TTS, 也非常需要随机性的任务</p></li>
+</ul>
+<h3 id="optimizing-evaluation-metrics">Optimizing Evaluation Metrics</h3>
+<p>评估标注：BLEU Score，Decoder 先产生一个完整的句子以后,再去跟正确的答案一整句做比较, 即是拿两个句子之间做比较</p>
+<p><strong>训练</strong>的时候,<strong>每一个词汇是分开考虑的</strong>,训练的时候 Minimize Cross Entropy</p>
+<p>所以 Minimize Cross Entropy 不一定能 Maxize BLEU Score，因为 BLEU Score 本身很复杂,不能微分的，所以不能作为训练的Loss 进行 Optimization</p>
+<p><img src="28.png" alt="25" style="zoom:100%;" /></p>
+<p>在不能 optimize 时，可以尝试 Reinforce Learing 强行Train一发，把无法 Optimize 的 Loss Function 当做是 RL 的 Reward, 把 Decoder 当做是 Agent。</p>
+<h3 id="scheduled-sampling">Scheduled Sampling</h3>
+<p><strong>训练跟测试是不一致</strong>，测试的时候, Decoder 看到的是自己的输出, 所以测试的时候, Decoder 会看到一些错误的东西。但是在训练的时候, Decoder 看到的是完全正确的, 那这个不一致的现象叫做, <strong>Exposure Bias</strong></p>
+<p><img src="29.png" alt="25" style="zoom:30%;" /></p>
+<p>假设 Decoder 在训练的时候, 永远只看过正确的data, 那在测试的时候, 就会<strong>一步错 步步错</strong>, 因为对 Decoder 来说,它从来没有看过错的东西, 所以Decoder 没有纠错能力。</p>
+<p><strong>Scheduled Sampling</strong>：<strong>给 Decoder 的输入加一些错误的东西</strong>, 但是 Scheduled Sampling 其实会伤害 Transformer 的平行化能力</p>
+<p><img src="30.png" alt="25" style="zoom:30%;" /></p>
+<h2 id="结构">结构</h2>
+<p><img src="31.png" alt="25" style="zoom:40%;" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/10/AudioClassification/" rel="prev" title="AudioClassification">
+                  <i class="fa fa-chevron-left"></i> AudioClassification
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/13/summary3/" rel="next" title="Learning Summary 3">
+                  Learning Summary 3 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">736k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">11:09</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;11&#x2F;ML6&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>
