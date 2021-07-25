@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Conditional Generation 控制 Generator 的输出，加入 Condition x，似的Generator 根据 x 和 z 产生 y">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习 by 李宏毅(7-2)">
+<meta property="og:url" content="https://ly1998117.github.io/2021/07/17/ML7-2/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="Conditional Generation 控制 Generator 的输出，加入 Condition x，似的Generator 根据 x 和 z 产生 y">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/1.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/8.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/9.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/10.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/11.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/12.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/1.gif">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/13.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/14.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/15.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/16.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/17.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/20.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/21.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/18.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/19.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/22.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/23.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/24.png">
+<meta property="article:published_time" content="2021-07-17T08:31:12.000Z">
+<meta property="article:modified_time" content="2021-07-17T16:18:55.506Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="生成式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ly1998117.github.io/2021/07/17/ML7-2/1.png">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2021/07/17/ML7-2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;17&#x2F;ML7-2&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;07&#x2F;17&#x2F;ML7-2&#x2F;&quot;,&quot;title&quot;:&quot;机器学习 by 李宏毅(7-2)&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>机器学习 by 李宏毅(7-2) | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">26</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">12</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#conditional-generation"><span class="nav-number">1.</span> <span class="nav-text">Conditional Generation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#application"><span class="nav-number">1.1.</span> <span class="nav-text">Application</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#text-to-image%E6%96%87%E5%AD%97%E5%AF%B9%E5%9B%BE%E7%89%87%E7%9A%84%E7%94%9F%E6%88%90%E5%AE%9E%E9%99%85%E6%98%AF-supervised-learning-%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%AD%E7%BB%83%E9%9B%86%E6%98%AF%E5%9B%BE%E7%89%87%E5%92%8C%E5%AF%B9%E5%BA%94%E7%9A%84%E6%96%87%E5%AD%97%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.1.</span> <span class="nav-text">Text-to-image：文字对图片的生成，实际是 supervised learning 的问题，训练集是图片和对应的文字描述。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#framework"><span class="nav-number">1.2.</span> <span class="nav-text">Framework</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#train"><span class="nav-number">1.3.</span> <span class="nav-text">Train</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#image-translation-pix2pix"><span class="nav-number">1.3.1.</span> <span class="nav-text">Image Translation （Pix2pix）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sound-to-image"><span class="nav-number">1.4.</span> <span class="nav-text">sound to image</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#image-%E4%BA%A7%E7%94%9F-gif"><span class="nav-number">1.5.</span> <span class="nav-text">Image 产生 gif</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gan-in-unsupervised-learning"><span class="nav-number">2.</span> <span class="nav-text">GAN in Unsupervised Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%B1%E5%83%8F%E9%A3%8E%E6%A0%BC%E8%BF%81%E7%A7%BB"><span class="nav-number">2.1.</span> <span class="nav-text">影像风格迁移</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cycle-gan"><span class="nav-number">2.2.</span> <span class="nav-text">Cycle GAN</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E4%B8%AAnetwork"><span class="nav-number">2.2.1.</span> <span class="nav-text">三个Network</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#problem"><span class="nav-number">2.2.2.</span> <span class="nav-text">Problem</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E5%90%91-cycle-gan"><span class="nav-number">2.2.3.</span> <span class="nav-text">双向 Cycle GAN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%88%E6%9E%9C"><span class="nav-number">2.2.4.</span> <span class="nav-text">效果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E9%A3%8E%E6%A0%BC%E8%BF%81%E7%A7%BB-gan"><span class="nav-number">2.3.</span> <span class="nav-text">其他风格迁移 GAN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#text-style-transfer"><span class="nav-number">2.4.</span> <span class="nav-text">Text Style Transfer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%BA%94%E7%94%A8"><span class="nav-number">2.5.</span> <span class="nav-text">其他应用</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/07/17/ML7-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习 by 李宏毅(7-2)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-17 16:31:12" itemprop="dateCreated datePublished" datetime="2021-07-17T16:31:12+08:00">2021-07-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-18 00:18:55" itemprop="dateModified" datetime="2021-07-18T00:18:55+08:00">2021-07-18</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="conditional-generation">Conditional Generation</h2>
+<p>控制 Generator 的输出，加入 Condition x，似的Generator 根据 x 和 z 产生 y</p>
+<span id="more"></span>
+<p><img src="1.png" alt="1" style="zoom:60%;" /></p>
+<h3 id="application">Application</h3>
+<h4 id="text-to-image文字对图片的生成实际是-supervised-learning-的问题训练集是图片和对应的文字描述">Text-to-image：文字对图片的生成，实际是 supervised learning 的问题，训练集是图片和对应的文字描述。</h4>
+<p>Generator 的输入 x 就是文字描述，可以用 RNN、Encoder等 seq2seq 模型对文字向量化</p>
+<p><img src="2.png" alt="1" style="zoom:60%;" /></p>
+<p>每次 Generate 出来什么样的角色, 取决于 Sample 的得到的 z，例如下图所示：</p>
+<p><img src="3.png" alt="1" style="zoom:60%;" /></p>
+<h3 id="framework">Framework</h3>
+<p>Generator 有两个输入,一个是从 Normal Distribution,Sample 出来的 z,另外一个是 x,也就是一段文字。Generator 会產生一张图片 y</p>
+<p><img src="4.png" alt="1" style="zoom:60%;" /></p>
+<p>Discriminator 以y作为输入，输出一个 Scalar 表示 y的真实性。</p>
+<p><img src="5.png" alt="1" style="zoom:40%;" /></p>
+<h3 id="train">Train</h3>
+<p>训练这个 Discriminator , 如果看到真实的图片,就输出 1, 如果看到生成的图片,就输出 0, 可以训练 Discriminator, 然后 Discriminator 跟 Generator 反复训练。但是这样不能解决 Conditional GAN 的问题。</p>
+<p>如果 Train Discriminator 时, 这个 <strong>Discriminator 只会把 y 当做输入</strong>, 那 Generator 只会产生可以骗过 Discriminator 的, 非常清晰的人脸图片，但是<strong>跟输入完全没有任何关系</strong>，直接忽视 x 的信息</p>
+<p>所以在 Conditional GAN 中的Discriminator 的 Input 除了y 还需要 X 的信息，只有当 y 的质量够真实且符合 x 的描述时，才会 Output 一个足够高的分数。</p>
+<p>所以训练时，需要文字跟图像成对的资料<strong>Pair of Data</strong></p>
+<p><img src="6.png" alt="1" style="zoom:60%;" /></p>
+<p>真正的成对的数据的label 为1，X 和 随机的生成的图像的 label 为0。 只有 Positive Sample 和 Negative Sample 来训练这样的 Discriminator 的效果还是比较差，还需要加上 真实的图片和错误的x的情况。</p>
+<p><img src="7.png" alt="1" style="zoom:60%;" /></p>
+<p>然后 Generator 跟 Discriminator,反覆的训练, 最后才会得到好的结果,这就是 Conditional GAN</p>
+<h4 id="image-translation-pix2pix">Image Translation （Pix2pix）</h4>
+<p>Conditional GAN 的应用, 也可以<strong>输入一张图片, 产生新的图片</strong></p>
+<p>比如说</p>
+<ul>
+<li>输入房屋的设计图, 然后让 Generator 直接输出房屋</li>
+<li>输入黑白的图片,然后输出 彩色图片 （图像修复）</li>
+<li>输入素描的图, 输出实景、实物</li>
+<li>输入白天的图片,输出变成晚上的图片</li>
+<li>输入起雾的图片, 输出没有雾的图片,把雾去掉</li>
+</ul>
+<p><img src="8.png" alt="1" style="zoom:70%;" /></p>
+<p><strong>实现以上效果从文字生成图像没区别</strong>, 现在只是从图像生成图像, 把文字的部分用图像取代掉而已,那当然同样的做法。当然 Image Translation 可以用 Supervised Learning的方法</p>
+<p>但是如果用 Supervised Learning 的方法, 得不到非常好的结果, 通常用 Supervised Learning 的方法, 训练一个图片生图片的 Generator, 输出的结果可能如图</p>
+<p><img src="9.png" alt="1" style="zoom:70%;" /></p>
+<p>输出的图像<strong>非常地模糊</strong>,直觉上因為<strong>同样的输入,可能对应到不一样的输出</strong>。而使用GAN之后的输出十分的真实，</p>
+<p><img src="10.png" alt="1" style="zoom:70%;" /></p>
+<p>但是，GAN 的输出有时会产生输入不存在的东西，如图的左上角部分，解决这个问题可以使用 supervised + GAN 的方法。Generator 在训练的时候, 一方面它要去骗过 Discriminator, 但同时又要产生一张图片跟真实答案越像越好。</p>
+<p><img src="11.png" alt="1" style="zoom:100%;" /></p>
+<h3 id="sound-to-image">sound to image</h3>
+<p>比如听一段狗叫声,看能不能够画出一只狗，那声音跟影像成对的数据，可以通过爬到大量的影片, 把一帧的图片对应到一小段声音，收集起来就可以 Train 一个 Conditional GAN</p>
+<p><img src="12.png" alt="1" style="zoom:70%;" /></p>
+<h3 id="image-产生-gif">Image 产生 gif</h3>
+<p><img src="1.gif" alt="1" style="zoom:70%;" /></p>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1905.08233">https://arxiv.org/abs/1905.08233</a></p>
+<h2 id="gan-in-unsupervised-learning">GAN in Unsupervised Learning</h2>
+<p>训练GAN的时候使用的数据是不成对的，有一堆X我们有一堆Y,但<strong>X跟Y是不成对</strong>，叫做unlabeled的数据</p>
+<p><img src="13.png" alt="1" style="zoom:70%;" /></p>
+<h3 id="影像风格迁移"><strong>影像风格迁移</strong></h3>
+<p>假设一个 Deep Network 的 TASK 是把X domain的图（假设是真人的照片）, 映射到 Y domain的图（二次元人物的头像），没有任何 pair data</p>
+<p>unconditional的 generation 的 generator 架构如图，另<strong>输入</strong>我们不再是Gaussian的分布, 而是<strong>X domain的图片的分佈</strong>,输出是<strong>Y domain图片的分佈</strong></p>
+<p><img src="14.png" alt="1" style="zoom:70%;" /></p>
+<p>Discriminator，能够识别 Y domain 的图和非 Y domain 的图，<strong>Y domain的图</strong>就给它<strong>高分</strong>,看到<strong>不是Y domain的图</strong>。但 Generator 并不会考虑到 X domain 的信息，仅仅是输出Y domain 就可以另 Discriminator 得到高分</p>
+<p><img src="15.png" alt="1" style="zoom:70%;" /></p>
+<p>生成的图像与<strong>输入的真实的照片,没有什麼特别的关系</strong>。conditional GAN 也有一模一样的问题, conditional GAN 假设discriminator只看Y, 那可能会无视generator的输入, 產生出来的结果不符合要求。</p>
+<p>如果我们要<strong>从unpaired的data学习 没有办法直接套用conditional GAN的想法</strong>,<strong>conditional GAN里面, 是有成对的数据</strong></p>
+<h3 id="cycle-gan">Cycle GAN</h3>
+<p>训练俩个 Generator ，一个 负责 X domain 转换到 Y domain，另一个负责 Y domain 转换到 X domain</p>
+<p>在训练的时候增加了一个额外的目标, 希望输入一张图片, 从X domain转成Y domain以后, 要从Y domain转回原来一模一样的X domain的图, 经过两次转换以后,<strong>输入跟输出要越接近越好</strong>。</p>
+<p><img src="16.png" alt="1" style="zoom:70%;" /></p>
+<p>相当于有一个循环, 从X到Y 在从Y回到X, 所以叫做 Cycle GAN, 要让输入经过两次转换以后,变成输出。输入跟输出越接近越好,这个叫做 Cycle 的 consistency。</p>
+<h4 id="三个network"><strong>三个Network</strong></h4>
+<ol type="1">
+<li>第一个generator, 把X转成Y</li>
+<li>第二个generator, 把Y还原回原来的X</li>
+<li>discriminator, 分辨蓝色的这个generator它的输出, 像不像是Y domain的图</li>
+</ol>
+<p><strong>加入了这个橙色的</strong>从Y到X的generator以后, 蓝色的generator 就不能够随便生成跟输入没有关系的人脸</p>
+<h4 id="problem">Problem</h4>
+<p>但是Generator 可能会学习到一些奇怪的关联，只能保证两个 Generator 可以还原，但是中间的 Y domain 与原始图像的关系并不是我们希望的。这个问题有可能发生，但是并没有好的方法解决。</p>
+<p>实际上你要使用Cycle GAN的时候,<strong>这种问题没有那么容易出现</strong>, 输入跟输出往往就会看起来非常像,而且甚至不用cycle GAN, 拿一般的GAN来做, 这种图片风格转换的任务,往往也做得起来。</p>
+<h4 id="双向-cycle-gan">双向 Cycle GAN</h4>
+<p><strong>Cycle GAN可以是双向的</strong>，在训练cycle GAN的时候, 可以同时做另外一个方向的训练,也就是</p>
+<ul>
+<li>橙色的generator, 负责Y domain 转换到 X domain</li>
+<li>蓝色的generator, 负责把X domain的图片还原回原来Y domain的图片</li>
+</ul>
+<p><img src="17.png" alt="1" style="zoom:40%;" /></p>
+<h4 id="效果">效果</h4>
+<p><img src="20.png" alt="1" style="zoom:70%;" /></p>
+<p>失败结果</p>
+<p><img src="21.png" alt="1" style="zoom:70%;" /></p>
+<h3 id="其他风格迁移-gan">其他风格迁移 GAN</h3>
+<p><img src="18.png" alt="1" style="zoom:70%;" /></p>
+<ul>
+<li><p>Disco GAN、Dual GAN,他们跟Cycle GAN没有半毛钱的不同</p></li>
+<li><p>Disco GAN、Dual GAN、Cycle GAN, 是完全不同的团队,在几乎一样的时间,提出了几乎一模一样的想法。</p></li>
+</ul>
+<p>另外一个更进阶的,可以做影像风格转换的版本,叫做StarGAN，Cycle GAN 只能在两种风格间做转换,那StarGAN 可以在多种风格间做转换。</p>
+<p><img src="19.png" alt="1" style="zoom:70%;" /></p>
+<h3 id="text-style-transfer">Text Style Transfer</h3>
+<p>例如，负面的语句转换为正面的句子，同样可以用 Cycle GAN 实现。</p>
+<p><strong>收集一大堆负面的句子,收集一大堆正面的句子</strong></p>
+<p><img src="22.png" alt="1" style="zoom:70%;" /></p>
+<p>存在问题，这个sequence to sequence model 输出是文字, 接到discriminator无法 Gradient descend，只能作为 RL 问题去训练。</p>
+<p>效果展示</p>
+<p><img src="23.png" alt="1" style="zoom:40%;" /></p>
+<h3 id="其他应用">其他应用</h3>
+<p><img src="24.png" alt="1" style="zoom:70%;" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E7%94%9F%E6%88%90%E5%BC%8F/" rel="tag"># 生成式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/15/ML7-1/" rel="prev" title="机器学习 by 李宏毅(7-1)">
+                  <i class="fa fa-chevron-left"></i> 机器学习 by 李宏毅(7-1)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/18/Core-PyTorch/" rel="next" title="Deep Learning with PyTorch -- Part 1 Core PyTorch (C1-C3)">
+                  Deep Learning with PyTorch -- Part 1 Core PyTorch (C1-C3) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">807k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">12:13</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;17&#x2F;ML7-2&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>

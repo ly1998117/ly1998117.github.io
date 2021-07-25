@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Unsupervised Learning - Deep Generative Model this post will tell you a bit more about generative models: what they are, why they are important, and where they might be going.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习 by 李宏毅(7-2)">
+<meta property="og:url" content="https://ly1998117.github.io/2021/07/23/ML8-1/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="Unsupervised Learning - Deep Generative Model this post will tell you a bit more about generative models: what they are, why they are important, and where they might be going.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/1.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/1.gif">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/8.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/9.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/10.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/11.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/12.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/14.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/13.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/15.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/16.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/10.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/17.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/18.png">
+<meta property="article:published_time" content="2021-07-23T09:50:55.000Z">
+<meta property="article:modified_time" content="2021-07-25T13:44:20.170Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="生成式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ly1998117.github.io/2021/07/23/ML8-1/1.png">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2021/07/23/ML8-1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;23&#x2F;ML8-1&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;07&#x2F;23&#x2F;ML8-1&#x2F;&quot;,&quot;title&quot;:&quot;机器学习 by 李宏毅(7-2)&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>机器学习 by 李宏毅(7-2) | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">26</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">12</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#unsupervised-learning---deep-generative-model"><span class="nav-number">1.</span> <span class="nav-text">Unsupervised Learning - Deep Generative Model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#generative-model"><span class="nav-number">2.</span> <span class="nav-text">Generative Model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pixelrnn"><span class="nav-number">2.1.</span> <span class="nav-text">PixelRNN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#variational-autoencoder-vae"><span class="nav-number">2.2.</span> <span class="nav-text">Variational Autoencoder （VAE)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#auto-encoder"><span class="nav-number">2.2.1.</span> <span class="nav-text">Auto-encoder</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#variational-autoencoder"><span class="nav-number">2.2.2.</span> <span class="nav-text">Variational Autoencoder</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#why-vae"><span class="nav-number">2.2.3.</span> <span class="nav-text">Why VAE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#problems"><span class="nav-number">2.2.4.</span> <span class="nav-text">Problems</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gan"><span class="nav-number">2.3.</span> <span class="nav-text">GAN</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/07/23/ML8-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习 by 李宏毅(7-2)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-23 17:50:55" itemprop="dateCreated datePublished" datetime="2021-07-23T17:50:55+08:00">2021-07-23</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-25 21:44:20" itemprop="dateModified" datetime="2021-07-25T21:44:20+08:00">2021-07-25</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="unsupervised-learning---deep-generative-model">Unsupervised Learning - Deep Generative Model</h2>
+<p>this post will tell you a bit more about generative models: what they are, why they are important, and where they might be going.</p>
+<span id="more"></span>
+<p>This tremendous amount of information is out there and to a large extent easily accessible — either in the physical world of atoms or the digital world of bits. The only tricky part is to develop models and algorithms that can analyze and understand this treasure trove of data.</p>
+<p><strong>Generative models are one of the most promising approaches towards this goal</strong>. To train a generative model we first collect a large amount of data in some domain (e.g., think millions of images, sentences, or sounds, etc.) and then train a model to generate data like it. The intuition behind this approach follows a famous quote from <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Richard_Feynman">Richard Feynman</a>:</p>
+<blockquote>
+<p>“What I cannot create, I do not understand.”</p>
+<p>—Richard Feynman</p>
+</blockquote>
+<h2 id="generative-model">Generative Model</h2>
+<ul>
+<li>PixelRNN</li>
+<li>Variational Autoencoder （VAE)</li>
+<li>Generative Adversarial Network （GAN)</li>
+</ul>
+<h3 id="pixelrnn">PixelRNN</h3>
+<ul>
+<li><p>Task：To create an image, generating a pixel each time. E.g 3x3 images</p></li>
+<li><p>Method:</p>
+<ul>
+<li>Initial a pixel (RGB-3d) as input of neura network, output a new pixel</li>
+<li>the first pixel and ouput pixel as input of neural network, output the third pixel</li>
+<li>Finally, we can output 8 pixel</li>
+</ul></li>
+<li><p>This neural network is called RNN, and can be trained just with a large collection of images without any a annotation</p></li>
+</ul>
+<p><img src="1.png" alt="1" style="zoom:40%;" /></p>
+<p><img src="2.png" alt="2" style="zoom:40%;" /></p>
+<ul>
+<li><p>Tips：</p>
+<ul>
+<li>if each pixel is represented by 3 numbers( corresponding to RGB ）, the performance is not acceptable. Each pixel can be represented by a 1-N encoding feature, the dimension is represented the color (256x256x256).</li>
+<li>Dimensionality reduction，clustering the similar color -&gt; 167 colors in total</li>
+</ul></li>
+<li><p>WaveNet - Voice synthesis</p>
+<ul>
+<li><p>直接对声音信号进行 sample 作为 Input</p></li>
+<li><p>给定前面一段声音信号，predict 下一个信号加入前面的声音信号作为 Input</p>
+<p><img src="1.gif" alt="1" style="zoom:100%;" /></p></li>
+</ul></li>
+</ul>
+<h3 id="variational-autoencoder-vae">Variational Autoencoder （VAE)</h3>
+<h4 id="auto-encoder">Auto-encoder</h4>
+<p><img src="3.png" alt="3" style="zoom:40%;" /></p>
+<p>训练好的NN Decoder 可以看做 Generative Network，输入 Random Vector 就可以得到一个 Image</p>
+<p><img src="4.png" alt="3" style="zoom:40%;" /></p>
+<p>但实际上的 Performance 比较差</p>
+<h4 id="variational-autoencoder">Variational Autoencoder</h4>
+<p>NN Encoder output 两个 Vector，如图所示，经过一系列运算得到 Vector C，即 Autoencoder的code</p>
+<p><img src="5.png" alt="3" style="zoom:40%;" /></p>
+<p>假设 vector C 为10维，可以固定8维，采样其余2维。从而控制变量得出每个 dimension 的作用，产生不同的图像</p>
+<p><img src="6.png" alt="6" style="zoom:40%;" /></p>
+<p>2维进行采样得到的结果</p>
+<p><img src="7.png" alt="6" style="zoom:40%;" /></p>
+<h4 id="why-vae">Why VAE</h4>
+<ul>
+<li><p>Intuitive Reason:</p>
+<ul>
+<li>Autodecoder: 将Image encode 到 code space 中的一个点，所以在点与点之间进行sample得到的code，decode 之后可能与两张 real image 无关。</li>
+<li>VAE：将 Image encode 的过程中加入noise，所以一个 Image 对应 code space 中的一片区域，所以两张相近的Image 对应的 code field 很接近，区域之间 sample 得到的图像更有可能与real image 相关</li>
+<li><img src="8.png" alt="6" style="zoom:30%;" /></li>
+<li>VAE的 M 向量等于 AE 的 Code，C 向量为 包含 noise 的code，exp 可以使 noise 可正可负，<span class="math inline">\(\sigma\)</span>是e的方差，</li>
+<li><img src="9.png" alt="6" style="zoom:30%;" /></li>
+<li>如果仅仅 minimize loss，模型学习到的 variance 会为0，也就是没有noise 等于原本的 AE，因此对其的取值进行限制</li>
+<li><img src="10.png" alt="6" style="zoom:40%;" /></li>
+<li>画出图像，发现当 <span class="math inline">\(\sigma\)</span> = 0, variance=1 时，公式的值最小，人为限制<span class="math inline">\(\sigma\)</span> 取值尽接近0。其中 m的平方为L2正则化</li>
+<li><img src="11.png" alt="6" style="zoom:40%;" /></li>
+</ul></li>
+<li><p>Official Reason：</p>
+<ul>
+<li><p>每个图片都是高维空间的一个点，我们需要<strong>估计图片在高维空间的概率分布 P(x)</strong>，从而根据分布 sample 得到新的图片与real data接近的可能性最大。</p>
+<ul>
+<li><p>可以使用 Gaussian Mixture Model</p></li>
+<li><p><img src="12.png" alt="6" style="zoom:40%;" /></p></li>
+<li><p>P(m) 为不同的 Gaussian Distribution 的权值，然后根据weight 决定从哪一个 Guassian sample data</p></li>
+<li><p>怎么从 Guassian Mixture Model Sample?</p>
+<ul>
+<li><p>根据 multinomial distribution 决定sample 哪个 Guassian</p></li>
+<li><p>每个Guassian 有不同的 mean，variance</p></li>
+<li><p><span class="math display">\[
+  P(x) = \sum_{m}^{}P(m)P(x|m)
+  \]</span></p></li>
+<li><p>Each x you generate is from a mixture, Distributed representation is better than cluster</p></li>
+</ul></li>
+</ul></li>
+<li><p>对于 VAE：</p>
+<ul>
+<li><p>sample vector z from normal distribution <span class="math inline">\(z \text{~} N(0,1)\)</span>，Each dimension represents an attribute</p></li>
+<li><p>根据 z 决定Gaussian 的mean，variance，z的取值可能性是无限的</p></li>
+<li><p><span class="math display">\[
+  x|z\text{~N(μ(z)},\sigma(z))
+  \]</span></p></li>
+<li><p><span class="math display">\[
+  \mu(z), \sigma(z) = NN(z)
+  \]</span></p></li>
+<li><p><img src="14.png" alt="6" style="zoom:40%;" /></p></li>
+<li><p>每一个sample得到的z，都对应 P(x) 上的一个 Guassian，所以有无穷多的Guassian</p></li>
+<li><p><img src="13.png" alt="6" style="zoom:35%;" /></p></li>
+<li><p>得到 distribution P(x)，z 可以从任何分布 sample</p></li>
+<li><p><span class="math display">\[
+  P(x) = \int_{z}P(z)P(x|z)dz
+  \]</span></p></li>
+<li><p>Maximizing the likelihood of the observed x</p></li>
+<li><p><span class="math display">\[
+  L = \sum_{x} logP(x)
+  \]</span></p></li>
+<li><p>即调整 NN 的参数，使得 L 最大</p></li>
+<li><p><img src="15.png" alt="6" style="zoom:35%;" /></p></li>
+<li><p><span class="math display">\[
+  logP(x) = \int_{z}q(z|x)logP(x)dz \text{,                q(z|x) 是任意 distribution}
+  \]</span></p></li>
+<li><p><span class="math display">\[
+  =\int_zq(z|x)log(\frac{P(z,x)}{P(z|x)})dz=\int_zq(z|x)log(\frac{P(z,x)}{q(z|x)}\frac{q(z|x)}{P(z|x)})
+  \]</span></p></li>
+<li><p><span class="math display">\[
+  =\int_zq(z|x)log(\frac{P(z,x)}{q(z|x)})dz+\int_zq(z|x)log(\frac{q(z|x)}{P(x|z)})dz
+  \]</span></p></li>
+<li><p><span class="math display">\[
+  =\int_zq(z|x)log(\frac{P(z,x)}{q(z|x)})dz+KL(q(z|x)||p(x|z))\text{,         KL divergence &gt;=0}
+  \]</span></p></li>
+<li><p><span class="math display">\[
+  \ge\int_zq(z|x)log(\frac{p(z,x)}{q(z|x)})dz\text{,    Lower Bound }L_b
+  \]</span></p></li>
+<li><p><span class="math display">\[
+  logP(x) = L_b + KL(q(z|x)||p(x|z))\text{,      L}_b=\int_zq(z|x)log(\frac{p(x|z)P(z)}{q(z|x)})dz
+  \]</span></p></li>
+<li><p>P(x|z) 为Decoder，q(z|x)为 Encoder，Maximizing logP(x) 等价于 Maximizing <span class="math inline">\(L_b\)</span>，Find 合适的<span class="math inline">\(p(x|z) \text{ and }q(z|x)\)</span></p></li>
+<li><p>固定<span class="math inline">\(p(x|z)\)</span> 调整 <span class="math inline">\(q(z|x)\)</span> ，因为 logP(x) 的大小只和 <span class="math inline">\(p(x|z)\)</span>有关所以如图，最后KL越来越小，<span class="math inline">\(p(x|z) \text{ and }q(z|x)\)</span>越来越接近。</p></li>
+<li><p><img src="16.png" alt="6" style="zoom:35%;" /></p></li>
+<li><p><span class="math display">\[
+  L_b =\int_zq(z|x)log(\frac{P(z)}{q(z|x)})dz + \int_zq(z|x)log(P(x|z))dz
+  \]</span></p></li>
+<li><p><span class="math display">\[
+  L_b = -KL(q(z|x)||P(z))+ \int_zq(z|x)log(P(x|z))dz
+  \]</span></p></li>
+<li><p>Minimizing <span class="math inline">\(KL(q(z|x)||P(z))\)</span>，调整 Encoder 参数，使得 Mean 和 Variance 和 P(z)越接近越好，等价于<img src="10.png" alt="6" style="zoom:30%;" /></p></li>
+<li><p>Maximizing</p></li>
+<li><p><span class="math display">\[
+  \int_zq(z|x)log(P(x|z))dz=E_{q(z|x)}log(P(x|z))
+  \]</span></p></li>
+<li><p>等价于 x 输入到 Encoder得到 distribution q(z|x)，sample 出一个z，输入Decoder 中得到distribution P(x|z)，使得 P(x|z) 的 Mean 接近 x，就可以 Maximizing log(P(x|z))</p></li>
+<li><p><img src="17.png" alt="6" style="zoom:30%;" /></p></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="problems">Problems</h4>
+<ul>
+<li>VAE 并没有真正学习模拟真实的图像，只是记忆存在的data，尝试生成和已有data一样的data</li>
+</ul>
+<p><img src="18.png" alt="6" style="zoom:30%;" /></p>
+<h3 id="gan">GAN</h3>
+<p>previous Post</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E7%94%9F%E6%88%90%E5%BC%8F/" rel="tag"># 生成式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/20/summary4/" rel="prev" title="summary4">
+                  <i class="fa fa-chevron-left"></i> summary4
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">807k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">12:13</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;23&#x2F;ML8-1&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>
