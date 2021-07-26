@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Flow-based model">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习 by 李宏毅(8-2)">
+<meta property="og:url" content="https://ly1998117.github.io/2021/07/25/ML8-2/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="Flow-based model">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/1.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/8.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/9.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/10.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/11.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/12.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/13.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/14.png">
+<meta property="article:published_time" content="2021-07-25T13:54:18.000Z">
+<meta property="article:modified_time" content="2021-07-26T16:39:59.801Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="生成式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ly1998117.github.io/2021/07/25/ML8-2/1.png">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2021/07/25/ML8-2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;25&#x2F;ML8-2&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;07&#x2F;25&#x2F;ML8-2&#x2F;&quot;,&quot;title&quot;:&quot;机器学习 by 李宏毅(8-2)&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>机器学习 by 李宏毅(8-2) | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">26</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">12</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#generative-model"><span class="nav-number">1.</span> <span class="nav-text">Generative Model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#generator"><span class="nav-number">1.1.</span> <span class="nav-text">Generator</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flow-based-model"><span class="nav-number">2.</span> <span class="nav-text">Flow-based model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#math-background"><span class="nav-number">2.1.</span> <span class="nav-text">Math Background</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#jacobian-matrix---%E9%9B%85%E5%85%8B%E6%AF%94"><span class="nav-number">2.1.1.</span> <span class="nav-text">Jacobian Matrix---雅克比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#determinant"><span class="nav-number">2.1.2.</span> <span class="nav-text">Determinant</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#change-of-variable-theorem"><span class="nav-number">2.1.3.</span> <span class="nav-text">Change of Variable Theorem</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flow-based-model-1"><span class="nav-number">2.2.</span> <span class="nav-text">Flow-based model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#how-to-design-g"><span class="nav-number">2.3.</span> <span class="nav-text">How to design G</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#couping-layer-and-comput-g-1j_g"><span class="nav-number">2.3.1.</span> <span class="nav-text">Couping Layer and comput \(G^{-1},J_{G}\)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#x1-convolution"><span class="nav-number">2.3.2.</span> <span class="nav-text">1X1 Convolution</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#application"><span class="nav-number">2.4.</span> <span class="nav-text">Application</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/07/25/ML8-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习 by 李宏毅(8-2)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-25 21:54:18" itemprop="dateCreated datePublished" datetime="2021-07-25T21:54:18+08:00">2021-07-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-27 00:39:59" itemprop="dateModified" datetime="2021-07-27T00:39:59+08:00">2021-07-27</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Flow-based model</p>
+<span id="more"></span>
+<h2 id="generative-model">Generative Model</h2>
+<ul>
+<li>Component-by-component (Auto-regressive Model)
+<ul>
+<li>What is the best order for the components?
+<ul>
+<li>通常从左上角开始生成 pixel</li>
+</ul></li>
+<li>Slow generation</li>
+</ul></li>
+<li>Variational Auto-encoder
+<ul>
+<li>Maximizing a lower bound</li>
+</ul></li>
+<li>GAN
+<ul>
+<li>Unstable training</li>
+</ul></li>
+</ul>
+<h3 id="generator">Generator</h3>
+<ul>
+<li><p>A generator G is a network. The network defines a probability distribution <span class="math inline">\(P_G\)</span></p></li>
+<li><p><span class="math inline">\(P_G\)</span>与<span class="math inline">\(P_{data}\)</span> 越接近越好，具体来说：</p></li>
+<li><p><span class="math display">\[
+  \{x^1, x^2,x^3,...,x^m\}\ from\ P_{data}
+  \]</span></p>
+<p><span class="math display">\[
+  G^*=arg \underset{G}{max}\sum_{i=1}^{m} logP_G(x^i)
+  \]</span></p></li>
+<li><p>等价于 Minimizing，推导见 8-1 <span class="math display">\[
+  arg\underset{G}{min}KL(P_{data}||P_G)
+  \]</span></p></li>
+<li><p>由于<span class="math inline">\(P_G\)</span>非常复杂，很难知道如何 Maximizing <span class="math inline">\(G^*\)</span>，Flow-based model 可以直接 Optimize</p></li>
+</ul>
+<h2 id="flow-based-model">Flow-based model</h2>
+<h3 id="math-background">Math Background</h3>
+<h4 id="jacobian-matrix---雅克比">Jacobian Matrix---雅克比</h4>
+<p><span class="math display">\[
+x = \begin{bmatrix}x_1 \\x_2\end{bmatrix}\text{,        z}= \begin{bmatrix}z_1 \\z_2 \end{bmatrix}
+\]</span></p>
+<p><span class="math display">\[
+x = f(z)\text{,             z=}f^{-1}(x)
+\]</span></p>
+<p><span class="math display">\[
+J_f = \begin{bmatrix}\frac{\partial x_1}{\partial z_1} \space \space \frac{\partial x_1}{\partial z_2} \\ \frac{\partial x_2}{\partial z_1}\space \space \frac{\partial x_2}{\partial z_2} \end{bmatrix}\text{,         .} J_{f^{-1}} = \begin{bmatrix} \frac{\partial z_1}{\partial x_1} \space \space \frac{\partial z_1}{\partial x_2} \\ \frac{\partial z_2}{\partial x_1}\space \space \frac{\partial z_2}{\partial x_2} \end{bmatrix}
+\]</span></p>
+<p><span class="math display">\[
+J_f*J_{f^{-1}} = I
+\]</span></p>
+<h4 id="determinant">Determinant</h4>
+<p>行列式-det(Matrix)</p>
+<p><img src="1.png" alt="1" style="zoom:30%;" /></p>
+<h4 id="change-of-variable-theorem">Change of Variable Theorem</h4>
+<p>假设 Generator 为 <span class="math inline">\(x=f(z)\)</span>，input distribution 为<span class="math inline">\(\pi(z)\)</span>，output distribution 为 <span class="math inline">\(p(x)\)</span></p>
+<p><img src="2.png" alt="1" style="zoom:30%;" /></p>
+<p>distribution 的面积恒为1，利用微积分求出二者的关系</p>
+<p><img src="3.png" alt="1" style="zoom:30%;" /></p>
+<p><img src="4.png" alt="1" style="zoom:30%;" /> <span class="math display">\[
+p\left(x^{\prime}\right)\left|\operatorname{det}\left[\begin{array}{ll}\Delta x_{11} &amp; \Delta x_{21} \\\Delta x_{12} &amp; \Delta x_{22}\end{array}\right]\right|=\pi\left(z^{\prime}\right) \Delta z_{1} \Delta z_{2}
+\]</span></p>
+<p><span class="math display">\[
+p\left(x^{\prime}\right)\left|\frac{1}{\Delta z_{1} \Delta z_{2}}\operatorname{det}\left[\begin{array}{a}\Delta x_{11} &amp; \Delta x_{21} \\\Delta x_{12} &amp; \Delta x_{22}\end{array}\right]\right|=\pi\left(z^{\prime}\right)
+\]</span></p>
+<p><span class="math display">\[
+p\left(x^{\prime}\right)\left|\operatorname{det}\left[\begin{array}{a}\frac{\Delta x_{11}}{\Delta z_1} &amp; \frac{\Delta x_{21}}{\Delta z_1} \\\frac{\Delta x_{12}}{\Delta z_2} &amp;\frac{\Delta x_{22}}{\Delta z_2}\end{array}\right]\right|=\pi\left(z^{\prime}\right)
+\]</span></p>
+<p><span class="math display">\[
+p\left(x^{\prime}\right)\left|\operatorname{det}\left[\begin{array}{ll}\partial x_{1} / \partial z_{1} &amp; \partial x_{2} / \partial z_{1} \\ \partial x_{1} / \partial z_{2} &amp; \partial x_{2} /\partial z_{2} \end{array}\right]\right|=\pi\left(z^{\prime}\right)
+\]</span></p>
+<p><span class="math display">\[
+p\left(x^{\prime}\right)\left|\operatorname{det}\left[\begin{array}{ll}\partial x_{1} / \partial z_{1} &amp; \partial x_{1} / \partial z_{2} \\ \partial x_{2} / \partial z_{1} &amp; \partial x_{2} / \partial z_{2} \end{array}\right]\right|=\pi\left(z^{\prime}\right)
+\]</span></p>
+<p><span class="math display">\[
+p\left(x^{\prime}\right)\left|\operatorname{det}[J_f]\right|=\pi\left(z^{\prime}\right)
+\]</span></p>
+<p><span class="math display">\[
+p\left(x^{\prime}\right)=\pi\left(z^{\prime}\right)\left|\operatorname{det}[J_{f^{-1}}]\right|\text{,              x=f(z)}
+\]</span></p>
+<h3 id="flow-based-model-1">Flow-based model</h3>
+<p><span class="math display">\[
+G^*=arg \underset{G}{max}\sum_{i=1}^{m} logP_G(x^i)\text{,          x}=G(z)
+\]</span></p>
+<p><span class="math display">\[
+p_G\left(x^{i}\right)=\pi\left(z^{i}\right)\left|\operatorname{det}[J_{G^{-1}}]\right| \text{,                 z}^i=G^{-1}(x^i)
+\]</span></p>
+<p><span class="math display">\[
+logp_G\left(x^{i}\right)=log\pi\left(G^{-1}(x^i)\right)+log\left|\operatorname{det}[J_{G^{-1}}]\right|
+\]</span></p>
+<ul>
+<li><p>we need compute: <span class="math inline">\(det[J_{G^{-1}}]\)</span>, <span class="math inline">\(G^{-1}\)</span></p></li>
+<li><p>G 可逆，x 和 z 的大小必须一样，G的限制比较大</p></li>
+</ul>
+<p><img src="5.png" alt="1" style="zoom:40%;" /> <span class="math display">\[
+p_1\left(x^{i}\right)=\pi\left(z^{i}\right)\left|\operatorname{det}[J_{G_1^{-1}}]\right|
+\]</span></p>
+<p><span class="math display">\[
+p_2\left(x^{i}\right)=\pi\left(z^{i}\right)\left|\operatorname{det}[J_{G_1^{-1}}]\right|\left|\operatorname{det}[J_{G_2^{-1}}]\right|
+\]</span></p>
+<p><span class="math display">\[
+p_k\left(x^{i}\right)=\pi\left(z^{i}\right)\left|\operatorname{det}[J_{G_1^{-1}}]\right|...\left|\operatorname{det}[J_{G_k^{-1}}]\right|
+\]</span></p>
+<p><span class="math display">\[
+logp_k\left(x^{i}\right)=log\pi\left(z^{i}\right)+\sum_{h=1}^{k}log\left|\operatorname{det}[J_{G_h^{-1}}]\right|
+\]</span></p>
+<p><span class="math display">\[
+z^i=G^{-1}(...G^{-k}(x^i))
+\]</span></p>
+<p>当 z = 0 时，<span class="math inline">\(\pi (z)\)</span> 取得最大值</p>
+<p><img src="6.png" alt="1" style="zoom:35%;" /></p>
+<h3 id="how-to-design-g">How to design G</h3>
+<ul>
+<li>Input ：z vector</li>
+<li>output：x vector</li>
+<li>Generator：G</li>
+</ul>
+<p><span class="math display">\[
+x=G(z)
+\]</span></p>
+<p><span class="math display">\[
+J_{G}=\left[ \begin{array}{ll}\partial x_{1} / \partial z_{1}&amp; \partial x_{1} / \partial z_{2} &amp; ... &amp; \partial x_{1} / \partial z_{D} \\\partial x_{2} / \partial z_{1} &amp; \partial x_{2} / \partial z_{2}&amp;...&amp;\partial x_{2} / \partial z_{D}\\...&amp;...&amp;...&amp;...\\\partial x_{D} / \partial z_{1} &amp; \partial x_{D} / \partial z_{2} &amp; ...&amp; \partial x_{D} / \partial z_{D}\end{array} \right]
+\]</span></p>
+<h4 id="couping-layer-and-comput-g-1j_g">Couping Layer and comput <span class="math inline">\(G^{-1},J_{G}\)</span></h4>
+<p>Coupling Layer 将 z 分割为 前d维和后D-d 维两个vector，运算过程如图所示：</p>
+<p><img src="7.png" alt="1" style="zoom:40%;" /></p>
+<p>其中，F，H 为任何类型的Model 或者 Function</p>
+<ul>
+<li>How to compute <span class="math inline">\(G^{-1}\)</span></li>
+</ul>
+<p><span class="math display">\[
+z_{i\le d} = x_{i\le d}\text{,            直接 copy 前d维}
+\]</span></p>
+<p><span class="math display">\[
+\beta_{d\le i \le D} = F(z_{i\le d})\text{,          , }\gamma_{d\le i\le D}=H(z_{i\le d})
+\]</span></p>
+<p><span class="math display">\[
+z_{d\le i\le D}=\frac{x_{d\le i\le D}-\gamma_{d\le i\le D}}{\beta_{d\le i\le D}}
+\]</span></p>
+<ul>
+<li>How to compute <span class="math inline">\(J_{G}\)</span>?</li>
+</ul>
+<p><span class="math display">\[
+p\left(x^{\prime}\right)\left|\operatorname{det}[J_G]\right|=\pi\left(z^{\prime}\right)
+\]</span></p>
+<p><span class="math display">\[
+x_{i\le d}  |det[J_{G_{d\times d}}]| = z_{i\le d}\text{,          即}J_{G_{d\times d}} = I_{d\times d}
+\]</span></p>
+<p><span class="math display">\[
+x_{d\le i\le D} = \beta_{d\le i\le D}·z_{d\le i\le D}+\gamma_{d\le i\le D}
+\]</span></p>
+<p><span class="math display">\[
+J_{G_{(D-d) \times (D-d)}}=Diagonal\left[ \begin{array}{ll}\beta_d &amp; 0 &amp; ... &amp; 0 \\0 &amp; \beta_{d+1} &amp;...&amp;0\\...&amp;...&amp;...&amp;...\\0 &amp; 0 &amp; ...&amp; \beta_D \end{array} \right]
+\]</span></p>
+<p><span class="math display">\[
+det(J_G) = det \left( \begin{array}{ll} I_{d\times d} &amp; O \\ ? &amp; Diagonal \end{array} \right) = det(Diagonal) = \beta_d\beta_{d+1}...\beta_{D}
+\]</span></p>
+<p><img src="8.png" alt="1" style="zoom:40%;" /></p>
+<ul>
+<li>Stacking</li>
+</ul>
+<p>堆叠如图所示，会出现前 d 维的 input 与最终的output 的前d维完全一样，只是从 π(z) sample 到的噪声</p>
+<p><img src="9.png" alt="1" style="zoom:40%;" /></p>
+<p>所以可以将 F，H的方向</p>
+<p><img src="10.png" alt="1" style="zoom:40%;" /></p>
+<h4 id="x1-convolution">1X1 Convolution</h4>
+<p>用在 GLOW model 中</p>
+<ul>
+<li>theory</li>
+</ul>
+<p>每个 pixel 的 RGB vector 乘以 3X3的 Matrix 矩阵得到新的 pixel</p>
+<p><img src="11.png" alt="1" style="zoom:40%;" /></p>
+<p>W need to be learned，can shuffle the channels.</p>
+<p>if W is a invertible matrix, it is easy to compute <span class="math inline">\(W^{-1}\)</span>. because a matrix uninvertible only when it's determinant is 0 whitch hardly ever happens <span class="math display">\[
+x = f(z) = Wz
+\]</span></p>
+<p><span class="math display">\[
+J_{f}=\left[ \begin{array}{ll}\partial x_{1} / \partial z_{1}&amp; \partial x_{1} / \partial z_{2} &amp; \partial x_{1} / \partial z_{3} \\\partial x_{2} / \partial z_{1} &amp; \partial x_{2} / \partial z_{2}&amp;\partial x_{2} / \partial z_{3}\\\partial x_{3} / \partial z_{1} &amp; \partial x_{3} / \partial z_{2} &amp; \partial x_{3} / \partial z_{3}\end{array} \right] = \left[ \begin{array}{ll} w_{11}&amp; w_{12} &amp; w_{13} \\ w_{21} &amp;  w_{22} &amp; w_{23}\\w_{31} &amp;w_{32}&amp; w_{33}\end{array} \right]=W
+\]</span></p>
+<p>假设input 为 d x d 的RGB image，每一个 RGB pixel 对应一个 W</p>
+<p><img src="12.png" alt="1" style="zoom:40%;" /></p>
+<p>得到整个 Image 的 determinant： <span class="math display">\[
+det(input) = (det(W))^{d\times d}
+\]</span></p>
+<h3 id="application">Application</h3>
+<p><img src="13.png" alt="1" style="zoom:40%;" /></p>
+<p><img src="14.png" alt="1" style="zoom:40%;" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E7%94%9F%E6%88%90%E5%BC%8F/" rel="tag"># 生成式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/25/core-pytorch2/" rel="prev" title="Deep Learning with PyTorch -- Part 1 Core PyTorch (C4-C6)">
+                  <i class="fa fa-chevron-left"></i> Deep Learning with PyTorch -- Part 1 Core PyTorch (C4-C6)
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">813k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">12:19</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;25&#x2F;ML8-2&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>
