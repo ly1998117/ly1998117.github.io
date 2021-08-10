@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Self-Supervised Learning 芝麻街">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习 by 李宏毅(9)">
+<meta property="og:url" content="https://ly1998117.github.io/2021/07/31/ML9/index.html">
+<meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="Self-Supervised Learning 芝麻街">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/1.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/8.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/9.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/10.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/11.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/12.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/13.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/14.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/15.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/16.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/17.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/18.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/19.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/20.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/21.png">
+<meta property="og:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/22.png">
+<meta property="article:published_time" content="2021-07-31T08:56:45.000Z">
+<meta property="article:modified_time" content="2021-08-03T16:50:13.969Z">
+<meta property="article:author" content="LiuYang">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="生成式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ly1998117.github.io/Users/liuyang/blog/source/_posts/ML9/1.png">
+
+
+<link rel="canonical" href="https://ly1998117.github.io/2021/07/31/ML9/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;31&#x2F;ML9&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;07&#x2F;31&#x2F;ML9&#x2F;&quot;,&quot;title&quot;:&quot;机器学习 by 李宏毅(9)&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>机器学习 by 李宏毅(9) | LiuYang's Blog</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LiuYang's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">26</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">12</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#self-supervised-learning"><span class="nav-number">1.</span> <span class="nav-text">Self-Supervised Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#large-models"><span class="nav-number">1.1.</span> <span class="nav-text">Large Models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#what-is-self-supervised"><span class="nav-number">1.2.</span> <span class="nav-text">What is Self-Supervised?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bert"><span class="nav-number">1.3.</span> <span class="nav-text">BERT</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#masking-get-label"><span class="nav-number">1.3.1.</span> <span class="nav-text">Masking get label</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#next-sentence-prediction"><span class="nav-number">1.3.2.</span> <span class="nav-text">Next Sentence Prediction</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bert-task"><span class="nav-number">1.3.3.</span> <span class="nav-text">BERT TASK</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#application"><span class="nav-number">1.4.</span> <span class="nav-text">Application</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#case-1-sentiment-analysis"><span class="nav-number">1.4.1.</span> <span class="nav-text">Case 1： Sentiment analysis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#case-2-pos-tagging"><span class="nav-number">1.4.2.</span> <span class="nav-text">Case 2 ：POS tagging</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#case-3natural-language-inference"><span class="nav-number">1.4.3.</span> <span class="nav-text">Case 3：Natural Language Inference</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#case-4extraction-based-question-answering-qa"><span class="nav-number">1.4.4.</span> <span class="nav-text">Case 4：Extraction-based Question Answering (QA)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#qa"><span class="nav-number">1.5.</span> <span class="nav-text">Q&amp;A</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#training-bert-is-challenging"><span class="nav-number">1.6.</span> <span class="nav-text">Training BERT is challenging!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bert-embryology-%E8%83%9A%E8%83%8E%E5%AD%A6"><span class="nav-number">1.7.</span> <span class="nav-text">BERT Embryology (胚胎学)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pre-training-a-seq2seq-model"><span class="nav-number">1.8.</span> <span class="nav-text">Pre-training a seq2seq model</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="LiuYang"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">LiuYang</p>
+  <div class="site-description" itemprop="description">人与人的悲欢并不相通</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.macwk.com/" title="https:www.macwk.com&#x2F;" rel="noopener" target="_blank">Macwk</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ly1998117.github.io/2021/07/31/ML9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="LiuYang">
+      <meta itemprop="description" content="人与人的悲欢并不相通">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LiuYang's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习 by 李宏毅(9)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-31 16:56:45" itemprop="dateCreated datePublished" datetime="2021-07-31T16:56:45+08:00">2021-07-31</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-08-04 00:50:13" itemprop="dateModified" datetime="2021-08-04T00:50:13+08:00">2021-08-04</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="self-supervised-learning">Self-Supervised Learning</h2>
+<p>芝麻街 <span id="more"></span></p>
+<ul>
+<li><p><strong>ELMo</strong>, Embeddings from Language Models</p></li>
+<li><p><strong>BERT</strong>, Bidirectional Encoder Representation from Transformers</p></li>
+<li><p><strong>ERNIE</strong>, Enhanced Representation through Knowledge Integration</p></li>
+<li><p><strong>Big Bird</strong>, Tansformer for Longer Sequences</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/1.png" alt="1" style="zoom:30%;" /></p></li>
+</ul>
+<h3 id="large-models">Large Models</h3>
+<ul>
+<li><p>BERT, Extremely big model with 340M parameters</p></li>
+<li><p>ELMO, 96 M</p></li>
+<li><p>GPT-2, 1542 Million</p></li>
+<li><p>Megatron, 8 Billion</p></li>
+<li><p>T5, 11 Billion</p></li>
+<li><p>Turing NLG, 17 Billion</p></li>
+<li><p>GPT-3, 10 times larger than Turing NLG, 175 Billion</p></li>
+<li><p>Switch Transformer, 1.6 Trillion parameters</p></li>
+</ul>
+<h3 id="what-is-self-supervised">What is Self-Supervised?</h3>
+<p>在不存在 Label 情况下，进行 Supervised Learning。假设已有文章x，将文章分为x' x'' 两部分，将x'' 作为 label，x' 作为 model 的 Input。</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/2.png" alt="2" style="zoom:40%;" /></p>
+<h3 id="bert">BERT</h3>
+<p>BERT 是 Transformer Encoder ，Input vector output vector 相同的长度，常用于NLP field。</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/3.png" alt="3" style="zoom:40%;" /></p>
+<h4 id="masking-get-label">Masking get label</h4>
+<p>Input a sequence, then randomly masking some tokens，有两种方法来做mask，一种是添加一个特殊的标记 "MASK"，另一种是用一个字来替换某个字。</p>
+<ul>
+<li>replacing the word with a special token</li>
+</ul>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/4.png" alt="4" style="zoom:40%;" /></p>
+<ul>
+<li>replacing the word with a random word</li>
+</ul>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/5.png" alt="5" style="zoom:40%;" /></p>
+<p>mask后，我们把BERT的输出看作是另一个序列，我们在输出序列中寻找mask部分的相对应的输出，然后这个向量将通过一个<strong>Linear transform</strong>，即向量与一个<strong>矩阵相乘</strong>，然后做softmax，输出一个分布。输出是一个很长的向量，包含我们想要处理的每个汉字，每一个字都对应到一个分数。</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/6.png" alt="6" style="zoom:40%;" /></p>
+<p>在训练过程中，我们知道被mask的字符是什么，而BERT不知道，我们可以用一个one-hot vector来表示这个字符，并使输出和one-hot vector之间的 cross entropy 最小。实质上是分类问题，mask的字符是我们的label，BERT需要预测mask的字符。</p>
+<h4 id="next-sentence-prediction">Next Sentence Prediction</h4>
+<p>当我们训练BERT时，除了mask之外，我们还会使用另一种方法，这种额外的方法叫做<strong>Next Sentence Prediction</strong>.从数据库中拿出两个句子，然后在这<strong>两个句子之间</strong>添加一个<strong>特殊标记 [SEP]</strong>。这样，BERT就可以知道，这两个句子是不同的句子，因为这两个句子之间有一个分隔符。</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/7.png" alt="7" style="zoom:50%;" /></p>
+<p>在句子的<strong>开头</strong>添加一个<strong>特殊标记</strong>，用CLS来表示. 经过 BERT 得到一个 sequence，但只考虑CLS对应的输出，乘以一个Linear transform，再做一个<strong>二分类问题</strong>输出：是或不是，即预测，第二句是否是第一句的后续句。这个方法被称为<strong>Next Sentence Prediction</strong> 。但后来的研究发现，对于BERT要做的任务来说，<strong>Next Sentence Prediction 并没有真正的帮助</strong>。</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/8.png" alt="8" style="zoom:60%;" /></p>
+<p>还有一种类似于Next Sentence Prediction 的方法，它在文献上看起来更有用，被称为<strong>Sentence order prediction，简称SOP</strong>。主要思想是，我们最初挑选的两个句子可能是相连的，有两种可能性：要么句子1在句子2后面相连，要么句子2在句子1后面相连。让 BERT 预测两个句子的 order</p>
+<h4 id="bert-task">BERT TASK</h4>
+<p>训练目标：</p>
+<ul>
+<li>Mask 一些汉字，然后要求 BERT 填补缺失的字符</li>
+<li>预测两个句子是否有顺序关系</li>
+</ul>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/9.png" alt="9" style="zoom:70%;" /></p>
+<p>BERT的神奇之处在于，在你训练了一个填空的模型之后，它还可以<strong>用于其他任务</strong>。被称为<strong>Downstream Tasks(下游任务)</strong>，但是，当我们想让BERT学习做这些任务时，我们仍然<strong>需要一些标记的信息</strong></p>
+<p>BERT只是学习填空，但是，以后可以用来做各种你感兴趣的 Downstream Tasks 。它就像胚胎中的干细胞,它有各种无限的潜力。我们只需要给它一点数据来激发它。BERT分化成各种任务的功能细胞，被称为<strong>Fine-tune(微调)</strong></p>
+<p>为了测试Self-supervised学习的能力，通常会在<strong>多个任务上测试</strong>它，让 BERT 分化成各种任务的功能细胞，测试在每个任务上的准确性，然后我们取其平均值，得到一个总分。任务集中最著名的基准被称为<strong>GLUE，它是General Language Understanding Evaluation的缩写。</strong></p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/10.png" alt="10" style="zoom:77%;" /></p>
+<p>BERT在GLUE上的性能，</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/11.png" alt="11" style="zoom:50%;" /></p>
+<p>在这张图中，横轴表示不同的模型，除了ELMO和GPT，其他的还有各种BERT。 黑色的线，表示人类在这个任务上的准确度。这里每一个点代表一个任务，<strong>蓝色曲线</strong>表示机器<strong>GLUE得分的平均值</strong>。</p>
+<h3 id="application">Application</h3>
+<h4 id="case-1-sentiment-analysis">Case 1： Sentiment analysis</h4>
+<p>Sentiment analysis情感分析，输入 model 一个句子，让它判断这个句子是正面的还是负面的。</p>
+<p>对于BERT来说，只要给它一个判断情绪的句子，然后把<strong>CLS标记放在这个句子的前面</strong>，输入到BERT中, 这4个输入实际上对应着4个输出。但只看CLS的部分。CLS在这里输出一个向量，再进行Linear transform，也就是将它乘以一个Linear transform的矩阵，这里省略了Softmax。</p>
+<p>然而，在实践中，你必须为你的Downstream Tasks 提供<strong>标记数据</strong>，换句话说，BERT没有办法从头开始解决情感分析问题，你仍然需要向BERT提供一些标记数据，你需要向它提供大量的句子，以及它们的正负标签，来训练这个BERT模型。</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/12.png" alt="12" style="zoom:80%;" /></p>
+<p>在训练的时候，Linear transform和BERT模型都是利用Gradient descent来更新参数的。</p>
+<ul>
+<li>Linear transform的参数是<strong>随机初始化</strong>的</li>
+<li>而BERT的参数是由<strong>预训练的 Mask+NSP BERT初始化</strong>的。</li>
+</ul>
+<p>学过填空的BERT，比随机初始化新参数的网络表现更好</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/13.png" alt="13" style="zoom:40%;" /></p>
+<p>首先，在训练网络时，scratch与用学习填空的BERT初始化的网络相比，<strong>损失下降得比较慢</strong>，最后，用随机初始化参数的网络的损失仍然高于用学习填空的BERT初始化的参数。</p>
+<ul>
+<li>当你进行Self-supervised学习时，你使用了大量的<strong>无标记数据</strong>。</li>
+<li>另外，Downstream Tasks 需要少量的<strong>标记数据</strong>。</li>
+</ul>
+<p>所谓的 "半监督 "是指，你有大量的无标签数据和少量的有标签数据，这种情况被称为 "半监督"，所以使用BERT的整个过程是连续应用Pre-Train和Fine-Tune，它可以被视为一种半监督方法。</p>
+<h4 id="case-2-pos-tagging">Case 2 ：POS tagging</h4>
+<p>词性标注，给model一个句子，它必须告诉你这个句子中每个词的词性，即使这个词是相同的，也可能有不同的词性。</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/14.png" alt="14" style="zoom:80%;" /></p>
+<p>你只需向BERT输入一个句子。之后，对于这个句子中的每一个标记，它是一个中文单词，有一个代表这个单词的相应向量。然后，这些向量会依次通过Linear transform和Softmax层。最后，网络会预测给定单词所属的类别，例如，它的词性。</p>
+<p>但是，你可以把这些例子改成<strong>其他任务</strong>，例如，你可以把它们改成语音任务，或者改成计算机视觉任务。语音、文本和图像都可以表示为一排向量。虽然下面的例子是文字，但这项技术<strong>不仅限于处理文字</strong>，它还可以用于其他任务，如计算机视觉。</p>
+<h4 id="case-3natural-language-inference">Case 3：Natural Language Inference</h4>
+<p>模型输入两个句子，输出一个类别。机器要做的是判断，是否有可能<strong>从前提中推断出假设</strong>。这个前提与这个假设相矛盾吗？</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/15.png" alt="15" style="zoom:80%;" /></p>
+<p>例如，前提：一个人骑着马，然后他跳过一架破飞机。假设：这个人在一个餐馆。所以<strong>推论</strong>说这两个是<strong>矛盾</strong>的。这种任务很常见，例如，舆情分析。给定一篇文章，下面有一个评论，这个消息是同意这篇文章，还是反对这篇文章？</p>
+<p>只需要 BERT 输入两个句子，我们在这两个句子之间放一个<strong>特殊的标记</strong>，并在最开始放CLS标记。但我们只把CLS标记作为Linear transform的输入，它决定这两个输入句子的类别。</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/16.png" alt="16" style="zoom:80%;" /></p>
+<h4 id="case-4extraction-based-question-answering-qa">Case 4：Extraction-based Question Answering (QA)</h4>
+<p>回答系统，在机器读完一篇文章后，你问它一个问题，它将给你一个答案。但 Extraction-based的QA，假设<strong>答案必须出现在文章</strong>中。</p>
+<p>在这个任务中，一个输入序列包含<strong>一篇文章</strong>和<strong>一个问题</strong>，文章和问题都是一个<strong>序列</strong>。对于中文来说，每个d代表一个汉字，每个q代表一个汉字。你把d和q放入QA模型中，我们希望它输出<strong>两个正整数s和e</strong>。根据这两个正整数，我们可以直接从文章中<strong>截取第 s个字到第e个字</strong>，就是答案。</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/17.png" alt="17" style="zoom:80%;" /></p>
+<p><strong>使用BERT预训练的模型</strong>，输入一个问题，一篇文章，以及在问题和文章之间的一个特殊标记，然后我们在开头放一个CLS标记。</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/18.png" alt="18" style="zoom:60%;" /></p>
+<p>在这个任务中，需要<strong>从头训练</strong>（随机初始化）两个向量，用橙色向量和蓝色向量来表示，这两个向量的长度与BERT的输出相同。如何使用这两个向量？</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/19.png" alt="19" style="zoom:60%;" /></p>
+<ul>
+<li><p>计算<strong>橙色向量</strong>和与文件相对应的<strong>输出向量的内积</strong>, 图中有3个代表文章的标记, 即输出三个向量, 计算这三个向量与橙色向量的内积, 得到三个值, 然后通过 softmax 函数。</p>
+<p>这个内积<strong>和attention很相似</strong>，你可以把橙色部分看成是query，黄色部分看成是key，这是一个attention。然后找到分数最大的位置，图中为2，输出的起始位置应该是 s = 2</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/20.png" alt="20" style="zoom:60%;" /></p></li>
+<li><p>蓝色部分完全一样，计算得到 Scalar 取 argmax 得到 e=3</p></li>
+<li><p>最终的 answer = d2 d3</p></li>
+</ul>
+<hr />
+<h3 id="qa">Q&amp;A</h3>
+<p><strong>Q：</strong>BERT的输入长度有限制吗？</p>
+<p><strong>A：</strong>理论上没有，因为BERT模型是一个transformer的Encoder，所以可以输入很长的序列，只要你必须能够做Self-Attention，但Self-Attention的计算复杂性是非常高的。所以在实践中，BERT最多可以输入512长度的序列，Self-Attention在中间就要产生512乘以512大小的Attention Metric，那么你可能会被计算所淹没。所以实际上它的长度不是无限的。</p>
+<hr />
+<h3 id="training-bert-is-challenging">Training BERT is challenging!</h3>
+<p>BERT是这样一个著名的模型，在预训练中，它只是填空题。但是，<strong>真的不能把它训练起来</strong>。谷歌最早的BERT,它使用的<strong>数据规模已经很大</strong>了,它的数据中包含了30亿个词汇，所以你处理起来会比较痛苦,<strong>更痛苦的是训练过程</strong></p>
+<hr />
+<h3 id="bert-embryology-胚胎学">BERT Embryology (胚胎学)</h3>
+<p>BERT的训练过程中需要非常大的计算资源，所以我们想知道有没有可能，<strong>节省这些计算资源</strong>？有没有可能让它训练得更快？,</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/21.png" alt="21" style="zoom:60%;" /></p>
+<p>BERT在学习填空的过程中，学到了什么？"它在这个过程中何时学会填动词？什么时候学会填名词？ 什么时候学会填代词？ 没有人研究过这个问题。所以我们自己训练BERT后，可以观察到BERT什么时候学会填什么词汇，它是如何提高填空能力的？</p>
+<hr />
+<h3 id="pre-training-a-seq2seq-model">Pre-training a seq2seq model</h3>
+<p>上述的任务都不包括，Seq2Seq模型，如果我们要解决，Seq2Seq模型呢？BERT只是一个预训练Encoder，有没有办法预训练Seq2Seq模型的Decoder？</p>
+<p><img src="/Users/liuyang/blog/source/_posts/ML9/22.png" alt="22" style="zoom:67%;" /></p>
+<p>假设有一个Seq2Seq模型，有一个transformer，还有一个Encoder和Decoder。输入是一串句子，输出是一串句子，中间用Cross Attention连接起来，然后你故意在Encoder的输入上做一些<strong>干扰</strong>，<strong>Encoder看到的是被破坏的结果，那么Decoder输出句子被破坏前的结果，训练这个模型实际上是预训练一个Seq2Seq模型。</strong></p>
+<p>如何对输入做干扰？比如，删除一些词，打乱词的顺序，旋转词的顺序。或者插入一个MASK，再去掉一些词。总之，有各种方法。在破坏了输入的句子之后，它可以通过Seq2Seq模型来恢复它。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E7%94%9F%E6%88%90%E5%BC%8F/" rel="tag"># 生成式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/29/core-pytorch2/" rel="prev" title="Deep Learning with PyTorch -- Part 1 Core PyTorch (C4-C5)">
+                  <i class="fa fa-chevron-left"></i> Deep Learning with PyTorch -- Part 1 Core PyTorch (C4-C5)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/05/core-pytorch3/" rel="next" title="Deep Learning with PyTorch -- Part 1 Core PyTorch (C6-C8)">
+                  Deep Learning with PyTorch -- Part 1 Core PyTorch (C6-C8) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LiuYang</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">943k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">14:17</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdn.jsdelivr.net/npm/ribbon.js@1.0.2/dist/ribbon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{&quot;enable&quot;:true,&quot;tags&quot;:&quot;none&quot;,&quot;js&quot;:&quot;https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;npm&#x2F;mathjax@3.1.4&#x2F;es5&#x2F;tex-mml-chtml.js&quot;}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/quicklink@2.1.0/dist/quicklink.umd.js"></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{&quot;enable&quot;:true,&quot;home&quot;:true,&quot;archive&quot;:true,&quot;delay&quot;:true,&quot;timeout&quot;:3000,&quot;priority&quot;:true,&quot;ignores&quot;:null,&quot;url&quot;:&quot;https:&#x2F;&#x2F;ly1998117.github.io&#x2F;2021&#x2F;07&#x2F;31&#x2F;ML9&#x2F;&quot;}</script>
+  <script src="/js/third-party/quicklink.js"></script>
+
+
+
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+  <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+  <script async src="/js/cursor/explosion.js"></script>
+
+</body>
+</html>
