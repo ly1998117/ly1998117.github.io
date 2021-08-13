@@ -20,16 +20,44 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
 <script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;ly1998117.github.io&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:true,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:true,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="Adversarial Attack">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ML10">
 <meta property="og:url" content="https://ly1998117.github.io/2021/08/07/ML10/index.html">
 <meta property="og:site_name" content="LiuYang&#39;s Blog">
+<meta property="og:description" content="Adversarial Attack">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/1.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/2.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/3.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/4.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/5.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/6.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/7.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/8.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/9.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/10.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/11.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/12.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/13.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/14.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/15.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/16.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/17.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/18.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/19.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/20.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/21.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/22.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/23.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/24.png">
+<meta property="og:image" content="https://ly1998117.github.io/2021/08/07/ML10/25.png">
 <meta property="article:published_time" content="2021-08-07T11:58:37.000Z">
-<meta property="article:modified_time" content="2021-08-10T15:11:45.885Z">
+<meta property="article:modified_time" content="2021-08-13T15:50:41.521Z">
 <meta property="article:author" content="LiuYang">
 <meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ly1998117.github.io/2021/08/07/ML10/1.png">
 
 
 <link rel="canonical" href="https://ly1998117.github.io/2021/08/07/ML10/">
@@ -131,7 +159,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -144,6 +172,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#adversarial-attack"><span class="nav-number">1.</span> <span class="nav-text">Adversarial Attack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#example-of-attack"><span class="nav-number">2.</span> <span class="nav-text">Example of Attack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-to-attack"><span class="nav-number">3.</span> <span class="nav-text">How to Attack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#attack-approach"><span class="nav-number">3.1.</span> <span class="nav-text">Attack Approach</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fast-gradient-sign-method-fgsm"><span class="nav-number">3.2.</span> <span class="nav-text">Fast Gradient Sign Method （FGSM）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#white-box-vs-black-box"><span class="nav-number">4.</span> <span class="nav-text">White Box vs Black Box</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#attack-is-so-easy"><span class="nav-number">4.1.</span> <span class="nav-text">Attack Is so easy？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#one-pixel-attack"><span class="nav-number">5.</span> <span class="nav-text">One pixel attack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#universal-adversarial-attack"><span class="nav-number">6.</span> <span class="nav-text">Universal Adversarial Attack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#beyong-images"><span class="nav-number">7.</span> <span class="nav-text">Beyong Images</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attack-in-the-physical-world"><span class="nav-number">8.</span> <span class="nav-text">Attack in the Physical World</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB%E6%88%B4%E4%B8%8A%E7%89%B9%E6%AE%8A%E7%9A%84%E7%9C%BC%E9%95%9C"><span class="nav-number">8.1.</span> <span class="nav-text">人脸识别戴上特殊的眼镜</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E9%80%9A%E6%A0%87%E5%BF%97%E8%AF%86%E5%88%AB%E7%B3%BB%E7%BB%9F%E6%94%BB%E5%87%BB"><span class="nav-number">8.2.</span> <span class="nav-text">交通标志识别系统攻击</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#backdoor-in-model"><span class="nav-number">9.</span> <span class="nav-text">&quot;Backdoor&quot; in Model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#defence"><span class="nav-number">10.</span> <span class="nav-text">Defence</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#passive-defence"><span class="nav-number">10.1.</span> <span class="nav-text">Passive Defence</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#proactive-defence"><span class="nav-number">10.2.</span> <span class="nav-text">Proactive Defence</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -251,7 +280,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-08-10 23:11:45" itemprop="dateModified" datetime="2021-08-10T23:11:45+08:00">2021-08-10</time>
+        <time title="修改时间：2021-08-13 23:50:41" itemprop="dateModified" datetime="2021-08-13T23:50:41+08:00">2021-08-13</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -271,14 +300,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>0</span>
+      <span>4.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
@@ -289,7 +318,148 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        
+        <h2 id="adversarial-attack">Adversarial Attack</h2>
+<span id="more"></span>
+<p>把 Network 用在真正的应用上, 光是正确率高是不够的, 还需要能够<strong>应对来自人类的恶意</strong>, 如果 Network 的工作是要侦测有恶意的行为, 这些它要侦测的对象, 会去想办法骗过 Network, Network 要<strong>在有人试图想要欺骗它的情况下,也得到高的正确率</strong></p>
+<p>举例来说 今天都会用 Network 来做 E-Mail 的 Filtering 侦测一封邮件是不是垃圾邮件, 对于一个垃圾邮件的发信者而言, 他也会想尽办法避免他的邮件被分类垃圾邮件。</p>
+<h2 id="example-of-attack">Example of Attack</h2>
+<p>对于影像识别的系统, 给它一张照片, 它可以告诉我们说这张照片属于什么类别</p>
+<p><img src="1.png" alt="1" style="zoom:70%;" /></p>
+<p>在输入<strong>照片上面加入一个非常小的噪声</strong>, 一般这个<strong>噪声都非常非常地小</strong>,小到人肉眼看不出来。加噪声的照片叫做 <strong>Attacked Image</strong>, 没有被加噪声的照片, 一般叫 <strong>Benign Image</strong>, 是还没有被攻击的图片。Benign Image 丢到 Network 的输出是猫, 希望 Attacked Image 攻击方希望 Attacked Image 到 Network 的输出不可以是猫,要变成其他的东西。</p>
+<p>攻击大致上可以分成<strong>两种类型</strong>：</p>
+<ul>
+<li><p><strong>没有目标的攻击</strong>,没有目标的攻击原来的答案是猫, 目标让 Network 的输出不是猫</p></li>
+<li><p><strong>有目标的攻击</strong>, 希望 Network 输出不能是猫, 还要输出别的东西。比如说 我们希望加了一个噪声以后, Network 输出是海星, 才算是攻击成功。</p></li>
+</ul>
+<p>用 50 层的 ResNet 举例来说，当一个 Benign Image 没有被攻击的图片, 输入到 50 层的 ResNet 的时候,它的输出是 Tiger Cat，<strong>置信度是 0.64</strong></p>
+<p><img src="2.png" alt="2" style="zoom:67%;" /></p>
+<p>接下来在 Benign Image 上面加入一些噪声, 希望成功攻击的目标,是把 Tiger Cat 变成海星。而被攻击以后的图片如图，肉眼几乎看不出来。把这张图片丢到 ResNet 以后，<strong>ResNet 的 Output 变成 Star Fish, 而且置信度是 100 %</strong></p>
+<p>如果加入的只是<strong>一般的噪声,它并不一定会犯错</strong></p>
+<p><img src="3.png" alt="3" style="zoom:67%;" /></p>
+<ul>
+<li>图片加入了噪声,这个时候 ResNet 看到的是 Tabby Cat, 但无论如何都知道是猫科动物</li>
+<li>把噪声加得更大一点, Persian Cat 这是波斯猫</li>
+<li>把噪声再加更大一点, 人眼可能已经不知道这是什么东西了, 这个时候 ResNet 说,它看到了 Fire Screen, 机器觉得前面的噪声是这个屏风, 而后面这个橙色的猫就是火焰</li>
+</ul>
+<p>但不知道为什么加入一个人肉眼看不到的噪声的时候, 却产生了天差地远的结果</p>
+<h2 id="how-to-attack">How to Attack</h2>
+<p>Network 是一个 Function 我们叫它 f, Function 输入是一张图片,我们叫它 x0, 它的输出是一个 Distribution,这个是这个分类的结果,那我们叫它 y0。假设 <strong>Network 的参数就是固定的</strong></p>
+<ul>
+<li><p>如果是 Non-Targeted Attack，现在目标就是, <strong>找到一张新的图片</strong>用 x 来表示,当 x 丢到这个 Network f 的时候,它的输出是 y, 正确的答案叫做 ŷ, <strong>希望 y 跟 ŷ 的差距越大越好</strong>。本质<strong>解一个 Optimization 的问题</strong>, 跟训练 Network 是非常类似的。确定一个 Loss Function L, 是 y 跟 ŷ 之间的差距,<strong>取一个负号</strong>，举例来说, Classification 的 Cross Entropy，我们希望这个 <strong>Cross Entropy 越大越好</strong>,所以在 Cross Entropy 前面加一个负号。</p></li>
+<li><p><img src="4.png" alt="4" style="zoom:60%;" /></p></li>
+<li><p>Targeted Attack，先设定好目标 <span class="math inline">\(y^{target}\)</span> 来代表我们的目标, ŷ 是一个 One-Hot Vector, <span class="math inline">\(y^{target}\)</span> 也是一个 One-Hot Vector,那 <strong>y 不止跟 ŷ 越远越好,我们还要跟 <span class="math inline">\(y^{target}\)</span> 越近越好</strong> 。Loss Function 可以写成</p></li>
+<li><p><span class="math display">\[
+  L(x)=-e(y, \hat y) + e(y,y^{target})
+  \]</span></p>
+<p>然后Minimize 这个 Loss。同时加入的噪声越小越好, 也就是新图片跟原来的图片要越相近越好,<strong>x 跟 x0 要越近越好</strong>，所以解这个Optimization 的 Problem 的时候还会<strong>多加入一个限制</strong>,这个限制是 <span class="math display">\[
+  d(x,x^0) &lt;= \epsilon
+  \]</span></p>
+<p>Threshold根据人眼感知能力而定，<strong>如果 x0 跟 x 之间的差距大于 Σ,我们假设人就会看到这个噪声</strong>。d(x0,x) 就代表它们之间的距离，有各式各样不同的算法, 假设 <strong>x 是一个向量</strong>,<strong>x0 是另外一个向量</strong>, 这两个向量<strong>相减记为 Δx</strong></p></li>
+</ul>
+<p><img src="5.png" alt="5" style="zoom:50%;" /></p>
+<p>​ 假设图片x只有四个 Pixel , 把这张图片做两种不同的变化</p>
+<p>​ 第一个变化是这四个 Pixel 的顏色, 都做了非常小的改变</p>
+<p><img src="6.png" alt="6" style="zoom:50%;" /></p>
+<p>​ 第二种变化是只有右下角这个 Pixel 比较大的改变</p>
+<p><img src="7.png" alt="7" style="zoom:50%;" /></p>
+<p>​ 计算 L2 的 Norm 的时候,<strong>这两张图片的 L2-Norm</strong>相等，<strong>L-Infinity 不一样</strong>。如果从这个例子来看 L-Infinity 跟 L2,哪一个比 较<strong>接近人类的感知能力</strong>？图像右下角的顏色一变深, 就发现有图片有变化做了某种修改, 所以看起来 L-Infinity 也许更符合实 际的需求, 避免被人类发现。</p>
+<p>​ 如果我们今天要攻击的对象, 是一个跟语音相关的系统, x 跟 x0 其实都是声音讯号, 不见得是 L2 跟 L-Infinity, 要去研究人类 的听觉系统, 人类对什麼频态的变化特别敏感, 根据听觉系统来制定比较适合的 x 跟 x0 之间距离的衡量方式, 这个部分就是 需要用到 <strong>Domain Knowledge</strong>。</p>
+<h3 id="attack-approach">Attack Approach</h3>
+<p>Minimize Loss，找一个 x 去 Minimize Loss, 但 x 有限制 <span class="math display">\[
+x^* =\underset{d(x^0,x) \le \epsilon}{arg \ min L(x)}
+\]</span> 如果把这个限制拿掉, 这个问题跟 <strong>Train 一个模型其实没有差别</strong>，只是<strong>把参数改成Network 的 Input</strong>。</p>
+<p><img src="8.png" alt="8" style="zoom:50%;" /></p>
+<p>现在 <strong>Network 的参数是固定的</strong>,我们只去<strong>调 Input</strong> 部分, 从而 Minimum Loss</p>
+<ul>
+<li>初始化 Input x，令 x = x0</li>
+<li>Gradient Descent ，<strong>Iterative Update 参数</strong>, 设 Iteration, t=1 to T。每一个 Iteration，计算 Gradient of x to Loss再 Update Image</li>
+<li>Image x0 - Gradient * Learning Rate</li>
+</ul>
+<p>Gradient Descent 的对象做限制，Gradient Descent 中再加一个 Module fix，Update 参数以后, 如果 <strong>xt 跟 x0 的差距大于ε</strong>，<span class="math inline">\(x^t=fix(x^t)\)</span></p>
+<p>假设现在用 L-Infinity，x0 如图 x 可以取值范围只有方框的范围，所以如果得到蓝色这个点跑出框, 就在框里找一个跟蓝色的点最近的位置。</p>
+<p><img src="9.png" alt="9" style="zoom:50%;" /></p>
+<h3 id="fast-gradient-sign-method-fgsm">Fast Gradient Sign Method （FGSM）</h3>
+<p>FGSM 只 Update 一次参数，只做一次的 Attack，G 做了一个特别的设计：不直接用 Gradient Descent 的值, 而是取一个 Sign <span class="math display">\[
+sign(x)=\left\{\begin{matrix}1 &amp;&amp; if &amp; x&gt;0   \\0 &amp;&amp; if &amp; x=0 \\ -1 &amp;&amp; if &amp; x&lt;0\end{matrix}\right.
+\]</span> Learning Rate = ε，所以 x0 做完一次攻击以后, 它一定会挪到四个角落的地方</p>
+<p><img src="10.png" alt="10" style="zoom:50%;" /> <span class="math display">\[
+x^t = x^t - \epsilon \times g \{-1,1\}
+\]</span></p>
+<h2 id="white-box-vs-black-box">White Box vs Black Box</h2>
+<p>上述的攻击都需要知道 Network 的参数，这种攻击称为 <strong>White Box Attack</strong>. 但是线上模型的 parameters 几乎不可能获得。所以在不知道 parameters 的 Attack 称为 <strong>Black Box Attack</strong></p>
+<ul>
+<li>假设知道Network 的训练数据。
+<ul>
+<li>自己训练一个 Proxy Network 来模仿要攻击的 Network，Proxy Network 会在一定程度上近似Target Network，对Proxy Network 的Attack 很有可能对 线上的 Network 有效</li>
+</ul></li>
+</ul>
+<p><img src="11.png" alt="11" style="zoom:30%;" /></p>
+<ul>
+<li>完全没有训练数据，那就用 Network 生成一些 成对数据</li>
+</ul>
+<p>Black Box Attack 结果如下：</p>
+<p><img src="12.png" alt="12" style="zoom:40%;" /></p>
+<p>对角线是白箱攻击，模型正确率为0. 黑箱攻击模型的正确率越低代表攻击越有效。</p>
+<p><img src="13.png" alt="13" style="zoom:40%;" /></p>
+<p>Ensemble Attack，行表示其余Network是白箱攻击，行中的Network 黑箱攻击。</p>
+<h3 id="attack-is-so-easy">Attack Is so easy？</h3>
+<p>下图所示，横轴表示 Attack 有效的方向，纵轴表示随机方向。深蓝色表示识别正确，攻击有效的方向在图中所有的Network都近似，所以一些人认为攻击成功的原因有一部分在于训练数据的局限性</p>
+<p><img src="14.png" alt="14" style="zoom:30%;" /></p>
+<h2 id="one-pixel-attack">One pixel attack</h2>
+<p>改变输入图像的一个 pixel，Network就会识别错误</p>
+<p><img src="15.png" alt="15" style="zoom:40%;" /></p>
+<h2 id="universal-adversarial-attack">Universal Adversarial Attack</h2>
+<p>一个 signal 成功攻击所有图片，而不是每个图片特殊的signal。只要 universal signal 加到图片，Network就会被成功攻击</p>
+<p><img src="16.png" alt="16" style="zoom:40%;" /></p>
+<h2 id="beyong-images">Beyong Images</h2>
+<ul>
+<li>Detect synthesized speech：加上Noise，Network 检测不出明显合成的 speech</li>
+<li>NLP---Q&amp;A</li>
+</ul>
+<h2 id="attack-in-the-physical-world">Attack in the Physical World</h2>
+<p>上述的Attack都是在 Input 上加上特殊的Noise或者signal，从而攻击成功。实际上，攻击也可以加在现实中</p>
+<h3 id="人脸识别戴上特殊的眼镜">人脸识别戴上特殊的眼镜</h3>
+<p><img src="17.png" alt="17" style="zoom:40%;" /></p>
+<ul>
+<li>实验考虑了现实世界的多角度</li>
+<li>考虑的摄像捕捉的像素局限性</li>
+<li>考虑到某些颜色从数字信号到现实世界发生变化的可能性</li>
+</ul>
+<h3 id="交通标志识别系统攻击">交通标志识别系统攻击</h3>
+<ul>
+<li>在路牌上贴纸，攻击辨识 Network</li>
+</ul>
+<p><img src="18.png" alt="18" style="zoom:40%;" /></p>
+<ul>
+<li>延长数字的笔画</li>
+</ul>
+<p><img src="19.png" alt="19" style="zoom:40%;" /></p>
+<h2 id="backdoor-in-model">"Backdoor" in Model</h2>
+<p>在训练 Network 前，在训练资料中加入Attack的图片，图片和标注看起来都正常，但是训练出来的模型会误判attack的图片</p>
+<p><img src="20.png" alt="20" style="zoom:40%;" /></p>
+<h2 id="defence">Defence</h2>
+<p>Passive &amp;&amp; Proactive</p>
+<h3 id="passive-defence">Passive Defence</h3>
+<p>模型不变，但是在Network之前加上一个Filter，削减 attack signal 的作用。</p>
+<p><img src="21.png" alt="21" style="zoom:30%;" /></p>
+<p>比如对图像模糊，结果正确。但是模糊化会使得置信度下降</p>
+<p><img src="22.png" alt="22" style="zoom:30%;" /></p>
+<p>对图像进行压缩和解压缩，有损</p>
+<p><img src="23.png" alt="23" style="zoom:50%;" /></p>
+<p>利用Generator产生和输入一模一样的图片，Generator 不会产生attack signal</p>
+<p><img src="24.png" alt="24" style="zoom:50%;" /></p>
+<p>但是，Filter 一但被知道，就会失去作用，完全可以把Filter看做是 Network的第一层。所以需要随机化Filter的操作</p>
+<p><img src="25.png" alt="25" style="zoom:40%;" /></p>
+<p>仍然可以被 universal signal 攻击</p>
+<h3 id="proactive-defence">Proactive Defence</h3>
+<p>训练一个 Robust 的模型，在模型训练的过程中，就对模型攻击。将攻击后的图片标记正确的label，重新训练模型。</p>
+<p>Adversarial Training（数据增强一种方法）:</p>
+<ul>
+<li>Training model</li>
+<li>Find problem and Attack</li>
+<li>Add attacked data to training data</li>
+<li>retrain model （loop）</li>
+</ul>
 
     </div>
 
@@ -343,14 +513,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">947k</span>
+    <span title="站点总字数">957k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">14:21</span>
+    <span title="站点阅读时长">14:30</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
